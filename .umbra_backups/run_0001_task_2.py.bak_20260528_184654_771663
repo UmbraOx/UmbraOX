@@ -1,0 +1,105 @@
+import pygame
+
+class Player:
+    """
+    A class to represent a blue square player in a Pygame application.
+    
+    Attributes:
+        x (int): The x-coordinate of the top-left corner of the player.
+        y (int): The y-coordinate of the top-left corner of the player.
+        width (int): The width of the player.
+        height (int): The height of the player.
+        speed (int): The movement speed of the player in pixels per frame.
+    """
+
+    def __init__(self, x: int = 0, y: int = 0, width: int = 40, height: int = 40, speed: int = 4):
+        """
+        Initializes a new instance of Player.
+
+        Args:
+            x (int): The initial x-coordinate of the player.
+            y (int): The initial y-coordinate of the player.
+            width (int): The width of the player.
+            height (int): The height of the player.
+            speed (int): The movement speed of the player in pixels per frame.
+        """
+        self.x = x
+        self.y = y
+        self.width = width
+        self.height = height
+        self.speed = speed
+
+    def move(self, screen_width: int, screen_height: int):
+        """
+        Moves the player based on arrow key inputs and clamps within screen boundaries.
+
+        Args:
+            screen_width (int): The width of the screen.
+            screen_height (int): The height of the screen.
+        """
+        keys = pygame.key.get_pressed()
+        
+        if keys[pygame.K_LEFT]:
+            self.x -= self.speed
+        if keys[pygame.K_RIGHT]:
+            self.x += self.speed
+        if keys[pygame.K_UP]:
+            self.y -= self.speed
+        if keys[pygame.K_DOWN]:
+            self.y += self.speed
+
+        # Clamp the player within screen boundaries
+        self.x = max(0, min(self.x, screen_width - self.width))
+        self.y = max(0, min(self.y, screen_height - self.height))
+
+    def draw(self, surface: pygame.Surface):
+        """
+        Draws the player on the given Pygame surface.
+
+        Args:
+            surface (pygame.Surface): The surface to draw the player on.
+        """
+        color = (0, 0, 255)  # Blue
+        rect = pygame.Rect(self.x, self.y, self.width, self.height)
+        pygame.draw.rect(surface, color, rect)
+
+    def to_dict(self) -> dict:
+        """
+        Returns a dictionary representation of the player's state.
+
+        Returns:
+            dict: A dictionary containing the player's position and dimensions.
+        """
+        return {
+            "x": self.x,
+            "y": self.y,
+            "width": self.width,
+            "height": self.height
+        }
+
+# Example usage in a Pygame application
+def main():
+    pygame.init()
+    screen_width = 800
+    screen_height = 600
+    screen = pygame.display.set_mode((screen_width, screen_height))
+    clock = pygame.time.Clock()
+
+    player = Player(x=screen_width // 2, y=screen_height // 2)
+
+    running = True
+    while running:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                running = False
+
+        player.move(screen_width, screen_height)
+        screen.fill((0, 0, 0))  # Clear screen with black
+        player.draw(screen)
+        pygame.display.flip()
+        clock.tick(60)  # Limit to 60 FPS
+
+    pygame.quit()
+
+if __name__ == "__main__":
+    main()

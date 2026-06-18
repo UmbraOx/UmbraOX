@@ -1,0 +1,24 @@
+{
+  "name": "DemiWorldT",
+  "slug": "demiworldt",
+  "project_type": "general",
+  "description": "lets make a game that is open world like skyrim with quests, dialog, inventory, crafting, thieving, stealth, shops, environment, the  city construction and squad hiring like from Bellwrite, and the graphics/art from Romestead, have an automation system like in Graveyard Digger. Build the whole world with towns, cities, bandit camps, goblin camps, mining areas, wood cutting areas, crafting for fletching such as arrows, darts, throwing stars, bows, etc., blacksmith crafting for armor, weapons, etc. We should have materials to build buildings, carts, items, weapons, gear, etc. Make 10 weapons and 3 sets of armour along with 10 spellsTo start out, add 10 different enemies, a few bandits, and a few goblins that spawn at their bases. Should have a pause menu accessible with the \"esc\" key, movement with w,a,s,d keys, inventory accessible with the I key. all screens and dialogs should have an x that's clickable in the top right corner to close out of the menu. What genre/style? (e.g. fantasy RPG, sci-fi, horror): fantasy RPG. What is the main gameplay loop? (combat, exploration, puzzle, building): crafting, building, and resource managment. Any specific features you want? (multiplayer, crafting, base building, etc): crafting, npc jobs, player jobs, base building, npc sales, city building and npc managment",
+  "created_at": "2026-06-14T10:54:34.943560",
+  "updated_at": "2026-06-14T17:03:28.932562",
+  "status": "active",
+  "files": [
+    {
+      "path": "C:\\Umbra\\workspaces\\agent_builds\\demiworldt\\demiworldt_game.py",
+      "type": "game",
+      "added_at": "2026-06-14T10:54:34.983562"
+    },
+    {
+      "path": "C:\\Umbra\\workspaces\\agent_builds\\demiworldt\\demiworldt_game.py",
+      "type": "game",
+      "added_at": "2026-06-14T17:03:28.932562"
+    }
+  ],
+  "conversation": [],
+  "metadata": {},
+  "tags": []
+}

@@ -1,0 +1,15 @@
+{
+  "objective": "Build runtime capability: runtime_expansion :: execution",
+  "result": {
+    "success": true,
+    "objective": "Build runtime capability: runtime_expansion :: execution",
+    "started": "2026-05-20T10:33:34.760916+00:00",
+    "completed": "2026-05-20T10:33:34.760916+00:00",
+    "error": null,
+    "traceback": null,
+    "result": {
+      "status": "executed",
+      "objective": "Build runtime capability: runtime_expansion :: execution"
+    }
+  }
+}

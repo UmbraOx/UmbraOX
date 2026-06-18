@@ -1,0 +1,72 @@
+# =============================================
+# UMBRA OS - Clean .gitignore
+# =============================================
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.py.bak.*
+*.bak
+
+# Virtual environments
+venv/
+.venv/
+env/
+ENV/
+
+# Massive files that break GitHub
+umbra_tree.txt
+repository_tree.txt
+*.tree.txt
+umbra_core.zip
+
+# Git backups and broken folders
+.git_broken/
+.git_backup*/
+.git_backup*
+
+# Large runtime/generated folders
+workspaces/run_*/
+workspaces/*/run_*/
+workspaces/videos/
+workspaces/*/generated/
+workspaces/cache/
+
+# Temp / Cache
+temp/
+tmp/
+*.tmp
+.cache/
+**/.cache/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Logs & Journals
+*.log
+logs/
+journal/
+evolution_journal/
+runtime_journal/
+snapshots/
+
+# Secrets
+.env
+.env.*
+apikeys.json
+secrets.json
+
+# OS
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+# Testing
+.pytest_cache/
+.coverage
+htmlcov/

@@ -1,0 +1,24 @@
+import sys
+
+def main():
+    """
+    This script continuously reads user input and performs actions based on the input.
+    The /quit command can be used to exit the script cleanly.
+    """
+    try:
+        while True:
+            user_input = input("Enter command: ")
+            if user_input.strip().lower() == "/quit":
+                print("Exiting script...")
+                sys.exit(0)
+            else:
+                print(f"Received command: {user_input}")
+    except KeyboardInterrupt:
+        print("\nScript interrupted by user.")
+        sys.exit(1)
+    except Exception as e:
+        print(f"An error occurred: {e}")
+        sys.exit(1)
+
+if __name__ == '__main__':
+    main()

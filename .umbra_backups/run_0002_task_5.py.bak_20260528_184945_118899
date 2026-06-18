@@ -1,0 +1,71 @@
+from flask import Flask, request, jsonify
+
+app = Flask(__name__)
+
+# Game state initialization
+game_state = {
+    "health": 100,
+    "game_over": False
+}
+
+def validate_input(data):
+    """Validate the input data."""
+    if not isinstance(data, dict) or 'action' not in data:
+        return False
+    return True
+
+@app.route('/game', methods=['GET'])
+def get_game_state():
+    """
+    Get the current game state.
+
+    Returns:
+        JSON response with the current health and game_over status.
+    """
+    try:
+        return jsonify(game_state), 200
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+@app.route('/game', methods=['POST'])
+def update_game_state():
+    """
+    Update the game state based on the input action.
+
+    Request Body:
+        - action: string (either 'damage' or 'restart')
+
+    Returns:
+        JSON response with the updated game state.
+    """
+    try:
+        data = request.get_json()
+        
+        if not validate_input(data):
+            return jsonify({"error": "Invalid input"}), 400
+        
+        action = data['action']
+        
+        if action == 'damage':
+            if game_state["health"] > 0:
+                game_state["health"] -= 10
+                if game_state["health"] <= 0:
+                    game_state["game_over"] = True
+            else:
+                return jsonify({"message": "GAME OVER. Press R to restart."}), 200
+        
+        elif action == 'restart':
+            game_state["health"] = 100
+            game_state["game_over"] = False
+            return jsonify({"message": "Game restarted"}), 200
+        
+        else:
+            return jsonify({"error": "Invalid action"}), 400
+        
+        return jsonify(game_state), 200
+    
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+if __name__ == '__main__':
+    app.run(debug=True)

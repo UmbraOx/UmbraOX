@@ -1,0 +1,5 @@
+[
+  "create a file named registry_test_2.py with print(\"ok\")",
+  "create a file named test_plan_1.py with print(\"plan\")",
+  "create a file named state_test.py with print(\"state\")"
+]

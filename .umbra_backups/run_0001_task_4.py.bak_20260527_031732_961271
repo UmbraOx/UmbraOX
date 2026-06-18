@@ -1,0 +1,51 @@
+from bs4 import BeautifulSoup
+
+def extract_headlines(html_content):
+    """
+    Extracts headlines from the given HTML content using BeautifulSoup.
+    
+    Args:
+        html_content (str): The HTML content as a string.
+        
+    Returns:
+        list: A list of extracted headlines.
+    """
+    try:
+        # Parse the HTML content
+        soup = BeautifulSoup(html_content, 'html.parser')
+        
+        # Find all headline tags and attributes
+        # Assuming headlines are within <h1> to <h6> tags
+        headline_tags = ['h1', 'h2', 'h3', 'h4', 'h5', 'h6']
+        headlines = []
+        
+        for tag in headline_tags:
+            # Extract text from each headline tag
+            headlines.extend([headline.get_text(strip=True) for headline in soup.find_all(tag)])
+        
+        return headlines
+    
+    except Exception as e:
+        print(f"An error occurred while extracting headlines: {e}")
+        return []
+
+# Example usage
+html_content = """
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Sample Page</title>
+</head>
+<body>
+    <h1>Main Headline</h1>
+    <h2>Sub Headline 1</h2>
+    <p>This is a paragraph.</p>
+    <h3>Sub Headline 2</h3>
+    <h4>Another Sub Headline</h4>
+</body>
+</html>
+"""
+
+headlines = extract_headlines(html_content)
+print(headlines)

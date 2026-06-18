@@ -1,0 +1,103 @@
+from flask import Flask, request, jsonify
+
+app = Flask(__name__)
+
+# In-memory database simulation
+items_db = {}
+
+def validate_item(item):
+    """Validate the item data."""
+    if not isinstance(item.get('id'), int) or item['id'] <= 0:
+        return False, "Invalid 'id'. It must be a positive integer."
+    if not isinstance(item.get('name'), str) or not item['name'].strip():
+        return False, "Invalid 'name'. It must be a non-empty string."
+    if not isinstance(item.get('price'), (int, float)) or item['price'] < 0:
+        return False, "Invalid 'price'. It must be a non-negative number."
+    return True, ""
+
+@app.route('/items', methods=['POST'])
+def create_item():
+    """
+    Create a new item.
+    
+    Request JSON body:
+    {
+        "id": int,
+        "name": str,
+        "price": float
+    }
+    """
+    item = request.get_json()
+    is_valid, error_message = validate_item(item)
+    if not is_valid:
+        return jsonify({"error": error_message}), 400
+    
+    item_id = item['id']
+    if item_id in items_db:
+        return jsonify({"error": "Item already exists."}), 409
+    
+    items_db[item_id] = item
+    return jsonify(item), 201
+
+@app.route('/items/<int:item_id>', methods=['GET'])
+def get_item(item_id):
+    """
+    Get an item by ID.
+    
+    :param item_id: int
+    """
+    item = items_db.get(item_id)
+    if not item:
+        return jsonify({"error": "Item not found."}), 404
+    return jsonify(item), 200
+
+@app.route('/items/<int:item_id>', methods=['PUT'])
+def update_item(item_id):
+    """
+    Update an existing item.
+    
+    :param item_id: int
+    
+    Request JSON body:
+    {
+        "name": str,
+        "price": float
+    }
+    """
+    if item_id not in items_db:
+        return jsonify({"error": "Item not found."}), 404
+    
+    update_data = request.get_json()
+    is_valid, error_message = validate_item(update_data)
+    if not is_valid:
+        return jsonify({"error": error_message}), 400
+    
+    # Update the item
+    items_db[item_id].update(update_data)
+    return jsonify(items_db[item_id]), 200
+
+@app.route('/items/<int:item_id>', methods=['DELETE'])
+def delete_item(item_id):
+    """
+    Delete an item by ID.
+    
+    :param item_id: int
+    """
+    if item_id not in items_db:
+        return jsonify({"error": "Item not found."}), 404
+    
+    del items_db[item_id]
+    return jsonify({"message": "Item deleted successfully."}), 200
+
+@app.errorhandler(404)
+def not_found(error):
+    """Handle 404 errors."""
+    return jsonify({"error": "Resource not found."}), 404
+
+@app.errorhandler(500)
+def internal_error(error):
+    """Handle 500 errors."""
+    return jsonify({"error": "Internal server error."}), 500
+
+if __name__ == '__main__':
+    app.run(debug=True)

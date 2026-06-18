@@ -1,0 +1,75 @@
+import pandas as pd
+from scipy import stats
+
+# Load the dataset
+try:
+    df = pd.read_csv('data.csv')
+except FileNotFoundError:
+    print("The file 'data.csv' was not found.")
+    exit()
+
+# Display basic information about the dataset
+print("\nBasic Information:")
+print(df.info())
+
+# Check for missing values and handle them
+missing_values = df.isnull().sum()
+print("\nMissing Values in Each Column:")
+print(missing_values)
+
+# Fill or drop missing values based on your analysis needs
+df_cleaned = df.dropna()  # This example drops rows with any missing values
+
+# Detect column types
+numeric_cols = df.select_dtypes(include=['number']).columns
+categorical_cols = df.select_dtypes(include=['object', 'category']).columns
+
+print("\nNumeric Columns:")
+print(numeric_cols)
+print("\nCategorical Columns:")
+print(categorical_cols)
+
+# Perform standard statistical analysis on numeric columns
+for col in numeric_cols:
+    print(f"\nStatistical Analysis for {col}:")
+    mean = df_cleaned[col].mean()
+    median = df_cleaned[col].median()
+    std_dev = df_cleaned[col].std()
+    skewness = stats.skew(df_cleaned[col])
+    kurtosis = stats.kurtosis(df_cleaned[col])
+    
+    print(f"Mean: {mean:.2f}")
+    print(f"Median: {median:.2f}")
+    print(f"Standard Deviation: {std_dev:.2f}")
+    print(f"Skewness: {skewness:.2f}")
+    print(f"Kurtosis: {kurtosis:.2f}")
+
+# Draw meaningful conclusions
+print("\nConclusion:")
+if len(numeric_cols) > 0:
+    # Example conclusion based on skewness and kurtosis
+    for col in numeric_cols:
+        if skewness > 1:
+            print(f"The distribution of {col} is positively skewed.")
+        elif skewness < -1:
+            print(f"The distribution of {col} is negatively skewed.")
+        else:
+            print(f"The distribution of {col} is approximately symmetric.")
+
+        if kurtosis > 3:
+            print(f"The distribution of {col} has heavier tails than a normal distribution (leptokurtic).")
+        elif kurtosis < 3:
+            print(f"The distribution of {col} has lighter tails than a normal distribution (platykurtic).")
+        else:
+            print(f"The distribution of {col} is approximately normal.")
+
+    # Example conclusion based on mean and median
+    for col in numeric_cols:
+        if mean > median:
+            print(f"The mean of {col} is greater than the median, indicating positive skewness.")
+        elif mean < median:
+            print(f"The mean of {col} is less than the median, indicating negative skewness.")
+        else:
+            print(f"The mean and median of {col} are approximately equal, suggesting symmetry.")
+
+# Additional analysis or visualizations can be added here

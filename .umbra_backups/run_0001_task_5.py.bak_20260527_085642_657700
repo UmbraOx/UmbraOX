@@ -1,0 +1,99 @@
+from flask import Flask, jsonify, request, render_template_string
+import json
+
+app = Flask(__name__)
+
+# Load initial configuration from JSON file
+def load_config():
+    try:
+        with open('umbra_config.json', 'r') as f:
+            return json.load(f)
+    except FileNotFoundError:
+        return {
+            "provider": "default",
+            "model": "default",
+            "resource_manager_settings": {}
+        }
+
+# Save configuration to JSON file
+def save_config(config):
+    with open('umbra_config.json', 'w') as f:
+        json.dump(config, f, indent=4)
+
+# Initial load of the configuration
+config = load_config()
+
+# HTML template for the web UI
+HTML_TEMPLATE = """
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Umbra Config Editor</title>
+</head>
+<body>
+    <h1>Umbra Configuration</h1>
+    <form action="/update" method="post">
+        <label for="provider">Provider:</label>
+        <input type="text" id="provider" name="provider" value="{{ config.provider }}" required><br><br>
+        
+        <label for="model">Model:</label>
+        <input type="text" id="model" name="model" value="{{ config.model }}" required><br><br>
+        
+        <h2>Resource Manager Settings</h2>
+        <label for="setting1">Setting 1:</label>
+        <input type="text" id="setting1" name="setting1" value="{{ config.resource_manager_settings.get('setting1', '') }}"><br><br>
+        
+        <label for="setting2">Setting 2:</label>
+        <input type="text" id="setting2" name="setting2" value="{{ config.resource_manager_settings.get('setting2', '') }}"><br><br>
+        
+        <button type="submit">Save</button>
+    </form>
+    
+    <h2>Configuration Preview</h2>
+    <pre>{{ json.dumps(config, indent=4) }}</pre>
+    
+    <a href="/reload" class="btn btn-primary">Reload Config</a>
+</body>
+</html>
+"""
+
+# Route to display the configuration form
+@app.route('/')
+def index():
+    return render_template_string(HTML_TEMPLATE, config=config)
+
+# Route to update the configuration
+@app.route('/update', methods=['POST'])
+def update_config():
+    try:
+        new_provider = request.form['provider']
+        new_model = request.form['model']
+        new_settings = {
+            'setting1': request.form.get('setting1'),
+            'setting2': request.form.get('setting2')
+        }
+        
+        config['provider'] = new_provider
+        config['model'] = new_model
+        config['resource_manager_settings'].update(new_settings)
+        
+        save_config(config)
+        return jsonify({"message": "Configuration updated successfully", "config": config}), 200
+    
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+# Route to reload the configuration without restarting the server
+@app.route('/reload', methods=['GET'])
+def reload_config():
+    global config
+    try:
+        config = load_config()
+        return jsonify({"message": "Configuration reloaded successfully", "config": config}), 200
+    
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+if __name__ == '__main__':
+    app.run(debug=True)

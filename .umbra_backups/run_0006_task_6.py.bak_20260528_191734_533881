@@ -1,0 +1,62 @@
+class ConversationManager:
+    def __init__(self):
+        """
+        Initialize the ConversationManager with an empty list to store conversation history.
+        """
+        self.history = []
+
+    def add_message(self, message):
+        """
+        Add a new message to the conversation history.
+
+        :param message: The message to be added to the history.
+        """
+        if not isinstance(message, str):
+            raise ValueError("Message must be a string.")
+        self.history.append(message)
+        print(f"Message added: {message}")
+
+    def clear_history(self):
+        """
+        Clear all messages from the conversation history.
+        """
+        self.history.clear()
+        print("Conversation history cleared.")
+
+    def display_history(self):
+        """
+        Display the current conversation history.
+        """
+        if not self.history:
+            print("No messages in the conversation history.")
+        else:
+            print("Conversation History:")
+            for idx, message in enumerate(self.history, start=1):
+                print(f"{idx}. {message}")
+
+def main():
+    """
+    Main function to run the conversation manager CLI.
+    """
+    cm = ConversationManager()
+    while True:
+        command = input("Enter a command (/add <message>, /clear, /history, /exit): ").strip()
+
+        if command.startswith("/add"):
+            try:
+                message = command.split(" ", 1)[1]
+                cm.add_message(message)
+            except IndexError:
+                print("Usage: /add <message>")
+        elif command == "/clear":
+            cm.clear_history()
+        elif command == "/history":
+            cm.display_history()
+        elif command == "/exit":
+            print("Exiting the conversation manager.")
+            break
+        else:
+            print("Invalid command. Please try again.")
+
+if __name__ == "__main__":
+    main()

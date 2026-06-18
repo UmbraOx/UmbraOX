@@ -1,0 +1,34 @@
+import requests
+from bs4 import BeautifulSoup
+
+def fetch_news_html(url):
+    """
+    Sends an HTTP GET request to the specified URL and retrieves the HTML content.
+    
+    Args:
+        url (str): The URL of the news website page containing headlines.
+        
+    Returns:
+        str: The HTML content of the webpage if successful, None otherwise.
+    """
+    try:
+        # Send a GET request to the specified URL
+        response = requests.get(url)
+        # Raise an exception for HTTP errors
+        response.raise_for_status()
+        # Return the HTML content of the page
+        return response.text
+    except requests.exceptions.RequestException as e:
+        print(f"An error occurred: {e}")
+        return None
+
+# Example usage
+if __name__ == "__main__":
+    news_url = "https://news.example.com"  # Replace with a valid news website URL
+    html_content = fetch_news_html(news_url)
+    
+    if html_content:
+        soup = BeautifulSoup(html_content, 'html.parser')
+        headlines = soup.find_all('h2')  # Assuming headlines are in <h2> tags
+        for headline in headlines:
+            print(headline.get_text())

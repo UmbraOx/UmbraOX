@@ -1,0 +1,55 @@
+import sys
+
+def main():
+    """
+    This is the main function that runs the command loop for user interaction.
+    Users can type messages, receive responses, and use specific commands:
+    - /quit: Exits the program.
+    - /clear: Clears the chat history.
+    - /history: Displays the chat history.
+    """
+    
+    # Initialize an empty list to store chat history
+    chat_history = []
+    
+    while True:
+        try:
+            # Prompt user for input
+            user_input = input("You: ")
+            
+            # Check for commands
+            if user_input.startswith('/'):
+                command = user_input[1:]
+                
+                if command == 'quit':
+                    print("Exiting the program.")
+                    sys.exit(0)
+                elif command == 'clear':
+                    chat_history.clear()
+                    print("Chat history cleared.")
+                elif command == 'history':
+                    print("\nChat History:")
+                    for entry in chat_history:
+                        print(entry)
+                    print()
+                else:
+                    print(f"Unknown command: {command}.")
+            else:
+                # Simulate a response from the AI
+                response = f"Bot: Echo of '{user_input}'"
+                
+                # Add user input and bot response to chat history
+                chat_history.append(user_input)
+                chat_history.append(response)
+                
+                # Display the response
+                print(response)
+        
+        except KeyboardInterrupt:
+            print("\nKeyboardInterrupt received. Exiting the program.")
+            sys.exit(0)
+        except Exception as e:
+            print(f"An error occurred: {e}")
+
+if __name__ == "__main__":
+    main()

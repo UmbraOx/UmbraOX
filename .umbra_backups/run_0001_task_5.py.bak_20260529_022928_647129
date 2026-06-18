@@ -1,0 +1,51 @@
+import cv2
+import numpy as np
+from PIL import Image, ImageFilter
+
+def add_color_and_texture(image_path, output_path):
+    """
+    Adds color and texture to an ice cream image.
+
+    Parameters:
+        image_path (str): The path to the input ice cream image.
+        output_path (str): The path where the processed image will be saved.
+
+    Returns:
+        None
+    """
+    try:
+        # Load the ice cream image
+        image = cv2.imread(image_path)
+        
+        if image is None:
+            raise ValueError(f"Could not read the image at {image_path}")
+        
+        # Convert the BGR image to RGB for PIL processing
+        image_rgb = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+        pil_image = Image.fromarray(image_rgb)
+
+        # Apply color enhancement using PIL's ImageEnhance module
+        from PIL import ImageEnhance
+        enhancer = ImageEnhance.Color(pil_image)
+        enhanced_image = enhancer.enhance(1.5)  # Increase color intensity
+
+        # Add texture by applying a Gaussian blur
+        blurred_image = enhanced_image.filter(ImageFilter.GaussianBlur(radius=2))
+
+        # Convert the PIL image back to OpenCV format for saving
+        final_image = np.array(blurred_image)
+        final_image = cv2.cvtColor(final_image, cv2.COLOR_RGB2BGR)
+
+        # Save the processed image
+        cv2.imwrite(output_path, final_image)
+        
+        print(f"Processed image saved at {output_path}")
+
+    except Exception as e:
+        print(f"An error occurred: {e}")
+
+# Example usage
+if __name__ == "__main__":
+    input_image_path = "ice_cream.jpg"  # Path to your ice cream image
+    output_image_path = "processed_ice_cream.jpg"  # Output path for the processed image
+    add_color_and_texture(input_image_path, output_image_path)

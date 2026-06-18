@@ -1,0 +1,79 @@
+class Player:
+    """
+    A class representing the player in the game.
+    
+    Attributes:
+        name (str): The name of the player.
+        health (int): The current health points of the player.
+    """
+
+    def __init__(self, name):
+        """
+        Initializes a new instance of the Player class.
+
+        Args:
+            name (str): The name of the player.
+        """
+        self.name = name
+        self.health = 3
+
+    def display_health(self):
+        """
+        Displays the current health of the player on the screen.
+        """
+        print(f"{self.name}'s Health: [{'*' * self.health}{' ' * (3 - self.health)}]")
+
+    def take_damage(self, damage=1):
+        """
+        Reduces the player's health by a specified amount.
+
+        Args:
+            damage (int): The amount of damage to inflict. Defaults to 1.
+        
+        Returns:
+            bool: True if the player is still alive, False otherwise.
+        """
+        self.health -= damage
+        if self.health < 0:
+            self.health = 0
+        self.display_health()
+        return self.is_alive()
+
+    def is_alive(self):
+        """
+        Checks if the player is still alive.
+
+        Returns:
+            bool: True if the player has more than 0 health, False otherwise.
+        """
+        return self.health > 0
+
+def main():
+    """
+    Main function to run the game loop and handle player actions.
+    """
+    try:
+        player_name = input("Enter your character's name: ")
+        player = Player(player_name)
+        
+        while player.is_alive():
+            action = input(f"{player.name}, choose an action (attack, heal): ").strip().lower()
+            
+            if action == 'attack':
+                # Simulate taking damage
+                print("You attacked! Taking 1 damage.")
+                player.take_damage(1)
+            elif action == 'heal':
+                # Simulate healing
+                print("Healing not implemented in this example.")
+                player.display_health()
+            else:
+                print("Invalid action. Please choose 'attack' or 'heal'.")
+    except KeyboardInterrupt:
+        print("\nGame interrupted by user.")
+    finally:
+        if not player.is_alive():
+            print(f"{player.name} has been defeated!")
+
+if __name__ == "__main__":
+    main()

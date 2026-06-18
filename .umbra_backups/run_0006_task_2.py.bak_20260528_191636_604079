@@ -1,0 +1,31 @@
+import urllib.request
+import urllib.error
+
+def connect_to_ollama():
+    """
+    Establishes a connection to the Ollama service running on localhost at port 11434.
+    
+    Returns:
+        http.client.HTTPResponse: The response object from the HTTP request.
+        
+    Raises:
+        urllib.error.URLError: If there is an error in connecting to the server.
+    """
+    url = "http://localhost:11434"
+    
+    try:
+        response = urllib.request.urlopen(url)
+        return response
+    except urllib.error.URLError as e:
+        print(f"Failed to connect to Ollama at {url}. Error: {e.reason}")
+        raise
+
+# Example usage
+if __name__ == "__main__":
+    try:
+        response = connect_to_ollama()
+        print("Connection successful!")
+        print("Response status:", response.status)
+        print("Response headers:", response.headers)
+    except Exception as e:
+        print(f"An error occurred: {e}")

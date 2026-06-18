@@ -1,0 +1,62 @@
+import pandas as pd
+from sqlalchemy import create_engine, MetaData, Table, Column, Integer, Float, String, inspect
+
+class DatabaseManager:
+    def __init__(self, connection_string):
+        self.engine = create_engine(connection_string)
+        self.metadata = MetaData()
+
+    def create_table(self, table_name, df):
+        """
+        Create a new table if it doesn't exist in the database.
+
+        Parameters:
+        - table_name: str, name of the table to be created.
+        - df: pandas DataFrame, data to be used for creating the table schema.
+
+        Returns:
+        None
+        """
+        # Reflect existing tables from the database
+        inspector = inspect(self.engine)
+        existing_tables = inspector.get_table_names()
+
+        if table_name not in existing_tables:
+            print(f"Table '{table_name}' does not exist. Creating new table...")
+            
+            # Detect column types based on pandas DataFrame dtypes
+            columns = []
+            for col_name, dtype in df.dtypes.items():
+                if pd.api.types.is_integer_dtype(dtype):
+                    columns.append(Column(col_name, Integer))
+                elif pd.api.types.is_float_dtype(dtype):
+                    columns.append(Column(col_name, Float))
+                elif pd.api.types.is_string_dtype(dtype):
+                    columns.append(Column(col_name, String))
+                else:
+                    # Fallback to string for other types
+                    columns.append(Column(col_name, String))
+
+            # Create a new table with detected column types
+            new_table = Table(table_name, self.metadata, *columns)
+            new_table.create(self.engine)
+
+            print(f"Table '{table_name}' created successfully.")
+        else:
+            print(f"Table '{table_name}' already exists.")
+
+# Example usage:
+if __name__ == "__main__":
+    # Example DataFrame
+    data = {
+        'id': [1, 2, 3],
+        'value': [10.5, 20.3, None],
+        'description': ['Item 1', 'Item 2', 'Item 3']
+    }
+    df = pd.DataFrame(data)
+
+    # Example connection string (replace with your actual database connection string)
+    connection_string = 'sqlite:///example.db'
+
+    db_manager = DatabaseManager(connection_string)
+    db_manager.create_table('example_table', df)

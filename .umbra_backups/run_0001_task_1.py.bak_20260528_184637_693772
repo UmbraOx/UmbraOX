@@ -1,0 +1,40 @@
+"""
+This module initializes Pygame and sets up a display window with a resolution of 800x600.
+"""
+
+import pygame
+
+def initialize_pygame():
+    """
+    Initializes Pygame and creates a display window with the specified dimensions.
+
+    Returns:
+        pygame.Surface: The created display surface.
+    """
+    try:
+        # Initialize Pygame
+        pygame.init()
+
+        # Set up the display window
+        screen = pygame.display.set_mode((800, 600))
+        pygame.display.set_caption("Pygame Display Window")
+
+        return screen
+
+    except pygame.error as e:
+        print(f"Error initializing Pygame: {e}")
+        raise
+
+if __name__ == "__main__":
+    # Initialize Pygame and get the display surface
+    screen = initialize_pygame()
+
+    # Main loop to keep the window open
+    running = True
+    while running:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                running = False
+
+    # Quit Pygame
+    pygame.quit()

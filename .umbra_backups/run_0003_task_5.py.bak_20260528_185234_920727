@@ -1,0 +1,39 @@
+import pandas as pd
+
+def count_missing_values(dataframe):
+    """
+    This function takes a pandas DataFrame as input and prints out the number of missing values 
+    for each column, along with their data types.
+    
+    Parameters:
+    - dataframe: A pandas DataFrame object
+    
+    Returns:
+    None
+    """
+    
+    # Calculate the total number of missing values in each column
+    missing_values = dataframe.isnull().sum()
+    
+    # Get the data type of each column
+    column_types = dataframe.dtypes
+    
+    # Create a DataFrame to store the results
+    result_df = pd.DataFrame({
+        'Missing Values': missing_values,
+        'Data Type': column_types
+    })
+    
+    # Filter out columns with no missing values for cleaner output
+    result_df = result_df[result_df['Missing Values'] > 0]
+    
+    # Print the formatted result
+    if not result_df.empty:
+        print("Columns with Missing Values:")
+        print(result_df)
+    else:
+        print("No missing values found in the dataset.")
+        
+# Example usage:
+# df = pd.read_csv('your_dataset.csv')
+# count_missing_values(df)

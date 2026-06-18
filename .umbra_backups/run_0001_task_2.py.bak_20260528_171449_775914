@@ -1,0 +1,67 @@
+from flask import Flask, request, jsonify
+
+app = Flask(__name__)
+
+# Mock database of countries and their capitals
+countries_data = {
+    "France": "Paris",
+    "Germany": "Berlin",
+    "Italy": "Rome",
+    "Spain": "Madrid",
+    "United States": "Washington D.C."
+}
+
+@app.route('/country/capital', methods=['GET'])
+def get_capital():
+    """
+    Retrieve the capital of a specified country.
+
+    Args:
+        None
+
+    Returns:
+        JSON response with the capital of the country if found, otherwise an error message.
+    """
+    # Extract 'country' from query parameters
+    country = request.args.get('country')
+
+    # Validate input
+    if not country:
+        return jsonify({"error": "Country parameter is missing"}), 400
+
+    # Fetch capital from data
+    capital = countries_data.get(country)
+
+    if capital:
+        return jsonify({"country": country, "capital": capital}), 200
+    else:
+        return jsonify({"error": f"Capital for {country} not found"}), 404
+
+@app.errorhandler(404)
+def resource_not_found(e):
+    """
+    Handle 404 Not Found errors.
+
+    Args:
+        e (Exception): The exception that caused the error.
+
+    Returns:
+        JSON response with an error message.
+    """
+    return jsonify({"error": "Resource not found"}), 404
+
+@app.errorhandler(500)
+def internal_server_error(e):
+    """
+    Handle 500 Internal Server Error errors.
+
+    Args:
+        e (Exception): The exception that caused the error.
+
+    Returns:
+        JSON response with an error message.
+    """
+    return jsonify({"error": "Internal server error"}), 500
+
+if __name__ == '__main__':
+    app.run(debug=True)

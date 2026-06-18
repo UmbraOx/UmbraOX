@@ -1,0 +1,42 @@
+from typing import List, Dict
+
+def select_ice_cream_colors_and_textures(flavors: List[str]) -> Dict[str, Dict[str, str]]:
+    """
+    Selects colors and textures for a given list of ice cream flavors.
+    
+    Parameters:
+    flavors (List[str]): A list of ice cream flavors.
+    
+    Returns:
+    Dict[str, Dict[str, str]]: A dictionary with each flavor as the key,
+                                and another dictionary containing 'color' and 'texture'.
+    """
+    # Define a mapping of flavors to colors and textures
+    flavor_options = {
+        "vanilla": {"color": "white", "texture": "smooth"},
+        "chocolate": {"color": "dark brown", "texture": "creamy"},
+        "strawberry": {"color": "pink", "texture": "soft"},
+        "mint chocolate chip": {"color": "green and white", "texture": "chippy"},
+        "cookies and cream": {"color": "biscuit colored", "texture": "crunchy with soft cream"},
+        # Add more flavors as needed
+    }
+    
+    selected_options = {}
+    
+    for flavor in flavors:
+        try:
+            options = flavor_options[flavor.lower()]
+            selected_options[flavor] = options
+        except KeyError:
+            print(f"Warning: '{flavor}' is not a recognized flavor. Skipping.")
+    
+    return selected_options
+
+# Example usage
+if __name__ == "__main__":
+    flavors = ["vanilla", "chocolate", "strawberry", "mint chocolate chip", "cookies and cream", "unknown flavor"]
+    ice_cream_options = select_ice_cream_colors_and_textures(flavors)
+    for flavor, options in ice_cream_options.items():
+        print(f"Flavor: {flavor}")
+        print(f"  Color: {options['color']}")
+        print(f"  Texture: {options['texture']}")

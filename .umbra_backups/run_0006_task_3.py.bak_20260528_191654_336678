@@ -1,0 +1,49 @@
+import requests
+
+def send_message_to_ollama(message: str) -> str:
+    """
+    Send a message to the Ollama API and return the response.
+    
+    Args:
+        message (str): The message to be sent to Ollama.
+        
+    Returns:
+        str: The response from Ollama.
+        
+    Raises:
+        requests.exceptions.RequestException: If there is an error in the request.
+        ValueError: If the response status code indicates an error.
+    """
+    url = "https://ollama.com/api/message"  # Replace with the actual Ollama API endpoint
+    headers = {
+        "Content-Type": "application/json",
+        # Add any necessary authentication headers here
+    }
+    data = {
+        "message": message
+    }
+    
+    try:
+        response = requests.post(url, headers=headers, json=data)
+        response.raise_for_status()  # Raise an error for bad responses (4xx and 5xx)
+        
+        if response.status_code == 200:
+            return response.json().get("response", "No response received")
+        else:
+            raise ValueError(f"Unexpected status code: {response.status_code}")
+    
+    except requests.exceptions.RequestException as e:
+        print(f"Request failed: {e}")
+        raise
+    except ValueError as ve:
+        print(f"Value error occurred: {ve}")
+        raise
+
+# Example usage
+if __name__ == "__main__":
+    try:
+        message = "Hello, Ollama!"
+        response = send_message_to_ollama(message)
+        print(f"Response from Ollama: {response}")
+    except Exception as e:
+        print(f"An error occurred: {e}")

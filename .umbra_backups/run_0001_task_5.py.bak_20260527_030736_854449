@@ -1,0 +1,58 @@
+import pandas as pd
+
+# Load the dataset
+# For demonstration purposes, let's assume we have a CSV file named 'data.csv'
+df = pd.read_csv('data.csv')
+
+# Display the first few rows of the dataframe
+print("First few rows of the dataset:")
+print(df.head())
+print("\n")
+
+# Check for missing data and display the count of missing values in each column
+missing_data = df.isnull().sum()
+print("Missing data in each column:")
+print(missing_data)
+print("\n")
+
+# Handle missing data by filling them with the mean of the column (for numerical columns)
+numerical_cols = df.select_dtypes(include=['int64', 'float64']).columns
+df[numerical_cols] = df[numerical_cols].fillna(df[numerical_cols].mean())
+
+# Fill missing categorical values with the mode
+categorical_cols = df.select_dtypes(include=['object']).columns
+for col in categorical_cols:
+    df[col].fillna(df[col].mode()[0], inplace=True)
+
+# Display the updated dataframe after handling missing data
+print("Dataframe after handling missing data:")
+print(df.head())
+print("\n")
+
+# Detect and print column types
+column_types = df.dtypes
+print("Column types in the dataset:")
+print(column_types)
+print("\n")
+
+# Perform basic statistical analysis using standard methods
+summary_statistics = df.describe()
+print("Summary statistics for numerical columns:")
+print(summary_statistics)
+print("\n")
+
+# Additional analysis: Calculate correlation matrix for numerical columns
+correlation_matrix = df[numerical_cols].corr()
+print("Correlation matrix for numerical columns:")
+print(correlation_matrix)
+print("\n")
+
+# Additional analysis: Group by a categorical column and calculate mean of a numerical column
+if not categorical_cols.empty:
+    group_by_analysis = df.groupby(categorical_cols[0])[numerical_cols[0]].mean().reset_index()
+    print(f"Mean {numerical_cols[0]} grouped by {categorical_cols[0]}:")
+    print(group_by_analysis)
+    print("\n")
+
+# Conclusion
+print("Analysis completed. Please review the results above.")

@@ -1,0 +1,28 @@
+{
+  "name": "Ethan Vesperwood",
+  "age": 25,
+  "race": "human",
+  "class": "warrior",
+  "appearance": "Ethan is a tall and muscular human with shaggy brown hair that reaches his shoulders. He has piercing blue eyes that seem to sparkle with determination and intelligence. His rugged face bears the marks of countless battles, yet he carries himself with grace and confidence. Ethan wears simple but sturdy armor made from leather and metal, adorned with symbols that represent the gods he serves.",
+  "personality": [
+    "determined",
+    "curious",
+    "resilient"
+  ],
+  "backstory": "Ethan was born in a small farming village dedicated to the worship of the three gods who created Optiopia. From an early age, he showed a natural talent for combat and leadership. However, one fateful day, while exploring a hidden cave near his home, Ethan discovered a secret: humans had free will, and they could control their own destinies. Inspired by this revelation, Ethan decided to journey across the world in search of the best ingredients needed to create a dish that would surpass even the gods' creations.",
+  "abilities": [
+    "enhanced senses",
+    "leadership"
+  ],
+  "weaknesses": [
+    "overconfidence"
+  ],
+  "starting_stats": {
+    "hp": 100,
+    "attack": 15,
+    "defense": 12,
+    "speed": 10
+  },
+  "dialogue_style": "Ethan speaks with a blend of confidence and humility. He often uses metaphors drawn from the lands he travels through to convey his thoughts and ideas.",
+  "role": "player"
+}

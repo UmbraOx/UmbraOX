@@ -1,0 +1,150 @@
+{
+    "objective": "Build runtime capability: autonomous_retry :: validation",
+    "result": {
+        "success": true,
+        "objective": "Build runtime capability: autonomous_retry :: validation",
+        "written": "generated\\build_runtime_capability_autonomous_retry_validation.py",
+        "validation": {
+            "safe": true,
+            "valid": true,
+            "approved": true
+        },
+        "modules": {
+            "build_runtime_capability_task_queue_planning": "generated\\build_runtime_capability_task_queue_planning.py",
+            "build_runtime_capability_task_queue_execution": "generated\\build_runtime_capability_task_queue_execution.py",
+            "build_runtime_capability_task_queue_validation": "generated\\build_runtime_capability_task_queue_validation.py",
+            "build_runtime_capability_task_queue_deployment": "generated\\build_runtime_capability_task_queue_deployment.py",
+            "build_runtime_capability_agent_planning_planning": "generated\\build_runtime_capability_agent_planning_planning.py",
+            "build_runtime_capability_agent_planning_execution": "generated\\build_runtime_capability_agent_planning_execution.py",
+            "build_runtime_capability_agent_planning_validation": "generated\\build_runtime_capability_agent_planning_validation.py",
+            "build_runtime_capability_agent_planning_deployment": "generated\\build_runtime_capability_agent_planning_deployment.py",
+            "build_runtime_capability_memory_persistence_planning": "generated\\build_runtime_capability_memory_persistence_planning.py",
+            "build_runtime_capability_memory_persistence_execution": "generated\\build_runtime_capability_memory_persistence_execution.py",
+            "build_runtime_capability_memory_persistence_validation": "generated\\build_runtime_capability_memory_persistence_validation.py",
+            "build_runtime_capability_memory_persistence_deployment": "generated\\build_runtime_capability_memory_persistence_deployment.py",
+            "build_runtime_capability_vector_memory_planning": "generated\\build_runtime_capability_vector_memory_planning.py",
+            "build_runtime_capability_vector_memory_execution": "generated\\build_runtime_capability_vector_memory_execution.py",
+            "build_runtime_capability_vector_memory_validation": "generated\\build_runtime_capability_vector_memory_validation.py",
+            "build_runtime_capability_vector_memory_deployment": "generated\\build_runtime_capability_vector_memory_deployment.py",
+            "build_runtime_capability_sandbox_execution_planning": "generated\\build_runtime_capability_sandbox_execution_planning.py",
+            "build_runtime_capability_sandbox_execution_execution": "generated\\build_runtime_capability_sandbox_execution_execution.py",
+            "build_runtime_capability_sandbox_execution_validation": "generated\\build_runtime_capability_sandbox_execution_validation.py",
+            "build_runtime_capability_sandbox_execution_deployment": "generated\\build_runtime_capability_sandbox_execution_deployment.py",
+            "build_runtime_capability_self_repair_planning": "generated\\build_runtime_capability_self_repair_planning.py",
+            "build_runtime_capability_self_repair_execution": "generated\\build_runtime_capability_self_repair_execution.py",
+            "build_runtime_capability_self_repair_validation": "generated\\build_runtime_capability_self_repair_validation.py",
+            "build_runtime_capability_self_repair_deployment": "generated\\build_runtime_capability_self_repair_deployment.py",
+            "build_runtime_capability_goal_decomposition_planning": "generated\\build_runtime_capability_goal_decomposition_planning.py",
+            "build_runtime_capability_goal_decomposition_execution": "generated\\build_runtime_capability_goal_decomposition_execution.py",
+            "build_runtime_capability_goal_decomposition_validation": "generated\\build_runtime_capability_goal_decomposition_validation.py",
+            "build_runtime_capability_goal_decomposition_deployment": "generated\\build_runtime_capability_goal_decomposition_deployment.py",
+            "build_runtime_capability_autonomous_retry_planning": "generated\\build_runtime_capability_autonomous_retry_planning.py",
+            "build_runtime_capability_autonomous_retry_execution": "generated\\build_runtime_capability_autonomous_retry_execution.py",
+            "build_runtime_capability_autonomous_retry_validation": "generated\\build_runtime_capability_autonomous_retry_validation.py"
+        },
+        "dependencies": {
+            "build_runtime_capability_task_queue_planning": [],
+            "build_runtime_capability_task_queue_execution": [
+                "build_runtime_capability_task_queue_planning"
+            ],
+            "build_runtime_capability_task_queue_validation": [
+                "build_runtime_capability_task_queue_execution"
+            ],
+            "build_runtime_capability_task_queue_deployment": [
+                "build_runtime_capability_task_queue_validation"
+            ],
+            "build_runtime_capability_agent_planning_planning": [
+                "build_runtime_capability_task_queue_deployment"
+            ],
+            "build_runtime_capability_agent_planning_execution": [
+                "build_runtime_capability_agent_planning_planning"
+            ],
+            "build_runtime_capability_agent_planning_validation": [
+                "build_runtime_capability_agent_planning_execution"
+            ],
+            "build_runtime_capability_agent_planning_deployment": [
+                "build_runtime_capability_agent_planning_validation"
+            ],
+            "build_runtime_capability_memory_persistence_planning": [
+                "build_runtime_capability_agent_planning_deployment"
+            ],
+            "build_runtime_capability_memory_persistence_execution": [
+                "build_runtime_capability_memory_persistence_planning"
+            ],
+            "build_runtime_capability_memory_persistence_validation": [
+                "build_runtime_capability_memory_persistence_execution"
+            ],
+            "build_runtime_capability_memory_persistence_deployment": [
+                "build_runtime_capability_memory_persistence_validation"
+            ],
+            "build_runtime_capability_vector_memory_planning": [
+                "build_runtime_capability_memory_persistence_deployment"
+            ],
+            "build_runtime_capability_vector_memory_execution": [
+                "build_runtime_capability_vector_memory_planning"
+            ],
+            "build_runtime_capability_vector_memory_validation": [
+                "build_runtime_capability_vector_memory_execution"
+            ],
+            "build_runtime_capability_vector_memory_deployment": [
+                "build_runtime_capability_vector_memory_validation"
+            ],
+            "build_runtime_capability_sandbox_execution_planning": [
+                "build_runtime_capability_vector_memory_deployment"
+            ],
+            "build_runtime_capability_sandbox_execution_execution": [
+                "build_runtime_capability_sandbox_execution_planning"
+            ],
+            "build_runtime_capability_sandbox_execution_validation": [
+                "build_runtime_capability_sandbox_execution_execution"
+            ],
+            "build_runtime_capability_sandbox_execution_deployment": [
+                "build_runtime_capability_sandbox_execution_validation"
+            ],
+            "build_runtime_capability_self_repair_planning": [
+                "build_runtime_capability_sandbox_execution_deployment"
+            ],
+            "build_runtime_capability_self_repair_execution": [
+                "build_runtime_capability_self_repair_planning"
+            ],
+            "build_runtime_capability_self_repair_validation": [
+                "build_runtime_capability_self_repair_execution"
+            ],
+            "build_runtime_capability_self_repair_deployment": [
+                "build_runtime_capability_self_repair_validation"
+            ],
+            "build_runtime_capability_goal_decomposition_planning": [
+                "build_runtime_capability_self_repair_deployment"
+            ],
+            "build_runtime_capability_goal_decomposition_execution": [
+                "build_runtime_capability_goal_decomposition_planning"
+            ],
+            "build_runtime_capability_goal_decomposition_validation": [
+                "build_runtime_capability_goal_decomposition_execution"
+            ],
+            "build_runtime_capability_goal_decomposition_deployment": [
+                "build_runtime_capability_goal_decomposition_validation"
+            ],
+            "build_runtime_capability_autonomous_retry_planning": [
+                "build_runtime_capability_goal_decomposition_deployment"
+            ],
+            "build_runtime_capability_autonomous_retry_execution": [
+                "build_runtime_capability_autonomous_retry_planning"
+            ],
+            "build_runtime_capability_autonomous_retry_validation": [
+                "build_runtime_capability_autonomous_retry_execution"
+            ]
+        },
+        "capabilities": [
+            "autonomous_generation",
+            "recursive_execution",
+            "persistent_memory",
+            "multi_agent_orchestration",
+            "runtime_expansion",
+            "safe_validation"
+        ],
+        "project": {
+            "files": 102460
+        }
+    }
+}

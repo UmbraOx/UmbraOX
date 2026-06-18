@@ -1,0 +1,9 @@
+[
+  "create a file named queue_test.py with print(\"queue\")",
+  "create a file named snapshot_test.py with print(\"snapshot\")",
+  "create a file named layer9_test.py with print(\"layer9\")",
+  "create a folder named layer9_folder",
+  "create a file named registry_test_2.py with print(\"ok\")",
+  "create a file named test_plan_1.py with print(\"plan\")",
+  "create a file named state_test.py with print(\"state\")"
+]

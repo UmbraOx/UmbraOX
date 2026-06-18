@@ -1,0 +1,52 @@
+import os
+import sys
+from pathlib import Path
+import shutil
+import subprocess
+
+# Configuration
+SOURCE_FILE = Path("source.txt")
+DESTINATION_FILE = Path("destination.txt")
+DRY_RUN = False
+
+def run_command(command, **kwargs):
+    """Run a command using subprocess and handle errors."""
+    try:
+        print(f"Running: {' '.join(command)}")
+        result = subprocess.run(command, check=True, **kwargs)
+        return result
+    except subprocess.CalledProcessError as e:
+        print(f"Command failed with error: {e}")
+        sys.exit(1)
+
+def copy_file(src, dst):
+    """Copy a file from src to dst."""
+    try:
+        if DRY_RUN:
+            print(f"Dry-run: Copying {src} to {dst}")
+        else:
+            shutil.copy2(src, dst)
+            print(f"Copied {src} to {dst}")
+    except FileNotFoundError:
+        print(f"Error: Source file {src} not found.")
+        sys.exit(1)
+    except PermissionError as e:
+        print(f"Permission error: {e}")
+        sys.exit(1)
+
+def main():
+    if len(sys.argv) > 1 and sys.argv[1] == "--dry-run":
+        global DRY_RUN
+        DRY_RUN = True
+
+    # Example command to run
+    command = ["ls", "-l", SOURCE_FILE]
+
+    # Run the command
+    run_command(command)
+
+    # Copy file
+    copy_file(SOURCE_FILE, DESTINATION_FILE)
+
+if __name__ == "__main__":
+    main()

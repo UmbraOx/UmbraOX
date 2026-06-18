@@ -1,0 +1,39 @@
+{
+  "continuation_id": "cont_run_0001",
+  "original_prompt": "make a gif of a cat in armour dancing",
+  "remaining_tasks": [
+    {
+      "task_id": "run_0001_task_1",
+      "objective": "run_0001_task_1",
+      "error": "LLM call failed: timed out"
+    },
+    {
+      "task_id": "run_0001_task_2",
+      "objective": "run_0001_task_2",
+      "error": "LLM call failed: timed out"
+    },
+    {
+      "task_id": "run_0001_task_3",
+      "objective": "run_0001_task_3",
+      "error": "LLM call failed: timed out"
+    },
+    {
+      "task_id": "run_0001_task_4",
+      "objective": "run_0001_task_4",
+      "error": "LLM call failed: timed out"
+    },
+    {
+      "task_id": "run_0001_task_5",
+      "objective": "run_0001_task_5",
+      "error": "LLM call failed: timed out"
+    },
+    {
+      "task_id": "run_0001_task_6",
+      "objective": "run_0001_task_6",
+      "error": "LLM call failed: timed out"
+    }
+  ],
+  "completed_tasks": [],
+  "created_at": "2026-05-30T09:36:32.511106",
+  "resumed_count": 0
+}

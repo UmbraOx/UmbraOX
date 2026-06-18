@@ -1,0 +1,43 @@
+# Import necessary libraries for data manipulation and statistical methods
+import pandas as pd
+import numpy as np
+
+# Load your dataset into a DataFrame
+# For demonstration, let's assume we are loading a CSV file named 'data.csv'
+df = pd.read_csv('data.csv')
+
+# Display the first few rows of the DataFrame to understand its structure
+print("First few rows of the dataset:")
+print(df.head())
+
+# Check for missing values in the DataFrame and print the count of missing values per column
+missing_values = df.isnull().sum()
+print("\nMissing values in each column:")
+print(missing_values)
+
+# Handle missing data by filling them with appropriate values or dropping them
+# Here, we'll fill missing numerical columns with their mean and categorical columns with their mode
+numerical_cols = df.select_dtypes(include=[np.number]).columns
+categorical_cols = df.select_dtypes(exclude=[np.number]).columns
+
+df[numerical_cols] = df[numerical_cols].fillna(df[numerical_cols].mean())
+df[categorical_cols] = df[categorical_cols].fillna(df[categorical_cols].mode().iloc[0])
+
+# Verify that missing values have been handled
+print("\nMissing values after handling:")
+print(df.isnull().sum())
+
+# Detect and print the data types of each column in the DataFrame
+print("\nData types of each column:")
+print(df.dtypes)
+
+# Perform some basic statistical analysis
+# For numerical columns, calculate mean, median, standard deviation, and count
+numerical_stats = df[numerical_cols].describe()
+print("\nStatistical summary for numerical columns:")
+print(numerical_stats)
+
+# For categorical columns, calculate the frequency of each category
+categorical_counts = df[categorical_cols].apply(lambda x: x.value_counts()).T
+print("\nFrequency counts for categorical columns:")
+print(categorical_counts)

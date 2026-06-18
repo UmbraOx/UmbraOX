@@ -1,0 +1,75 @@
+# Import necessary libraries
+import random
+
+class Entity:
+    """Base class for all entities in the game."""
+    
+    def __init__(self, x, y):
+        self.x = x
+        self.y = y
+    
+    def move(self, dx, dy):
+        """Move the entity by a certain offset."""
+        self.x += dx
+        self.y += dy
+
+class Player(Entity):
+    """Class representing the player character."""
+    
+    def __init__(self, x, y, health=100):
+        super().__init__(x, y)
+        self.health = health
+    
+    def take_damage(self, amount):
+        """Reduce player's health by a given amount."""
+        self.health -= amount
+        if self.health <= 0:
+            self.respawn()
+    
+    def respawn(self):
+        """Respawn the player at the center of the screen."""
+        self.x = 0
+        self.y = 0
+        self.health = 100
+
+class Enemy(Entity):
+    """Class representing an enemy character."""
+    
+    def __init__(self, x, y):
+        super().__init__(x, y)
+    
+    def move_randomly(self):
+        """Move the enemy randomly within a small range."""
+        dx = random.randint(-1, 1)
+        dy = random.randint(-1, 1)
+        self.move(dx, dy)
+
+def check_collision(player, enemy):
+    """Check if player and enemy have collided."""
+    return abs(player.x - enemy.x) < 2 and abs(player.y - enemy.y) < 2
+
+def main():
+    # Initialize the game
+    player = Player(0, 0)
+    enemy = Enemy(random.randint(-10, 10), random.randint(-10, 10))
+    
+    while True:
+        # Move the enemy randomly
+        enemy.move_randomly()
+        
+        # Check for collision
+        if check_collision(player, enemy):
+            print("Collision detected! Player takes damage.")
+            player.take_damage(20)
+        
+        # Display current state
+        print(f"Player position: ({player.x}, {player.y}), Health: {player.health}")
+        print(f"Enemy position: ({enemy.x}, {enemy.y})")
+        
+        # Break loop if player is dead
+        if player.health <= 0:
+            print("Game Over!")
+            break
+
+if __name__ == "__main__":
+    main()

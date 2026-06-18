@@ -1,0 +1,1 @@
+print("adaptive system active")

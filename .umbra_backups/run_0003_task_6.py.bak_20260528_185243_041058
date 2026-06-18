@@ -1,0 +1,55 @@
+import pandas as pd
+
+def generate_summary_report(df):
+    """
+    Generates and prints a detailed summary report of a DataFrame.
+    
+    Parameters:
+    - df: A pandas DataFrame
+    
+    The report includes:
+    - Column data types
+    - Missing values count per column
+    - Basic statistical information (mean, median, std dev)
+    - Summary statistics for numerical columns
+    """
+    # Step 1: Display the first few rows of the DataFrame to understand its structure
+    print("Preview of DataFrame:")
+    print(df.head())
+    
+    # Step 2: Print the column data types
+    print("\nColumn Data Types:")
+    print(df.dtypes)
+    
+    # Step 3: Calculate and display missing values in each column
+    missing_values = df.isnull().sum()
+    print("\nMissing Values per Column:")
+    print(missing_values[missing_values > 0])
+    
+    # Step 4: Display basic statistical information for numerical columns
+    print("\nBasic Statistics (Mean, Median, Std Dev):")
+    print(df.describe())
+    
+    # Step 5: Provide a more detailed summary of the DataFrame statistics
+    print("\nDetailed Summary Statistics:")
+    print(df.describe(include='all'))
+    
+    # Step 6: Display unique values count for each column if it's categorical or has less than 10 unique values
+    print("\nUnique Values in Each Column:")
+    for col in df.columns:
+        if df[col].dtype == 'object' or len(df[col].unique()) < 10:
+            print(f"\nColumn: {col}")
+            print(df[col].value_counts(dropna=False))
+    
+# Example usage
+if __name__ == "__main__":
+    # Create a sample DataFrame
+    data = {
+        'A': [1, 2, None, 4, 5],
+        'B': ['a', 'b', 'c', 'a', None],
+        'C': [None, 2.5, 3.0, 4.5, 5.0]
+    }
+    df = pd.DataFrame(data)
+    
+    # Generate and print the summary report
+    generate_summary_report(df)

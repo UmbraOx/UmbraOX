@@ -1,0 +1,26 @@
+{
+  "generated_at": "2026-05-25T22:53:03.832314",
+  "umbra_version": "Runtime Core v2",
+  "llm_provider": "ollama",
+  "llm_model": "qwen2.5-coder:14b",
+  "session_stats": {
+    "total_runs": 0,
+    "graph_nodes": 0,
+    "registered_tasks": 0
+  },
+  "last_run": null,
+  "recent_runs": [],
+  "graph_summary": {
+    "total": 0,
+    "complete": true,
+    "has_failures": false,
+    "by_state": {}
+  },
+  "state_machine_summary": {
+    "total": 0,
+    "by_state": {}
+  },
+  "next_steps": [
+    "No runs completed yet \u2014 start with a prompt"
+  ]
+}

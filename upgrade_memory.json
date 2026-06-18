@@ -1,0 +1,216 @@
+{
+  "approved": [],
+  "rejected": [],
+  "pending": [
+    {
+      "id": "55130c53",
+      "title": "Resolve TODO item",
+      "description": "# TODO DETECTION",
+      "target": ".\\core\\runtime\\architecture_inspector.py",
+      "type": "maintenance"
+    },
+    {
+      "id": "c6c3da88",
+      "title": "Resolve TODO item",
+      "description": "\"Project contains TODO items.\"",
+      "target": ".\\core\\runtime\\architecture_inspector.py",
+      "type": "maintenance"
+    },
+    {
+      "id": "47d65ffb",
+      "title": "Resolve TODO item",
+      "description": "# TODOS",
+      "target": ".\\core\\runtime\\code_indexer.py",
+      "type": "maintenance"
+    },
+    {
+      "id": "d1f2939d",
+      "title": "Resolve TODO item",
+      "description": "if \"TODO\" in line:",
+      "target": ".\\core\\runtime\\code_indexer.py",
+      "type": "maintenance"
+    },
+    {
+      "id": "9f9127db",
+      "title": "Resolve TODO item",
+      "description": "# TODO IMPROVEMENTS",
+      "target": ".\\core\\runtime\\improvement_planner.py",
+      "type": "maintenance"
+    },
+    {
+      "id": "7d5c1e3a",
+      "title": "Resolve TODO item",
+      "description": "if \"TODO\" in suggestion:",
+      "target": ".\\core\\runtime\\improvement_planner.py",
+      "type": "maintenance"
+    },
+    {
+      "id": "3b9b232b",
+      "title": "Resolve TODO item",
+      "description": "\"goal\": \"Resolve TODO items\",",
+      "target": ".\\core\\runtime\\improvement_planner.py",
+      "type": "maintenance"
+    },
+    {
+      "id": "be64a828",
+      "title": "Resolve TODO item",
+      "description": "# RULE: TODO DETECTION",
+      "target": ".\\core\\runtime\\self_improvement_engine.py",
+      "type": "maintenance"
+    },
+    {
+      "id": "2442862a",
+      "title": "Resolve TODO item",
+      "description": "\"goal\": \"Resolve TODO item\",",
+      "target": ".\\core\\runtime\\self_improvement_engine.py",
+      "type": "maintenance"
+    },
+    {
+      "id": "234c06ec",
+      "title": "Reduce import complexity",
+      "description": "187 imports detected",
+      "target": "project-wide",
+      "type": "architecture"
+    },
+    {
+      "id": "8354dea8",
+      "title": "Resolve TODO item",
+      "description": "# TODO DETECTION",
+      "target": ".\\core\\runtime\\architecture_inspector.py",
+      "type": "maintenance"
+    },
+    {
+      "id": "103d30e4",
+      "title": "Resolve TODO item",
+      "description": "\"Project contains TODO items.\"",
+      "target": ".\\core\\runtime\\architecture_inspector.py",
+      "type": "maintenance"
+    },
+    {
+      "id": "241d6ece",
+      "title": "Resolve TODO item",
+      "description": "# TODOS",
+      "target": ".\\core\\runtime\\code_indexer.py",
+      "type": "maintenance"
+    },
+    {
+      "id": "f1994bfb",
+      "title": "Resolve TODO item",
+      "description": "if \"TODO\" in line:",
+      "target": ".\\core\\runtime\\code_indexer.py",
+      "type": "maintenance"
+    },
+    {
+      "id": "603ecd91",
+      "title": "Resolve TODO item",
+      "description": "# TODO IMPROVEMENTS",
+      "target": ".\\core\\runtime\\improvement_planner.py",
+      "type": "maintenance"
+    },
+    {
+      "id": "d89bdacf",
+      "title": "Resolve TODO item",
+      "description": "if \"TODO\" in suggestion:",
+      "target": ".\\core\\runtime\\improvement_planner.py",
+      "type": "maintenance"
+    },
+    {
+      "id": "b5639cfc",
+      "title": "Resolve TODO item",
+      "description": "\"goal\": \"Resolve TODO items\",",
+      "target": ".\\core\\runtime\\improvement_planner.py",
+      "type": "maintenance"
+    },
+    {
+      "id": "fb9ef672",
+      "title": "Resolve TODO item",
+      "description": "# RULE: TODO DETECTION",
+      "target": ".\\core\\runtime\\self_improvement_engine.py",
+      "type": "maintenance"
+    },
+    {
+      "id": "62c20c30",
+      "title": "Resolve TODO item",
+      "description": "\"goal\": \"Resolve TODO item\",",
+      "target": ".\\core\\runtime\\self_improvement_engine.py",
+      "type": "maintenance"
+    },
+    {
+      "id": "8472d343",
+      "title": "Reduce import complexity",
+      "description": "187 imports detected",
+      "target": "project-wide",
+      "type": "architecture"
+    },
+    {
+      "id": "63171d4d",
+      "title": "Resolve TODO item",
+      "description": "# TODO DETECTION",
+      "target": ".\\core\\runtime\\architecture_inspector.py",
+      "type": "maintenance"
+    },
+    {
+      "id": "a69a5e38",
+      "title": "Resolve TODO item",
+      "description": "\"Project contains TODO items.\"",
+      "target": ".\\core\\runtime\\architecture_inspector.py",
+      "type": "maintenance"
+    },
+    {
+      "id": "4b67b98c",
+      "title": "Resolve TODO item",
+      "description": "# TODOS",
+      "target": ".\\core\\runtime\\code_indexer.py",
+      "type": "maintenance"
+    },
+    {
+      "id": "8f37fe81",
+      "title": "Resolve TODO item",
+      "description": "if \"TODO\" in line:",
+      "target": ".\\core\\runtime\\code_indexer.py",
+      "type": "maintenance"
+    },
+    {
+      "id": "c7310a6d",
+      "title": "Resolve TODO item",
+      "description": "# TODO IMPROVEMENTS",
+      "target": ".\\core\\runtime\\improvement_planner.py",
+      "type": "maintenance"
+    },
+    {
+      "id": "a6586117",
+      "title": "Resolve TODO item",
+      "description": "if \"TODO\" in suggestion:",
+      "target": ".\\core\\runtime\\improvement_planner.py",
+      "type": "maintenance"
+    },
+    {
+      "id": "acce8467",
+      "title": "Resolve TODO item",
+      "description": "\"goal\": \"Resolve TODO items\",",
+      "target": ".\\core\\runtime\\improvement_planner.py",
+      "type": "maintenance"
+    },
+    {
+      "id": "07a6abb6",
+      "title": "Resolve TODO item",
+      "description": "# RULE: TODO DETECTION",
+      "target": ".\\core\\runtime\\self_improvement_engine.py",
+      "type": "maintenance"
+    },
+    {
+      "id": "edc93d59",
+      "title": "Resolve TODO item",
+      "description": "\"goal\": \"Resolve TODO item\",",
+      "target": ".\\core\\runtime\\self_improvement_engine.py",
+      "type": "maintenance"
+    },
+    {
+      "id": "2ee924ab",
+      "title": "Reduce import complexity",
+      "description": "187 imports detected",
+      "target": "project-wide",
+      "type": "architecture"
+    }
+  ]
+}

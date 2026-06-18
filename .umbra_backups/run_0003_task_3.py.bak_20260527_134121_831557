@@ -1,0 +1,32 @@
+import pandas as pd
+
+# Load configuration and data files into DataFrames
+config_df = pd.read_csv('path_to_config_file.csv')
+data_df = pd.read_csv('path_to_data_file.csv')
+
+# Handle missing values gracefully
+config_df.fillna(method='ffill', inplace=True)  # Forward fill for configurations
+data_df.fillna(data_df.mean(), inplace=True)   # Fill missing values with column mean in data
+
+# Detect column types
+config_types = config_df.dtypes
+data_types = data_df.dtypes
+
+# Print clear, formatted output
+print("Configuration Summary:")
+print(config_df.info())
+print("\nData Summary:")
+print(data_df.info())
+
+print("\nConfiguration Column Types:\n", config_types)
+print("\nData Column Types:\n", data_types)
+
+# Save backup of configurations and data to separate CSV files
+config_backup_path = 'backup_config.csv'
+data_backup_path = 'backup_data.csv'
+
+config_df.to_csv(config_backup_path, index=False)
+data_df.to_csv(data_backup_path, index=False)
+
+print(f"\nBackup completed successfully. Configurations saved to {config_backup_path}")
+print(f"Data saved to {data_backup_path}")

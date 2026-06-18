@@ -1,0 +1,70 @@
+import pygame
+
+class Player(pygame.sprite.Sprite):
+    """Player class representing the player character."""
+    
+    def __init__(self, x, y):
+        super().__init__()
+        self.image = pygame.Surface((30, 30))
+        self.image.fill((255, 0, 0))  # Red color
+        self.rect = self.image.get_rect(topleft=(x, y))
+        self.health = 10
+
+    def take_damage(self):
+        """Reduce player health by 1."""
+        if self.health > 0:
+            self.health -= 1
+            print(f"Player health: {self.health}")
+        else:
+            print("Player has been defeated!")
+
+class Enemy(pygame.sprite.Sprite):
+    """Enemy class representing the enemy character."""
+    
+    def __init__(self, x, y):
+        super().__init__()
+        self.image = pygame.Surface((30, 30))
+        self.image.fill((0, 255, 0))  # Green color
+        self.rect = self.image.get_rect(topleft=(x, y))
+
+def handle_collisions(player_group, enemy_group):
+    """Handle collisions between player and enemies."""
+    for player in player_group:
+        if pygame.sprite.spritecollideany(player, enemy_group):
+            player.take_damage()
+
+def main():
+    """Main function to run the game loop."""
+    pygame.init()
+    screen = pygame.display.set_mode((400, 300))
+    clock = pygame.time.Clock()
+
+    # Create player and enemy sprites
+    player = Player(50, 100)
+    enemy = Enemy(200, 100)
+
+    # Add sprites to groups
+    player_group = pygame.sprite.Group(player)
+    enemy_group = pygame.sprite.Group(enemy)
+
+    running = True
+    while running:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                running = False
+
+        # Handle collisions
+        handle_collisions(player_group, enemy_group)
+
+        # Update screen
+        screen.fill((0, 0, 0))
+        player_group.draw(screen)
+        enemy_group.draw(screen)
+        pygame.display.flip()
+
+        clock.tick(60)
+
+    pygame.quit()
+
+if __name__ == "__main__":
+    main()

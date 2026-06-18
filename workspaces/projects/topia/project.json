@@ -1,0 +1,25 @@
+{
+  "name": "topia",
+  "slug": "topia",
+  "project_type": "general",
+  "description": "lets make a game called topia, the game should be made so all actions, chats, etc are in the gui window for the game not in powershell. Lets make 10 enemys, 10 items like food and potions, 10 weapons, 10 equipment, there should be a save option in the pause menu, an inventory and a gear section for players to equip and use gear and items. Players should have health same with monsters changing based on levels, players can level up. movment with the a,s,d,w, keys, character faces the direction of the mouse pointer, left click is attack and the e key is for using items there should be towns, shops, backpacks that increase inventory, npcs that you can talk to trade with get as followers. Make the game like sykrim with the design, art, looks or the graveyard keeper and Romestead. at least 1 npc with a quest we can complete, rocks, trees and monsters that drop amterials to make items, bags, gear, etc",
+  "created_at": "2026-06-09T09:27:33.850594",
+  "updated_at": "2026-06-09T10:18:58.693518",
+  "status": "active",
+  "files": [
+    {
+      "path": "C:\\Umbra\\workspaces\\projects\\topia\\direct_0001\\code\\topia_game.py",
+      "type": "game",
+      "added_at": "2026-06-09T10:18:58.693518"
+    }
+  ],
+  "conversation": [
+    {
+      "role": "user",
+      "content": "lets make a game called topia, the game should be made so all actions, chats, etc are in the gui window for the game not in powershell. Lets make 10 enemys, 10 items like food and potions, 10 weapons, 10 equipment, there should be a save option in the pause menu, an inventory and a gear section for players to equip and use gear and items. Players should have health same with monsters changing based on levels, players can level up. movment with the a,s,d,w, keys, character faces the direction of the mouse pointer, left click is attack and the e key is for using items there should be towns, shops, backpacks that increase inventory, npcs that you can talk to trade with get as followers. Make the game like sykrim with the design, art, looks or the graveyard keeper and Romestead. at least 1 npc with a quest we can complete, rocks, trees and monsters that drop amterials to make items, bags, gear, etc",
+      "timestamp": "2026-06-09T09:27:33.851593"
+    }
+  ],
+  "metadata": {},
+  "tags": []
+}

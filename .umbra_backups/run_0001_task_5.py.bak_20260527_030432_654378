@@ -1,0 +1,57 @@
+import pandas as pd
+
+class DatabaseManager:
+    def __init__(self, connection):
+        """
+        Initialize the DatabaseManager with a database connection.
+        
+        :param connection: A database connection object (e.g., from SQLAlchemy)
+        """
+        self.connection = connection
+
+    def read_records(self, table_name):
+        """
+        Retrieve all records from the specified table and perform initial analysis.
+        
+        :param table_name: The name of the table to retrieve records from
+        :return: A pandas DataFrame containing the records
+        """
+        # Step 1: Read data from the database into a pandas DataFrame
+        query = f"SELECT * FROM {table_name}"
+        df = pd.read_sql(query, self.connection)
+        
+        # Step 2: Display basic information about the DataFrame
+        print("Basic Information:")
+        print(df.info())
+        print("\n")
+        
+        # Step 3: Check for missing data and handle it gracefully
+        missing_data = df.isnull().sum()
+        if missing_data.any():
+            print("Missing Data Analysis:")
+            print(missing_data)
+            # Simple strategy to fill missing values with the mean of the column
+            df.fillna(df.mean(), inplace=True)
+            print("\nAfter filling missing data with column means:")
+            print(df.info())
+            print("\n")
+        else:
+            print("No missing data found.\n")
+        
+        # Step 4: Detect and print column types
+        print("Column Types Analysis:")
+        for col in df.columns:
+            print(f"{col}: {df[col].dtype}")
+        print("\n")
+        
+        # Step 5: Display basic statistics of the DataFrame
+        print("Basic Statistics:")
+        print(df.describe())
+        print("\n")
+        
+        return df
+
+# Example usage:
+# Assuming `engine` is a valid SQLAlchemy engine connected to a database
+# db_manager = DatabaseManager(engine)
+# records_df = db_manager.read_records('your_table_name')

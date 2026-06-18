@@ -1,0 +1,88 @@
+class ItemStorage:
+    """
+    In-memory storage class to hold items with a name and description.
+    Provides methods to add, retrieve, update, and delete items.
+    """
+
+    def __init__(self):
+        # Initialize an empty dictionary to store items
+        self.items = {}
+
+    def add_item(self, name: str, description: str) -> None:
+        """
+        Add an item with a given name and description to the storage.
+
+        :param name: Name of the item
+        :param description: Description of the item
+        :raises ValueError: If the item already exists
+        """
+        if name in self.items:
+            raise ValueError(f"Item '{name}' already exists.")
+        self.items[name] = description
+
+    def get_item(self, name: str) -> str:
+        """
+        Retrieve the description of an item by its name.
+
+        :param name: Name of the item
+        :return: Description of the item
+        :raises KeyError: If the item does not exist
+        """
+        return self.items[name]
+
+    def update_item(self, name: str, description: str) -> None:
+        """
+        Update the description of an existing item.
+
+        :param name: Name of the item to update
+        :param description: New description for the item
+        :raises KeyError: If the item does not exist
+        """
+        if name not in self.items:
+            raise KeyError(f"Item '{name}' does not exist.")
+        self.items[name] = description
+
+    def delete_item(self, name: str) -> None:
+        """
+        Delete an item from the storage by its name.
+
+        :param name: Name of the item to delete
+        :raises KeyError: If the item does not exist
+        """
+        if name not in self.items:
+            raise KeyError(f"Item '{name}' does not exist.")
+        del self.items[name]
+
+    def list_items(self) -> dict:
+        """
+        List all items with their descriptions.
+
+        :return: Dictionary of items with names as keys and descriptions as values
+        """
+        return self.items
+
+
+if __name__ == '__main__':
+    # Example usage of the ItemStorage class
+    storage = ItemStorage()
+
+    try:
+        # Add some items
+        storage.add_item('Apple', 'A sweet fruit')
+        storage.add_item('Banana', 'A yellow fruit')
+
+        # Retrieve an item
+        print(storage.get_item('Apple'))  # Output: A sweet fruit
+
+        # Update an item
+        storage.update_item('Apple', 'A very sweet fruit')
+        print(storage.get_item('Apple'))  # Output: A very sweet fruit
+
+        # Delete an item
+        storage.delete_item('Banana')
+
+        # List all items
+        print(storage.list_items())  # Output: {'Apple': 'A very sweet fruit'}
+
+    except (ValueError, KeyError) as e:
+        print(f"An error occurred: {e}")

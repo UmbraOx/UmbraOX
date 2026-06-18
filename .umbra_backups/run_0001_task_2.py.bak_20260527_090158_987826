@@ -1,0 +1,70 @@
+import os
+import sys
+from collections import namedtuple
+
+# Constants for configuration
+START_X, START_Y = 10, 10
+MOVEMENT_KEYS = {
+    '\x1b[A': (-1, 0),  # Up arrow
+    '\x1b[B': (1, 0),   # Down arrow
+    '\x1b[C': (0, 1),   # Right arrow
+    '\x1b[D': (0, -1)   # Left arrow
+}
+
+# Named tuple for position
+Position = namedtuple('Position', ['x', 'y'])
+
+def clear_screen():
+    """Clears the terminal screen."""
+    os.system('cls' if os.name == 'nt' else 'clear')
+
+def move_player(pos, direction):
+    """Moves the player character in the specified direction."""
+    new_x = pos.x + direction[0]
+    new_y = pos.y + direction[1]
+    return Position(new_x, new_y)
+
+def draw_player(pos):
+    """Draws the player character at the given position."""
+    clear_screen()
+    print(f"{' ' * pos.y}P")
+
+def main(dry_run=False):
+    # Initial player position
+    player_pos = Position(START_X, START_Y)
+    
+    if dry_run:
+        print("Dry run mode enabled. No actual movement will be performed.")
+    
+    try:
+        while True:
+            draw_player(player_pos)
+            
+            # Read a single character from input
+            key = os.read(sys.stdin.fileno(), 3).decode('utf-8')
+            
+            if key in MOVEMENT_KEYS:
+                new_position = move_player(player_pos, MOVEMENT_KEYS[key])
+                
+                # Check for boundary conditions (simple example, can be extended)
+                if 0 <= new_position.x < 20 and 0 <= new_position.y < 50:
+                    player_pos = new_position
+                else:
+                    print("Boundary reached!", end='\r')
+            
+            elif key == 'q':
+                # Quit the game on 'q' press
+                break
+            
+    except KeyboardInterrupt:
+        print("\nGame interrupted by user.")
+
+if __name__ == "__main__":
+    import argparse
+
+    parser = argparse.ArgumentParser(description="Move a player character using arrow keys.")
+    parser.add_argument('--dry-run', action='store_true', help="Run the script without actual movement.")
+    
+    args = parser.parse_args()
+    
+    main(dry_run=args.dry_run)

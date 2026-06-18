@@ -1,0 +1,31 @@
+import pygame
+from unittest.mock import patch
+import pytest
+
+@pytest.fixture
+def setup_pygame():
+    """Fixture to initialize Pygame and create a window."""
+    pygame.init()
+    screen = pygame.display.set_mode((800, 600))
+    pygame.display.set_caption('Umbra Test Game')
+    yield screen
+    pygame.quit()
+
+def test_create_window(setup_pygame):
+    """Test that the window is created with the correct dimensions and title."""
+    screen = setup_pygame
+    assert screen.get_width() == 800, "The window width should be 800 pixels."
+    assert screen.get_height() == 600, "The window height should be 600 pixels."
+    assert pygame.display.get_caption()[0] == 'Umbra Test Game', "The window title should be 'Umbra Test Game'."
+
+def test_pygame_quit(setup_pygame):
+    """Test that Pygame is properly quit after the test."""
+    with patch('pygame.quit') as mock_quit:
+        # The fixture will call pygame.quit() during teardown
+        pass
+    mock_quit.assert_called_once(), "Pygame should be quit once at the end of the test."
+
+def test_invalid_dimensions():
+    """Test that an error is raised when invalid dimensions are provided."""
+    with pytest.raises(ValueError):
+        screen = pygame.display.set_mode((0, 0))

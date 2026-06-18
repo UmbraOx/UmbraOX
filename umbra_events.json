@@ -1,0 +1,126 @@
+[
+  {
+    "event": "task_queued",
+    "data": {
+      "task": "create a file named dashboard_test.py with print(\"dashboard\")"
+    }
+  },
+  {
+    "event": "state_started",
+    "data": {
+      "tool": "fs.create_file",
+      "task_id": null
+    }
+  },
+  {
+    "event": "state_completed",
+    "data": {
+      "tool": "fs.create_file",
+      "task_id": null
+    }
+  },
+  {
+    "event": "task_queued",
+    "data": {
+      "task": "create a folder named dashboard_folder"
+    }
+  },
+  {
+    "event": "state_started",
+    "data": {
+      "tool": "fs.create_folder",
+      "task_id": null
+    }
+  },
+  {
+    "event": "state_completed",
+    "data": {
+      "tool": "fs.create_folder",
+      "task_id": null
+    }
+  },
+  {
+    "event": "task_queued",
+    "data": {
+      "task": "def get_governance_panel(state):"
+    }
+  },
+  {
+    "event": "task_queued",
+    "data": {
+      "task": "    return {"
+    }
+  },
+  {
+    "event": "task_queued",
+    "data": {
+      "task": "        \"upgrade_mode\": state.proposal_mode_enabled,"
+    }
+  },
+  {
+    "event": "task_queued",
+    "data": {
+      "task": "        \"actions\": ["
+    }
+  },
+  {
+    "event": "task_queued",
+    "data": {
+      "task": "            \"enable upgrades\","
+    }
+  },
+  {
+    "event": "task_queued",
+    "data": {
+      "task": "            \"disable upgrades\","
+    }
+  },
+  {
+    "event": "task_queued",
+    "data": {
+      "task": "            \"show upgrades\""
+    }
+  },
+  {
+    "event": "task_queued",
+    "data": {
+      "task": "        ]"
+    }
+  },
+  {
+    "event": "task_queued",
+    "data": {
+      "task": ""
+    }
+  },
+  {
+    "event": "task_queued",
+    "data": {
+      "task": ""
+    }
+  },
+  {
+    "event": "task_queued",
+    "data": {
+      "task": ""
+    }
+  },
+  {
+    "event": "task_queued",
+    "data": {
+      "task": ""
+    }
+  },
+  {
+    "event": "task_queued",
+    "data": {
+      "task": "create a file named test.py with print(\"ok\")"
+    }
+  },
+  {
+    "event": "task_queued",
+    "data": {
+      "task": "create a file named test.py with print(\"ok\")"
+    }
+  }
+]

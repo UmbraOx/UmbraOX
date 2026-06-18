@@ -1,0 +1,31 @@
+# Import necessary libraries
+import pandas as pd
+import json
+
+# Load the dataset (assuming it's a CSV file for this example)
+data = pd.read_csv('your_dataset.csv')
+
+# Display basic information about the dataset
+print("Dataset Information:")
+print(data.info())
+
+# Handle missing data by filling with appropriate values or dropping them
+# For demonstration, let's fill missing numerical values with their mean and categorical with mode
+numerical_cols = data.select_dtypes(include=['number']).columns
+categorical_cols = data.select_dtypes(include=['object']).columns
+
+data[numerical_cols] = data[numerical_cols].fillna(data[numerical_cols].mean())
+data[categorical_cols] = data[categorical_cols].fillna(data[categorical_cols].mode().iloc[0])
+
+# Display summary statistics to understand the dataset better
+print("\nSummary Statistics:")
+print(data.describe(include='all'))
+
+# Convert DataFrame to JSON format
+json_data = data.to_json(orient='records', indent=4)
+
+# Write the formatted JSON data to a file on the local system
+with open('output.json', 'w') as json_file:
+    json_file.write(json_data)
+
+print("\nJSON data has been written to 'output.json'")

@@ -1,0 +1,30 @@
+from PIL import Image, ImageDraw
+
+def generate_ice_cream_image():
+    """
+    Generates a simple image of an ice cream cone.
+    
+    The ice cream cone is drawn in red with a blue scoop on top.
+    """
+    try:
+        # Create a new image with a white background
+        width, height = 200, 300
+        image = Image.new("RGB", (width, height), "white")
+        draw = ImageDraw.Draw(image)
+        
+        # Draw the ice cream cone
+        cone_points = [(100, 250), (50, 300), (150, 300)]
+        draw.polygon(cone_points, fill="red", outline="black")
+        
+        # Draw the ice cream scoop
+        draw.ellipse((75, 150, 125, 200), fill="blue", outline="black")
+        
+        # Save and display the image
+        image.save("ice_cream.png")
+        image.show()
+        
+    except Exception as e:
+        print(f"An error occurred: {e}")
+
+if __name__ == "__main__":
+    generate_ice_cream_image()

@@ -1,0 +1,15 @@
+# gui_main.py
+from gui_utils import validate_input
+
+def display_message(message):
+    print(message)
+
+def main():
+    user_input = input("Enter a number: ")
+    if validate_input(user_input):
+        display_message(f"Valid input: {user_input}")
+    else:
+        display_message("Invalid input")
+
+if __name__ == "__main__":
+    main()

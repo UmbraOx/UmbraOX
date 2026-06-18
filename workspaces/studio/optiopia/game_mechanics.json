@@ -1,0 +1,132 @@
+{
+  "core_loop": "The player explores the open world of Optiopia, interacts with NPCs, fights monsters, completes quests, and collects ingredients to create superior dishes for the gods.",
+  "player_stats": {
+    "hp": 100,
+    "mana": 50,
+    "attack": 10,
+    "defense": 8,
+    "speed": 6,
+    "level": 1,
+    "exp": 0
+  },
+  "combat_system": {
+    "type": "real-time",
+    "actions": [
+      "Attack",
+      "Defend",
+      "Cast Spell",
+      "Use Item"
+    ],
+    "rules": [
+      "Players can choose between sword, wand, or bow as their starting weapon.",
+      "Combat involves managing HP and MP while selecting actions to defeat enemies."
+    ]
+  },
+  "progression": {
+    "level_cap": 50,
+    "exp_curve": "linear",
+    "stat_increases": {
+      "hp": 10,
+      "mana": 5,
+      "attack": 2,
+      "defense": 1,
+      "speed": 1
+    }
+  },
+  "inventory": {
+    "max_slots": 20,
+    "item_categories": [
+      "Food Ingredients",
+      "Weapons",
+      "Armor",
+      "Potions",
+      "Miscellaneous"
+    ],
+    "equipment_slots": [
+      "Weapon",
+      "Head",
+      "Chest",
+      "Legs",
+      "Accessories"
+    ]
+  },
+  "starting_options": [
+    {
+      "name": "Warrior",
+      "description": "A strong and resilient fighter equipped with a sword.",
+      "stats": {
+        "hp": 120,
+        "attack": 15,
+        "defense": 12
+      }
+    },
+    {
+      "name": "Mage",
+      "description": "A powerful spellcaster using the might of magic through a wand.",
+      "stats": {
+        "mana": 70,
+        "attack": 8,
+        "speed": 8
+      }
+    },
+    {
+      "name": "Ranger",
+      "description": "An agile archer skilled in ranged combat with a bow.",
+      "stats": {
+        "speed": 10,
+        "attack": 12
+      }
+    }
+  ],
+  "enemies": [
+    {
+      "name": "Goblin",
+      "hp": 50,
+      "attack": 6,
+      "behavior": "Randomly attacks nearby players.",
+      "drops": [
+        {
+          "item": "Raw Meat",
+          "quantity": 2
+        },
+        {
+          "item": "Wood",
+          "quantity": 1
+        }
+      ]
+    },
+    {
+      "name": "Orc",
+      "hp": 80,
+      "attack": 12,
+      "behavior": "Charges towards the nearest player and attempts to grapple them.",
+      "drops": [
+        {
+          "item": "Leather Armor",
+          "quantity": 1
+        },
+        {
+          "item": "Iron Ore",
+          "quantity": 2
+        }
+      ]
+    },
+    {
+      "name": "Witch",
+      "hp": 60,
+      "attack": 8,
+      "behavior": "Casts spells that reduce player stats before attacking.",
+      "drops": [
+        {
+          "item": "Magic Crystal",
+          "quantity": 1
+        },
+        {
+          "item": "Herb Bundle",
+          "quantity": 2
+        }
+      ]
+    }
+  ],
+  "difficulty_scaling": "Enemies' stats increase linearly with the player's level, ensuring a balanced challenge throughout the game."
+}

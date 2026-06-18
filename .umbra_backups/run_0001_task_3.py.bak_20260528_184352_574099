@@ -1,0 +1,48 @@
+import pygame
+
+class Player:
+    def __init__(self):
+        self.health = 100
+
+def display_health(screen, player):
+    """
+    Display the player's health in the top-left corner of the screen.
+    
+    :param screen: The Pygame surface to draw on.
+    :param player: An instance of the Player class with a 'health' attribute.
+    """
+    font = pygame.font.Font(None, 36)
+    text_surface = font.render(f"Health: {player.health}", True, (255, 0, 0))
+    screen.blit(text_surface, (10, 10))
+
+def main():
+    pygame.init()
+    
+    # Set up the display
+    screen_width, screen_height = 800, 600
+    screen = pygame.display.set_mode((screen_width, screen_height))
+    pygame.display.set_caption("Health Display Example")
+    
+    # Create a player instance
+    player = Player()
+    
+    # Main game loop
+    running = True
+    while running:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                running = False
+        
+        # Fill the screen with a background color
+        screen.fill((0, 0, 0))
+        
+        # Display the player's health
+        display_health(screen, player)
+        
+        # Update the display
+        pygame.display.flip()
+    
+    pygame.quit()
+
+if __name__ == "__main__":
+    main()

@@ -1,0 +1,1688 @@
+[
+    {
+        "prompt": "Build runtime capability: agent_orchestration",
+        "expanded": [
+            "Build runtime capability: agent_orchestration :: planning",
+            "Build runtime capability: agent_orchestration :: execution",
+            "Build runtime capability: agent_orchestration :: validation",
+            "Build runtime capability: agent_orchestration :: deployment"
+        ]
+    },
+    {
+        "prompt": "Build runtime capability: safe_execution",
+        "expanded": [
+            "Build runtime capability: safe_execution :: planning",
+            "Build runtime capability: safe_execution :: execution",
+            "Build runtime capability: safe_execution :: validation",
+            "Build runtime capability: safe_execution :: deployment"
+        ]
+    },
+    {
+        "prompt": "Build runtime capability: task_planning",
+        "expanded": [
+            "Build runtime capability: task_planning :: planning",
+            "Build runtime capability: task_planning :: execution",
+            "Build runtime capability: task_planning :: validation",
+            "Build runtime capability: task_planning :: deployment"
+        ]
+    },
+    {
+        "prompt": "Build runtime capability: self_validation",
+        "expanded": [
+            "Build runtime capability: self_validation :: planning",
+            "Build runtime capability: self_validation :: execution",
+            "Build runtime capability: self_validation :: validation",
+            "Build runtime capability: self_validation :: deployment"
+        ]
+    },
+    {
+        "prompt": "Build runtime capability: agent_orchestration",
+        "expanded": [
+            "Build runtime capability: agent_orchestration :: planning",
+            "Build runtime capability: agent_orchestration :: execution",
+            "Build runtime capability: agent_orchestration :: validation",
+            "Build runtime capability: agent_orchestration :: deployment"
+        ]
+    },
+    {
+        "prompt": "Build runtime capability: persistent_memory",
+        "expanded": [
+            "Build runtime capability: persistent_memory :: planning",
+            "Build runtime capability: persistent_memory :: execution",
+            "Build runtime capability: persistent_memory :: validation",
+            "Build runtime capability: persistent_memory :: deployment"
+        ]
+    },
+    {
+        "prompt": "Build runtime capability: safe_execution",
+        "expanded": [
+            "Build runtime capability: safe_execution :: planning",
+            "Build runtime capability: safe_execution :: execution",
+            "Build runtime capability: safe_execution :: validation",
+            "Build runtime capability: safe_execution :: deployment"
+        ]
+    },
+    {
+        "prompt": "Build runtime capability: task_planning",
+        "expanded": [
+            "Build runtime capability: task_planning :: planning",
+            "Build runtime capability: task_planning :: execution",
+            "Build runtime capability: task_planning :: validation",
+            "Build runtime capability: task_planning :: deployment"
+        ]
+    },
+    {
+        "prompt": "Build runtime capability: self_validation",
+        "expanded": [
+            "Build runtime capability: self_validation :: planning",
+            "Build runtime capability: self_validation :: execution",
+            "Build runtime capability: self_validation :: validation",
+            "Build runtime capability: self_validation :: deployment"
+        ]
+    },
+    {
+        "prompt": "Build runtime capability: runtime_expansion",
+        "expanded": [
+            "Build runtime capability: runtime_expansion :: planning",
+            "Build runtime capability: runtime_expansion :: execution",
+            "Build runtime capability: runtime_expansion :: validation",
+            "Build runtime capability: runtime_expansion :: deployment"
+        ]
+    },
+    {
+        "prompt": "Build runtime capability: agent_orchestration",
+        "expanded": [
+            "Build runtime capability: agent_orchestration :: planning",
+            "Build runtime capability: agent_orchestration :: execution",
+            "Build runtime capability: agent_orchestration :: validation",
+            "Build runtime capability: agent_orchestration :: deployment"
+        ]
+    },
+    {
+        "prompt": "Build runtime capability: safe_execution",
+        "expanded": [
+            "Build runtime capability: safe_execution :: planning",
+            "Build runtime capability: safe_execution :: execution",
+            "Build runtime capability: safe_execution :: validation",
+            "Build runtime capability: safe_execution :: deployment"
+        ]
+    },
+    {
+        "prompt": "Build runtime capability: task_planning",
+        "expanded": [
+            "Build runtime capability: task_planning :: planning",
+            "Build runtime capability: task_planning :: execution",
+            "Build runtime capability: task_planning :: validation",
+            "Build runtime capability: task_planning :: deployment"
+        ]
+    },
+    {
+        "prompt": "Build runtime capability: self_validation",
+        "expanded": [
+            "Build runtime capability: self_validation :: planning",
+            "Build runtime capability: self_validation :: execution",
+            "Build runtime capability: self_validation :: validation",
+            "Build runtime capability: self_validation :: deployment"
+        ]
+    },
+    {
+        "prompt": "Build runtime capability: agent_orchestration",
+        "expanded": [
+            "Build runtime capability: agent_orchestration :: planning",
+            "Build runtime capability: agent_orchestration :: execution",
+            "Build runtime capability: agent_orchestration :: validation",
+            "Build runtime capability: agent_orchestration :: deployment"
+        ]
+    },
+    {
+        "prompt": "Build runtime capability: safe_execution",
+        "expanded": [
+            "Build runtime capability: safe_execution :: planning",
+            "Build runtime capability: safe_execution :: execution",
+            "Build runtime capability: safe_execution :: validation",
+            "Build runtime capability: safe_execution :: deployment"
+        ]
+    },
+    {
+        "prompt": "Build runtime capability: task_planning",
+        "expanded": [
+            "Build runtime capability: task_planning :: planning",
+            "Build runtime capability: task_planning :: execution",
+            "Build runtime capability: task_planning :: validation",
+            "Build runtime capability: task_planning :: deployment"
+        ]
+    },
+    {
+        "prompt": "Build runtime capability: self_validation",
+        "expanded": [
+            "Build runtime capability: self_validation :: planning",
+            "Build runtime capability: self_validation :: execution",
+            "Build runtime capability: self_validation :: validation",
+            "Build runtime capability: self_validation :: deployment"
+        ]
+    },
+    {
+        "prompt": "Build runtime capability: agent_orchestration",
+        "expanded": [
+            "Build runtime capability: agent_orchestration :: planning",
+            "Build runtime capability: agent_orchestration :: execution",
+            "Build runtime capability: agent_orchestration :: validation",
+            "Build runtime capability: agent_orchestration :: deployment"
+        ]
+    },
+    {
+        "prompt": "Build runtime capability: persistent_memory",
+        "expanded": [
+            "Build runtime capability: persistent_memory :: planning",
+            "Build runtime capability: persistent_memory :: execution",
+            "Build runtime capability: persistent_memory :: validation",
+            "Build runtime capability: persistent_memory :: deployment"
+        ]
+    },
+    {
+        "prompt": "Build runtime capability: safe_execution",
+        "expanded": [
+            "Build runtime capability: safe_execution :: planning",
+            "Build runtime capability: safe_execution :: execution",
+            "Build runtime capability: safe_execution :: validation",
+            "Build runtime capability: safe_execution :: deployment"
+        ]
+    },
+    {
+        "prompt": "Build runtime capability: task_planning",
+        "expanded": [
+            "Build runtime capability: task_planning :: planning",
+            "Build runtime capability: task_planning :: execution",
+            "Build runtime capability: task_planning :: validation",
+            "Build runtime capability: task_planning :: deployment"
+        ]
+    },
+    {
+        "prompt": "Build runtime capability: self_validation",
+        "expanded": [
+            "Build runtime capability: self_validation :: planning",
+            "Build runtime capability: self_validation :: execution",
+            "Build runtime capability: self_validation :: validation",
+            "Build runtime capability: self_validation :: deployment"
+        ]
+    },
+    {
+        "prompt": "Build runtime capability: runtime_expansion",
+        "expanded": [
+            "Build runtime capability: runtime_expansion :: planning",
+            "Build runtime capability: runtime_expansion :: execution",
+            "Build runtime capability: runtime_expansion :: validation",
+            "Build runtime capability: runtime_expansion :: deployment"
+        ]
+    },
+    {
+        "prompt": "Build runtime capability: agent_orchestration",
+        "expanded": [
+            "Build runtime capability: agent_orchestration :: planning",
+            "Build runtime capability: agent_orchestration :: execution",
+            "Build runtime capability: agent_orchestration :: validation",
+            "Build runtime capability: agent_orchestration :: deployment"
+        ]
+    },
+    {
+        "prompt": "Build runtime capability: safe_execution",
+        "expanded": [
+            "Build runtime capability: safe_execution :: planning",
+            "Build runtime capability: safe_execution :: execution",
+            "Build runtime capability: safe_execution :: validation",
+            "Build runtime capability: safe_execution :: deployment"
+        ]
+    },
+    {
+        "prompt": "Build runtime capability: task_planning",
+        "expanded": [
+            "Build runtime capability: task_planning :: planning",
+            "Build runtime capability: task_planning :: execution",
+            "Build runtime capability: task_planning :: validation",
+            "Build runtime capability: task_planning :: deployment"
+        ]
+    },
+    {
+        "prompt": "Build runtime capability: self_validation",
+        "expanded": [
+            "Build runtime capability: self_validation :: planning",
+            "Build runtime capability: self_validation :: execution",
+            "Build runtime capability: self_validation :: validation",
+            "Build runtime capability: self_validation :: deployment"
+        ]
+    },
+    {
+        "prompt": "Build runtime capability: agent_orchestration",
+        "expanded": [
+            "Build runtime capability: agent_orchestration :: planning",
+            "Build runtime capability: agent_orchestration :: execution",
+            "Build runtime capability: agent_orchestration :: validation",
+            "Build runtime capability: agent_orchestration :: deployment"
+        ]
+    },
+    {
+        "prompt": "Build runtime capability: safe_execution",
+        "expanded": [
+            "Build runtime capability: safe_execution :: planning",
+            "Build runtime capability: safe_execution :: execution",
+            "Build runtime capability: safe_execution :: validation",
+            "Build runtime capability: safe_execution :: deployment"
+        ]
+    },
+    {
+        "prompt": "Build runtime capability: task_planning",
+        "expanded": [
+            "Build runtime capability: task_planning :: planning",
+            "Build runtime capability: task_planning :: execution",
+            "Build runtime capability: task_planning :: validation",
+            "Build runtime capability: task_planning :: deployment"
+        ]
+    },
+    {
+        "prompt": "Build runtime capability: self_validation",
+        "expanded": [
+            "Build runtime capability: self_validation :: planning",
+            "Build runtime capability: self_validation :: execution",
+            "Build runtime capability: self_validation :: validation",
+            "Build runtime capability: self_validation :: deployment"
+        ]
+    },
+    {
+        "prompt": "Build runtime capability: agent_orchestration",
+        "expanded": [
+            "Build runtime capability: agent_orchestration :: planning",
+            "Build runtime capability: agent_orchestration :: execution",
+            "Build runtime capability: agent_orchestration :: validation",
+            "Build runtime capability: agent_orchestration :: deployment"
+        ]
+    },
+    {
+        "prompt": "Build runtime capability: persistent_memory",
+        "expanded": [
+            "Build runtime capability: persistent_memory :: planning",
+            "Build runtime capability: persistent_memory :: execution",
+            "Build runtime capability: persistent_memory :: validation",
+            "Build runtime capability: persistent_memory :: deployment"
+        ]
+    },
+    {
+        "prompt": "Build runtime capability: safe_execution",
+        "expanded": [
+            "Build runtime capability: safe_execution :: planning",
+            "Build runtime capability: safe_execution :: execution",
+            "Build runtime capability: safe_execution :: validation",
+            "Build runtime capability: safe_execution :: deployment"
+        ]
+    },
+    {
+        "prompt": "Build runtime capability: task_planning",
+        "expanded": [
+            "Build runtime capability: task_planning :: planning",
+            "Build runtime capability: task_planning :: execution",
+            "Build runtime capability: task_planning :: validation",
+            "Build runtime capability: task_planning :: deployment"
+        ]
+    },
+    {
+        "prompt": "Build runtime capability: self_validation",
+        "expanded": [
+            "Build runtime capability: self_validation :: planning",
+            "Build runtime capability: self_validation :: execution",
+            "Build runtime capability: self_validation :: validation",
+            "Build runtime capability: self_validation :: deployment"
+        ]
+    },
+    {
+        "prompt": "Build runtime capability: runtime_expansion",
+        "expanded": [
+            "Build runtime capability: runtime_expansion :: planning",
+            "Build runtime capability: runtime_expansion :: execution",
+            "Build runtime capability: runtime_expansion :: validation",
+            "Build runtime capability: runtime_expansion :: deployment"
+        ]
+    },
+    {
+        "prompt": "Build runtime capability: agent_orchestration",
+        "expanded": [
+            "Build runtime capability: agent_orchestration :: planning",
+            "Build runtime capability: agent_orchestration :: execution",
+            "Build runtime capability: agent_orchestration :: validation",
+            "Build runtime capability: agent_orchestration :: deployment"
+        ]
+    },
+    {
+        "prompt": "Build runtime capability: safe_execution",
+        "expanded": [
+            "Build runtime capability: safe_execution :: planning",
+            "Build runtime capability: safe_execution :: execution",
+            "Build runtime capability: safe_execution :: validation",
+            "Build runtime capability: safe_execution :: deployment"
+        ]
+    },
+    {
+        "prompt": "Build runtime capability: task_planning",
+        "expanded": [
+            "Build runtime capability: task_planning :: planning",
+            "Build runtime capability: task_planning :: execution",
+            "Build runtime capability: task_planning :: validation",
+            "Build runtime capability: task_planning :: deployment"
+        ]
+    },
+    {
+        "prompt": "Build runtime capability: self_validation",
+        "expanded": [
+            "Build runtime capability: self_validation :: planning",
+            "Build runtime capability: self_validation :: execution",
+            "Build runtime capability: self_validation :: validation",
+            "Build runtime capability: self_validation :: deployment"
+        ]
+    },
+    {
+        "prompt": "Build runtime capability: agent_orchestration",
+        "expanded": [
+            "Build runtime capability: agent_orchestration :: planning",
+            "Build runtime capability: agent_orchestration :: execution",
+            "Build runtime capability: agent_orchestration :: validation",
+            "Build runtime capability: agent_orchestration :: deployment"
+        ]
+    },
+    {
+        "prompt": "Build runtime capability: safe_execution",
+        "expanded": [
+            "Build runtime capability: safe_execution :: planning",
+            "Build runtime capability: safe_execution :: execution",
+            "Build runtime capability: safe_execution :: validation",
+            "Build runtime capability: safe_execution :: deployment"
+        ]
+    },
+    {
+        "prompt": "Build runtime capability: task_planning",
+        "expanded": [
+            "Build runtime capability: task_planning :: planning",
+            "Build runtime capability: task_planning :: execution",
+            "Build runtime capability: task_planning :: validation",
+            "Build runtime capability: task_planning :: deployment"
+        ]
+    },
+    {
+        "prompt": "Build runtime capability: self_validation",
+        "expanded": [
+            "Build runtime capability: self_validation :: planning",
+            "Build runtime capability: self_validation :: execution",
+            "Build runtime capability: self_validation :: validation",
+            "Build runtime capability: self_validation :: deployment"
+        ]
+    },
+    {
+        "prompt": "Build runtime capability: agent_orchestration",
+        "expanded": [
+            "Build runtime capability: agent_orchestration :: planning",
+            "Build runtime capability: agent_orchestration :: execution",
+            "Build runtime capability: agent_orchestration :: validation",
+            "Build runtime capability: agent_orchestration :: deployment"
+        ]
+    },
+    {
+        "prompt": "Build runtime capability: persistent_memory",
+        "expanded": [
+            "Build runtime capability: persistent_memory :: planning",
+            "Build runtime capability: persistent_memory :: execution",
+            "Build runtime capability: persistent_memory :: validation",
+            "Build runtime capability: persistent_memory :: deployment"
+        ]
+    },
+    {
+        "prompt": "Build runtime capability: safe_execution",
+        "expanded": [
+            "Build runtime capability: safe_execution :: planning",
+            "Build runtime capability: safe_execution :: execution",
+            "Build runtime capability: safe_execution :: validation",
+            "Build runtime capability: safe_execution :: deployment"
+        ]
+    },
+    {
+        "prompt": "Build runtime capability: task_planning",
+        "expanded": [
+            "Build runtime capability: task_planning :: planning",
+            "Build runtime capability: task_planning :: execution",
+            "Build runtime capability: task_planning :: validation",
+            "Build runtime capability: task_planning :: deployment"
+        ]
+    },
+    {
+        "prompt": "Build runtime capability: self_validation",
+        "expanded": [
+            "Build runtime capability: self_validation :: planning",
+            "Build runtime capability: self_validation :: execution",
+            "Build runtime capability: self_validation :: validation",
+            "Build runtime capability: self_validation :: deployment"
+        ]
+    },
+    {
+        "prompt": "Build runtime capability: runtime_expansion",
+        "expanded": [
+            "Build runtime capability: runtime_expansion :: planning",
+            "Build runtime capability: runtime_expansion :: execution",
+            "Build runtime capability: runtime_expansion :: validation",
+            "Build runtime capability: runtime_expansion :: deployment"
+        ]
+    },
+    {
+        "prompt": "Build runtime capability: agent_orchestration",
+        "expanded": [
+            "Build runtime capability: agent_orchestration :: planning",
+            "Build runtime capability: agent_orchestration :: execution",
+            "Build runtime capability: agent_orchestration :: validation",
+            "Build runtime capability: agent_orchestration :: deployment"
+        ]
+    },
+    {
+        "prompt": "Build runtime capability: safe_execution",
+        "expanded": [
+            "Build runtime capability: safe_execution :: planning",
+            "Build runtime capability: safe_execution :: execution",
+            "Build runtime capability: safe_execution :: validation",
+            "Build runtime capability: safe_execution :: deployment"
+        ]
+    },
+    {
+        "prompt": "Build runtime capability: task_planning",
+        "expanded": [
+            "Build runtime capability: task_planning :: planning",
+            "Build runtime capability: task_planning :: execution",
+            "Build runtime capability: task_planning :: validation",
+            "Build runtime capability: task_planning :: deployment"
+        ]
+    },
+    {
+        "prompt": "Build runtime capability: self_validation",
+        "expanded": [
+            "Build runtime capability: self_validation :: planning",
+            "Build runtime capability: self_validation :: execution",
+            "Build runtime capability: self_validation :: validation",
+            "Build runtime capability: self_validation :: deployment"
+        ]
+    },
+    {
+        "prompt": "Build runtime capability: agent_orchestration",
+        "expanded": [
+            "Build runtime capability: agent_orchestration :: planning",
+            "Build runtime capability: agent_orchestration :: execution",
+            "Build runtime capability: agent_orchestration :: validation",
+            "Build runtime capability: agent_orchestration :: deployment"
+        ]
+    },
+    {
+        "prompt": "Build runtime capability: safe_execution",
+        "expanded": [
+            "Build runtime capability: safe_execution :: planning",
+            "Build runtime capability: safe_execution :: execution",
+            "Build runtime capability: safe_execution :: validation",
+            "Build runtime capability: safe_execution :: deployment"
+        ]
+    },
+    {
+        "prompt": "Build runtime capability: task_planning",
+        "expanded": [
+            "Build runtime capability: task_planning :: planning",
+            "Build runtime capability: task_planning :: execution",
+            "Build runtime capability: task_planning :: validation",
+            "Build runtime capability: task_planning :: deployment"
+        ]
+    },
+    {
+        "prompt": "Build runtime capability: self_validation",
+        "expanded": [
+            "Build runtime capability: self_validation :: planning",
+            "Build runtime capability: self_validation :: execution",
+            "Build runtime capability: self_validation :: validation",
+            "Build runtime capability: self_validation :: deployment"
+        ]
+    },
+    {
+        "prompt": "Build runtime capability: agent_orchestration",
+        "expanded": [
+            "Build runtime capability: agent_orchestration :: planning",
+            "Build runtime capability: agent_orchestration :: execution",
+            "Build runtime capability: agent_orchestration :: validation",
+            "Build runtime capability: agent_orchestration :: deployment"
+        ]
+    },
+    {
+        "prompt": "Build runtime capability: persistent_memory",
+        "expanded": [
+            "Build runtime capability: persistent_memory :: planning",
+            "Build runtime capability: persistent_memory :: execution",
+            "Build runtime capability: persistent_memory :: validation",
+            "Build runtime capability: persistent_memory :: deployment"
+        ]
+    },
+    {
+        "prompt": "Build runtime capability: safe_execution",
+        "expanded": [
+            "Build runtime capability: safe_execution :: planning",
+            "Build runtime capability: safe_execution :: execution",
+            "Build runtime capability: safe_execution :: validation",
+            "Build runtime capability: safe_execution :: deployment"
+        ]
+    },
+    {
+        "prompt": "Build runtime capability: task_planning",
+        "expanded": [
+            "Build runtime capability: task_planning :: planning",
+            "Build runtime capability: task_planning :: execution",
+            "Build runtime capability: task_planning :: validation",
+            "Build runtime capability: task_planning :: deployment"
+        ]
+    },
+    {
+        "prompt": "Build runtime capability: self_validation",
+        "expanded": [
+            "Build runtime capability: self_validation :: planning",
+            "Build runtime capability: self_validation :: execution",
+            "Build runtime capability: self_validation :: validation",
+            "Build runtime capability: self_validation :: deployment"
+        ]
+    },
+    {
+        "prompt": "Build runtime capability: runtime_expansion",
+        "expanded": [
+            "Build runtime capability: runtime_expansion :: planning",
+            "Build runtime capability: runtime_expansion :: execution",
+            "Build runtime capability: runtime_expansion :: validation",
+            "Build runtime capability: runtime_expansion :: deployment"
+        ]
+    },
+    {
+        "prompt": "Build runtime capability: agent_orchestration",
+        "expanded": [
+            "Build runtime capability: agent_orchestration :: planning",
+            "Build runtime capability: agent_orchestration :: execution",
+            "Build runtime capability: agent_orchestration :: validation",
+            "Build runtime capability: agent_orchestration :: deployment"
+        ]
+    },
+    {
+        "prompt": "Build runtime capability: safe_execution",
+        "expanded": [
+            "Build runtime capability: safe_execution :: planning",
+            "Build runtime capability: safe_execution :: execution",
+            "Build runtime capability: safe_execution :: validation",
+            "Build runtime capability: safe_execution :: deployment"
+        ]
+    },
+    {
+        "prompt": "Build runtime capability: task_planning",
+        "expanded": [
+            "Build runtime capability: task_planning :: planning",
+            "Build runtime capability: task_planning :: execution",
+            "Build runtime capability: task_planning :: validation",
+            "Build runtime capability: task_planning :: deployment"
+        ]
+    },
+    {
+        "prompt": "Build runtime capability: self_validation",
+        "expanded": [
+            "Build runtime capability: self_validation :: planning",
+            "Build runtime capability: self_validation :: execution",
+            "Build runtime capability: self_validation :: validation",
+            "Build runtime capability: self_validation :: deployment"
+        ]
+    },
+    {
+        "prompt": "Build runtime capability: agent_orchestration",
+        "expanded": [
+            "Build runtime capability: agent_orchestration :: planning",
+            "Build runtime capability: agent_orchestration :: execution",
+            "Build runtime capability: agent_orchestration :: validation",
+            "Build runtime capability: agent_orchestration :: deployment"
+        ]
+    },
+    {
+        "prompt": "Build runtime capability: safe_execution",
+        "expanded": [
+            "Build runtime capability: safe_execution :: planning",
+            "Build runtime capability: safe_execution :: execution",
+            "Build runtime capability: safe_execution :: validation",
+            "Build runtime capability: safe_execution :: deployment"
+        ]
+    },
+    {
+        "prompt": "Build runtime capability: task_planning",
+        "expanded": [
+            "Build runtime capability: task_planning :: planning",
+            "Build runtime capability: task_planning :: execution",
+            "Build runtime capability: task_planning :: validation",
+            "Build runtime capability: task_planning :: deployment"
+        ]
+    },
+    {
+        "prompt": "Build runtime capability: self_validation",
+        "expanded": [
+            "Build runtime capability: self_validation :: planning",
+            "Build runtime capability: self_validation :: execution",
+            "Build runtime capability: self_validation :: validation",
+            "Build runtime capability: self_validation :: deployment"
+        ]
+    },
+    {
+        "prompt": "Build runtime capability: agent_orchestration",
+        "expanded": [
+            "Build runtime capability: agent_orchestration :: planning",
+            "Build runtime capability: agent_orchestration :: execution",
+            "Build runtime capability: agent_orchestration :: validation",
+            "Build runtime capability: agent_orchestration :: deployment"
+        ]
+    },
+    {
+        "prompt": "Build runtime capability: persistent_memory",
+        "expanded": [
+            "Build runtime capability: persistent_memory :: planning",
+            "Build runtime capability: persistent_memory :: execution",
+            "Build runtime capability: persistent_memory :: validation",
+            "Build runtime capability: persistent_memory :: deployment"
+        ]
+    },
+    {
+        "prompt": "Build runtime capability: safe_execution",
+        "expanded": [
+            "Build runtime capability: safe_execution :: planning",
+            "Build runtime capability: safe_execution :: execution",
+            "Build runtime capability: safe_execution :: validation",
+            "Build runtime capability: safe_execution :: deployment"
+        ]
+    },
+    {
+        "prompt": "Build runtime capability: task_planning",
+        "expanded": [
+            "Build runtime capability: task_planning :: planning",
+            "Build runtime capability: task_planning :: execution",
+            "Build runtime capability: task_planning :: validation",
+            "Build runtime capability: task_planning :: deployment"
+        ]
+    },
+    {
+        "prompt": "Build runtime capability: self_validation",
+        "expanded": [
+            "Build runtime capability: self_validation :: planning",
+            "Build runtime capability: self_validation :: execution",
+            "Build runtime capability: self_validation :: validation",
+            "Build runtime capability: self_validation :: deployment"
+        ]
+    },
+    {
+        "prompt": "Build runtime capability: runtime_expansion",
+        "expanded": [
+            "Build runtime capability: runtime_expansion :: planning",
+            "Build runtime capability: runtime_expansion :: execution",
+            "Build runtime capability: runtime_expansion :: validation",
+            "Build runtime capability: runtime_expansion :: deployment"
+        ]
+    },
+    {
+        "prompt": "Build runtime capability: agent_orchestration",
+        "expanded": [
+            "Build runtime capability: agent_orchestration :: planning",
+            "Build runtime capability: agent_orchestration :: execution",
+            "Build runtime capability: agent_orchestration :: validation",
+            "Build runtime capability: agent_orchestration :: deployment"
+        ]
+    },
+    {
+        "prompt": "Build runtime capability: safe_execution",
+        "expanded": [
+            "Build runtime capability: safe_execution :: planning",
+            "Build runtime capability: safe_execution :: execution",
+            "Build runtime capability: safe_execution :: validation",
+            "Build runtime capability: safe_execution :: deployment"
+        ]
+    },
+    {
+        "prompt": "Build runtime capability: task_planning",
+        "expanded": [
+            "Build runtime capability: task_planning :: planning",
+            "Build runtime capability: task_planning :: execution",
+            "Build runtime capability: task_planning :: validation",
+            "Build runtime capability: task_planning :: deployment"
+        ]
+    },
+    {
+        "prompt": "Build runtime capability: self_validation",
+        "expanded": [
+            "Build runtime capability: self_validation :: planning",
+            "Build runtime capability: self_validation :: execution",
+            "Build runtime capability: self_validation :: validation",
+            "Build runtime capability: self_validation :: deployment"
+        ]
+    },
+    {
+        "prompt": "Build runtime capability: agent_orchestration",
+        "expanded": [
+            "Build runtime capability: agent_orchestration :: planning",
+            "Build runtime capability: agent_orchestration :: execution",
+            "Build runtime capability: agent_orchestration :: validation",
+            "Build runtime capability: agent_orchestration :: deployment"
+        ]
+    },
+    {
+        "prompt": "Build runtime capability: safe_execution",
+        "expanded": [
+            "Build runtime capability: safe_execution :: planning",
+            "Build runtime capability: safe_execution :: execution",
+            "Build runtime capability: safe_execution :: validation",
+            "Build runtime capability: safe_execution :: deployment"
+        ]
+    },
+    {
+        "prompt": "Build runtime capability: task_planning",
+        "expanded": [
+            "Build runtime capability: task_planning :: planning",
+            "Build runtime capability: task_planning :: execution",
+            "Build runtime capability: task_planning :: validation",
+            "Build runtime capability: task_planning :: deployment"
+        ]
+    },
+    {
+        "prompt": "Build runtime capability: self_validation",
+        "expanded": [
+            "Build runtime capability: self_validation :: planning",
+            "Build runtime capability: self_validation :: execution",
+            "Build runtime capability: self_validation :: validation",
+            "Build runtime capability: self_validation :: deployment"
+        ]
+    },
+    {
+        "prompt": "Build runtime capability: agent_orchestration",
+        "expanded": [
+            "Build runtime capability: agent_orchestration :: planning",
+            "Build runtime capability: agent_orchestration :: execution",
+            "Build runtime capability: agent_orchestration :: validation",
+            "Build runtime capability: agent_orchestration :: deployment"
+        ]
+    },
+    {
+        "prompt": "Build runtime capability: persistent_memory",
+        "expanded": [
+            "Build runtime capability: persistent_memory :: planning",
+            "Build runtime capability: persistent_memory :: execution",
+            "Build runtime capability: persistent_memory :: validation",
+            "Build runtime capability: persistent_memory :: deployment"
+        ]
+    },
+    {
+        "prompt": "Build runtime capability: safe_execution",
+        "expanded": [
+            "Build runtime capability: safe_execution :: planning",
+            "Build runtime capability: safe_execution :: execution",
+            "Build runtime capability: safe_execution :: validation",
+            "Build runtime capability: safe_execution :: deployment"
+        ]
+    },
+    {
+        "prompt": "Build runtime capability: task_planning",
+        "expanded": [
+            "Build runtime capability: task_planning :: planning",
+            "Build runtime capability: task_planning :: execution",
+            "Build runtime capability: task_planning :: validation",
+            "Build runtime capability: task_planning :: deployment"
+        ]
+    },
+    {
+        "prompt": "Build runtime capability: self_validation",
+        "expanded": [
+            "Build runtime capability: self_validation :: planning",
+            "Build runtime capability: self_validation :: execution",
+            "Build runtime capability: self_validation :: validation",
+            "Build runtime capability: self_validation :: deployment"
+        ]
+    },
+    {
+        "prompt": "Build runtime capability: runtime_expansion",
+        "expanded": [
+            "Build runtime capability: runtime_expansion :: planning",
+            "Build runtime capability: runtime_expansion :: execution",
+            "Build runtime capability: runtime_expansion :: validation",
+            "Build runtime capability: runtime_expansion :: deployment"
+        ]
+    },
+    {
+        "prompt": "Build runtime capability: agent_orchestration",
+        "expanded": [
+            "Build runtime capability: agent_orchestration :: planning",
+            "Build runtime capability: agent_orchestration :: execution",
+            "Build runtime capability: agent_orchestration :: validation",
+            "Build runtime capability: agent_orchestration :: deployment"
+        ]
+    },
+    {
+        "prompt": "Build runtime capability: safe_execution",
+        "expanded": [
+            "Build runtime capability: safe_execution :: planning",
+            "Build runtime capability: safe_execution :: execution",
+            "Build runtime capability: safe_execution :: validation",
+            "Build runtime capability: safe_execution :: deployment"
+        ]
+    },
+    {
+        "prompt": "Build runtime capability: task_planning",
+        "expanded": [
+            "Build runtime capability: task_planning :: planning",
+            "Build runtime capability: task_planning :: execution",
+            "Build runtime capability: task_planning :: validation",
+            "Build runtime capability: task_planning :: deployment"
+        ]
+    },
+    {
+        "prompt": "Build runtime capability: self_validation",
+        "expanded": [
+            "Build runtime capability: self_validation :: planning",
+            "Build runtime capability: self_validation :: execution",
+            "Build runtime capability: self_validation :: validation",
+            "Build runtime capability: self_validation :: deployment"
+        ]
+    },
+    {
+        "prompt": "Build runtime capability: agent_orchestration",
+        "expanded": [
+            "Build runtime capability: agent_orchestration :: planning",
+            "Build runtime capability: agent_orchestration :: execution",
+            "Build runtime capability: agent_orchestration :: validation",
+            "Build runtime capability: agent_orchestration :: deployment"
+        ]
+    },
+    {
+        "prompt": "Build runtime capability: safe_execution",
+        "expanded": [
+            "Build runtime capability: safe_execution :: planning",
+            "Build runtime capability: safe_execution :: execution",
+            "Build runtime capability: safe_execution :: validation",
+            "Build runtime capability: safe_execution :: deployment"
+        ]
+    },
+    {
+        "prompt": "Build runtime capability: task_planning",
+        "expanded": [
+            "Build runtime capability: task_planning :: planning",
+            "Build runtime capability: task_planning :: execution",
+            "Build runtime capability: task_planning :: validation",
+            "Build runtime capability: task_planning :: deployment"
+        ]
+    },
+    {
+        "prompt": "Build runtime capability: self_validation",
+        "expanded": [
+            "Build runtime capability: self_validation :: planning",
+            "Build runtime capability: self_validation :: execution",
+            "Build runtime capability: self_validation :: validation",
+            "Build runtime capability: self_validation :: deployment"
+        ]
+    },
+    {
+        "prompt": "Build runtime capability: agent_orchestration",
+        "expanded": [
+            "Build runtime capability: agent_orchestration :: planning",
+            "Build runtime capability: agent_orchestration :: execution",
+            "Build runtime capability: agent_orchestration :: validation",
+            "Build runtime capability: agent_orchestration :: deployment"
+        ]
+    },
+    {
+        "prompt": "Build runtime capability: persistent_memory",
+        "expanded": [
+            "Build runtime capability: persistent_memory :: planning",
+            "Build runtime capability: persistent_memory :: execution",
+            "Build runtime capability: persistent_memory :: validation",
+            "Build runtime capability: persistent_memory :: deployment"
+        ]
+    },
+    {
+        "prompt": "Build runtime capability: safe_execution",
+        "expanded": [
+            "Build runtime capability: safe_execution :: planning",
+            "Build runtime capability: safe_execution :: execution",
+            "Build runtime capability: safe_execution :: validation",
+            "Build runtime capability: safe_execution :: deployment"
+        ]
+    },
+    {
+        "prompt": "Build runtime capability: task_planning",
+        "expanded": [
+            "Build runtime capability: task_planning :: planning",
+            "Build runtime capability: task_planning :: execution",
+            "Build runtime capability: task_planning :: validation",
+            "Build runtime capability: task_planning :: deployment"
+        ]
+    },
+    {
+        "prompt": "Build runtime capability: self_validation",
+        "expanded": [
+            "Build runtime capability: self_validation :: planning",
+            "Build runtime capability: self_validation :: execution",
+            "Build runtime capability: self_validation :: validation",
+            "Build runtime capability: self_validation :: deployment"
+        ]
+    },
+    {
+        "prompt": "Build runtime capability: runtime_expansion",
+        "expanded": [
+            "Build runtime capability: runtime_expansion :: planning",
+            "Build runtime capability: runtime_expansion :: execution",
+            "Build runtime capability: runtime_expansion :: validation",
+            "Build runtime capability: runtime_expansion :: deployment"
+        ]
+    },
+    {
+        "prompt": "Build runtime capability: agent_orchestration",
+        "expanded": [
+            "Build runtime capability: agent_orchestration :: planning",
+            "Build runtime capability: agent_orchestration :: execution",
+            "Build runtime capability: agent_orchestration :: validation",
+            "Build runtime capability: agent_orchestration :: deployment"
+        ]
+    },
+    {
+        "prompt": "Build runtime capability: safe_execution",
+        "expanded": [
+            "Build runtime capability: safe_execution :: planning",
+            "Build runtime capability: safe_execution :: execution",
+            "Build runtime capability: safe_execution :: validation",
+            "Build runtime capability: safe_execution :: deployment"
+        ]
+    },
+    {
+        "prompt": "Build runtime capability: task_planning",
+        "expanded": [
+            "Build runtime capability: task_planning :: planning",
+            "Build runtime capability: task_planning :: execution",
+            "Build runtime capability: task_planning :: validation",
+            "Build runtime capability: task_planning :: deployment"
+        ]
+    },
+    {
+        "prompt": "Build runtime capability: self_validation",
+        "expanded": [
+            "Build runtime capability: self_validation :: planning",
+            "Build runtime capability: self_validation :: execution",
+            "Build runtime capability: self_validation :: validation",
+            "Build runtime capability: self_validation :: deployment"
+        ]
+    },
+    {
+        "prompt": "Build runtime capability: agent_orchestration",
+        "expanded": [
+            "Build runtime capability: agent_orchestration :: planning",
+            "Build runtime capability: agent_orchestration :: execution",
+            "Build runtime capability: agent_orchestration :: validation",
+            "Build runtime capability: agent_orchestration :: deployment"
+        ]
+    },
+    {
+        "prompt": "Build runtime capability: persistent_memory",
+        "expanded": [
+            "Build runtime capability: persistent_memory :: planning",
+            "Build runtime capability: persistent_memory :: execution",
+            "Build runtime capability: persistent_memory :: validation",
+            "Build runtime capability: persistent_memory :: deployment"
+        ]
+    },
+    {
+        "prompt": "Build runtime capability: safe_execution",
+        "expanded": [
+            "Build runtime capability: safe_execution :: planning",
+            "Build runtime capability: safe_execution :: execution",
+            "Build runtime capability: safe_execution :: validation",
+            "Build runtime capability: safe_execution :: deployment"
+        ]
+    },
+    {
+        "prompt": "Build runtime capability: task_planning",
+        "expanded": [
+            "Build runtime capability: task_planning :: planning",
+            "Build runtime capability: task_planning :: execution",
+            "Build runtime capability: task_planning :: validation",
+            "Build runtime capability: task_planning :: deployment"
+        ]
+    },
+    {
+        "prompt": "Build runtime capability: self_validation",
+        "expanded": [
+            "Build runtime capability: self_validation :: planning",
+            "Build runtime capability: self_validation :: execution",
+            "Build runtime capability: self_validation :: validation",
+            "Build runtime capability: self_validation :: deployment"
+        ]
+    },
+    {
+        "prompt": "Build runtime capability: runtime_expansion",
+        "expanded": [
+            "Build runtime capability: runtime_expansion :: planning",
+            "Build runtime capability: runtime_expansion :: execution",
+            "Build runtime capability: runtime_expansion :: validation",
+            "Build runtime capability: runtime_expansion :: deployment"
+        ]
+    },
+    {
+        "prompt": "Build runtime capability: agent_orchestration",
+        "expanded": [
+            "Build runtime capability: agent_orchestration :: planning",
+            "Build runtime capability: agent_orchestration :: execution",
+            "Build runtime capability: agent_orchestration :: validation"
+        ]
+    },
+    {
+        "prompt": "Build runtime capability: persistent_memory",
+        "expanded": [
+            "Build runtime capability: persistent_memory :: planning",
+            "Build runtime capability: persistent_memory :: execution",
+            "Build runtime capability: persistent_memory :: validation"
+        ]
+    },
+    {
+        "prompt": "Build runtime capability: safe_execution",
+        "expanded": [
+            "Build runtime capability: safe_execution :: planning",
+            "Build runtime capability: safe_execution :: execution",
+            "Build runtime capability: safe_execution :: validation"
+        ]
+    },
+    {
+        "prompt": "Build runtime capability: task_planning",
+        "expanded": [
+            "Build runtime capability: task_planning :: planning",
+            "Build runtime capability: task_planning :: execution",
+            "Build runtime capability: task_planning :: validation"
+        ]
+    },
+    {
+        "prompt": "Build runtime capability: self_validation",
+        "expanded": [
+            "Build runtime capability: self_validation :: planning",
+            "Build runtime capability: self_validation :: execution",
+            "Build runtime capability: self_validation :: validation"
+        ]
+    },
+    {
+        "prompt": "Build runtime capability: runtime_expansion",
+        "expanded": [
+            "Build runtime capability: runtime_expansion :: planning",
+            "Build runtime capability: runtime_expansion :: execution",
+            "Build runtime capability: runtime_expansion :: validation"
+        ]
+    },
+    {
+        "prompt": "Build runtime capability: agent_orchestration",
+        "expanded": [
+            "Build runtime capability: agent_orchestration :: planning",
+            "Build runtime capability: agent_orchestration :: execution",
+            "Build runtime capability: agent_orchestration :: validation"
+        ]
+    },
+    {
+        "prompt": "Build runtime capability: persistent_memory",
+        "expanded": [
+            "Build runtime capability: persistent_memory :: planning",
+            "Build runtime capability: persistent_memory :: execution",
+            "Build runtime capability: persistent_memory :: validation"
+        ]
+    },
+    {
+        "prompt": "Build runtime capability: safe_execution",
+        "expanded": [
+            "Build runtime capability: safe_execution :: planning",
+            "Build runtime capability: safe_execution :: execution",
+            "Build runtime capability: safe_execution :: validation"
+        ]
+    },
+    {
+        "prompt": "Build runtime capability: task_planning",
+        "expanded": [
+            "Build runtime capability: task_planning :: planning",
+            "Build runtime capability: task_planning :: execution",
+            "Build runtime capability: task_planning :: validation"
+        ]
+    },
+    {
+        "prompt": "Build runtime capability: self_validation",
+        "expanded": [
+            "Build runtime capability: self_validation :: planning",
+            "Build runtime capability: self_validation :: execution",
+            "Build runtime capability: self_validation :: validation"
+        ]
+    },
+    {
+        "prompt": "Build runtime capability: runtime_expansion",
+        "expanded": [
+            "Build runtime capability: runtime_expansion :: planning",
+            "Build runtime capability: runtime_expansion :: execution",
+            "Build runtime capability: runtime_expansion :: validation"
+        ]
+    },
+    {
+        "prompt": "Build runtime capability: agent_orchestration",
+        "expanded": [
+            "Build runtime capability: agent_orchestration :: planning",
+            "Build runtime capability: agent_orchestration :: execution",
+            "Build runtime capability: agent_orchestration :: validation"
+        ]
+    },
+    {
+        "prompt": "Build runtime capability: persistent_memory",
+        "expanded": [
+            "Build runtime capability: persistent_memory :: planning",
+            "Build runtime capability: persistent_memory :: execution",
+            "Build runtime capability: persistent_memory :: validation"
+        ]
+    },
+    {
+        "prompt": "Build runtime capability: safe_execution",
+        "expanded": [
+            "Build runtime capability: safe_execution :: planning",
+            "Build runtime capability: safe_execution :: execution",
+            "Build runtime capability: safe_execution :: validation"
+        ]
+    },
+    {
+        "prompt": "Build runtime capability: task_planning",
+        "expanded": [
+            "Build runtime capability: task_planning :: planning",
+            "Build runtime capability: task_planning :: execution",
+            "Build runtime capability: task_planning :: validation"
+        ]
+    },
+    {
+        "prompt": "Build runtime capability: self_validation",
+        "expanded": [
+            "Build runtime capability: self_validation :: planning",
+            "Build runtime capability: self_validation :: execution",
+            "Build runtime capability: self_validation :: validation"
+        ]
+    },
+    {
+        "prompt": "Build runtime capability: runtime_expansion",
+        "expanded": [
+            "Build runtime capability: runtime_expansion :: planning",
+            "Build runtime capability: runtime_expansion :: execution",
+            "Build runtime capability: runtime_expansion :: validation"
+        ]
+    },
+    {
+        "prompt": "Build runtime capability: agent_orchestration",
+        "expanded": [
+            "Build runtime capability: agent_orchestration :: planning",
+            "Build runtime capability: agent_orchestration :: execution",
+            "Build runtime capability: agent_orchestration :: validation"
+        ]
+    },
+    {
+        "prompt": "Build runtime capability: persistent_memory",
+        "expanded": [
+            "Build runtime capability: persistent_memory :: planning",
+            "Build runtime capability: persistent_memory :: execution",
+            "Build runtime capability: persistent_memory :: validation"
+        ]
+    },
+    {
+        "prompt": "Build runtime capability: safe_execution",
+        "expanded": [
+            "Build runtime capability: safe_execution :: planning",
+            "Build runtime capability: safe_execution :: execution",
+            "Build runtime capability: safe_execution :: validation"
+        ]
+    },
+    {
+        "prompt": "Build runtime capability: task_planning",
+        "expanded": [
+            "Build runtime capability: task_planning :: planning",
+            "Build runtime capability: task_planning :: execution",
+            "Build runtime capability: task_planning :: validation"
+        ]
+    },
+    {
+        "prompt": "Build runtime capability: self_validation",
+        "expanded": [
+            "Build runtime capability: self_validation :: planning",
+            "Build runtime capability: self_validation :: execution",
+            "Build runtime capability: self_validation :: validation"
+        ]
+    },
+    {
+        "prompt": "Build runtime capability: runtime_expansion",
+        "expanded": [
+            "Build runtime capability: runtime_expansion :: planning",
+            "Build runtime capability: runtime_expansion :: execution",
+            "Build runtime capability: runtime_expansion :: validation"
+        ]
+    },
+    {
+        "prompt": "Build runtime capability: agent_orchestration",
+        "expanded": [
+            "Build runtime capability: agent_orchestration :: planning",
+            "Build runtime capability: agent_orchestration :: execution",
+            "Build runtime capability: agent_orchestration :: validation"
+        ]
+    },
+    {
+        "prompt": "Build runtime capability: persistent_memory",
+        "expanded": [
+            "Build runtime capability: persistent_memory :: planning",
+            "Build runtime capability: persistent_memory :: execution",
+            "Build runtime capability: persistent_memory :: validation"
+        ]
+    },
+    {
+        "prompt": "Build runtime capability: safe_execution",
+        "expanded": [
+            "Build runtime capability: safe_execution :: planning",
+            "Build runtime capability: safe_execution :: execution",
+            "Build runtime capability: safe_execution :: validation"
+        ]
+    },
+    {
+        "prompt": "Build runtime capability: task_planning",
+        "expanded": [
+            "Build runtime capability: task_planning :: planning",
+            "Build runtime capability: task_planning :: execution",
+            "Build runtime capability: task_planning :: validation"
+        ]
+    },
+    {
+        "prompt": "Build runtime capability: self_validation",
+        "expanded": [
+            "Build runtime capability: self_validation :: planning",
+            "Build runtime capability: self_validation :: execution",
+            "Build runtime capability: self_validation :: validation"
+        ]
+    },
+    {
+        "prompt": "Build runtime capability: runtime_expansion",
+        "expanded": [
+            "Build runtime capability: runtime_expansion :: planning",
+            "Build runtime capability: runtime_expansion :: execution",
+            "Build runtime capability: runtime_expansion :: validation"
+        ]
+    },
+    {
+        "prompt": "Build runtime capability: agent_orchestration",
+        "expanded": [
+            "Build runtime capability: agent_orchestration :: planning",
+            "Build runtime capability: agent_orchestration :: execution",
+            "Build runtime capability: agent_orchestration :: validation"
+        ]
+    },
+    {
+        "prompt": "Build runtime capability: persistent_memory",
+        "expanded": [
+            "Build runtime capability: persistent_memory :: planning",
+            "Build runtime capability: persistent_memory :: execution",
+            "Build runtime capability: persistent_memory :: validation"
+        ]
+    },
+    {
+        "prompt": "Build runtime capability: safe_execution",
+        "expanded": [
+            "Build runtime capability: safe_execution :: planning",
+            "Build runtime capability: safe_execution :: execution",
+            "Build runtime capability: safe_execution :: validation"
+        ]
+    },
+    {
+        "prompt": "Build runtime capability: task_planning",
+        "expanded": [
+            "Build runtime capability: task_planning :: planning",
+            "Build runtime capability: task_planning :: execution",
+            "Build runtime capability: task_planning :: validation"
+        ]
+    },
+    {
+        "prompt": "Build runtime capability: self_validation",
+        "expanded": [
+            "Build runtime capability: self_validation :: planning",
+            "Build runtime capability: self_validation :: execution",
+            "Build runtime capability: self_validation :: validation"
+        ]
+    },
+    {
+        "prompt": "Build runtime capability: runtime_expansion",
+        "expanded": [
+            "Build runtime capability: runtime_expansion :: planning",
+            "Build runtime capability: runtime_expansion :: execution",
+            "Build runtime capability: runtime_expansion :: validation"
+        ]
+    },
+    {
+        "prompt": "Build runtime capability: agent_orchestration",
+        "expanded": [
+            "Build runtime capability: agent_orchestration :: planning",
+            "Build runtime capability: agent_orchestration :: execution",
+            "Build runtime capability: agent_orchestration :: validation"
+        ]
+    },
+    {
+        "prompt": "Build runtime capability: persistent_memory",
+        "expanded": [
+            "Build runtime capability: persistent_memory :: planning",
+            "Build runtime capability: persistent_memory :: execution",
+            "Build runtime capability: persistent_memory :: validation"
+        ]
+    },
+    {
+        "prompt": "Build runtime capability: safe_execution",
+        "expanded": [
+            "Build runtime capability: safe_execution :: planning",
+            "Build runtime capability: safe_execution :: execution",
+            "Build runtime capability: safe_execution :: validation"
+        ]
+    },
+    {
+        "prompt": "Build runtime capability: task_planning",
+        "expanded": [
+            "Build runtime capability: task_planning :: planning",
+            "Build runtime capability: task_planning :: execution",
+            "Build runtime capability: task_planning :: validation"
+        ]
+    },
+    {
+        "prompt": "Build runtime capability: self_validation",
+        "expanded": [
+            "Build runtime capability: self_validation :: planning",
+            "Build runtime capability: self_validation :: execution",
+            "Build runtime capability: self_validation :: validation"
+        ]
+    },
+    {
+        "prompt": "Build runtime capability: runtime_expansion",
+        "expanded": [
+            "Build runtime capability: runtime_expansion :: planning",
+            "Build runtime capability: runtime_expansion :: execution",
+            "Build runtime capability: runtime_expansion :: validation"
+        ]
+    },
+    {
+        "prompt": "Build runtime capability: agent_orchestration",
+        "expanded": [
+            "Build runtime capability: agent_orchestration :: planning",
+            "Build runtime capability: agent_orchestration :: execution",
+            "Build runtime capability: agent_orchestration :: validation"
+        ]
+    },
+    {
+        "prompt": "Build runtime capability: persistent_memory",
+        "expanded": [
+            "Build runtime capability: persistent_memory :: planning",
+            "Build runtime capability: persistent_memory :: execution",
+            "Build runtime capability: persistent_memory :: validation"
+        ]
+    },
+    {
+        "prompt": "Build runtime capability: safe_execution",
+        "expanded": [
+            "Build runtime capability: safe_execution :: planning",
+            "Build runtime capability: safe_execution :: execution",
+            "Build runtime capability: safe_execution :: validation"
+        ]
+    },
+    {
+        "prompt": "Build runtime capability: task_planning",
+        "expanded": [
+            "Build runtime capability: task_planning :: planning",
+            "Build runtime capability: task_planning :: execution",
+            "Build runtime capability: task_planning :: validation"
+        ]
+    },
+    {
+        "prompt": "Build runtime capability: self_validation",
+        "expanded": [
+            "Build runtime capability: self_validation :: planning",
+            "Build runtime capability: self_validation :: execution",
+            "Build runtime capability: self_validation :: validation"
+        ]
+    },
+    {
+        "prompt": "Build runtime capability: runtime_expansion",
+        "expanded": [
+            "Build runtime capability: runtime_expansion :: planning",
+            "Build runtime capability: runtime_expansion :: execution",
+            "Build runtime capability: runtime_expansion :: validation"
+        ]
+    },
+    {
+        "prompt": "Build runtime capability: agent_orchestration",
+        "expanded": [
+            "Build runtime capability: agent_orchestration :: planning",
+            "Build runtime capability: agent_orchestration :: execution",
+            "Build runtime capability: agent_orchestration :: validation"
+        ]
+    },
+    {
+        "prompt": "Build runtime capability: persistent_memory",
+        "expanded": [
+            "Build runtime capability: persistent_memory :: planning",
+            "Build runtime capability: persistent_memory :: execution",
+            "Build runtime capability: persistent_memory :: validation"
+        ]
+    },
+    {
+        "prompt": "Build runtime capability: safe_execution",
+        "expanded": [
+            "Build runtime capability: safe_execution :: planning",
+            "Build runtime capability: safe_execution :: execution",
+            "Build runtime capability: safe_execution :: validation"
+        ]
+    },
+    {
+        "prompt": "Build runtime capability: task_planning",
+        "expanded": [
+            "Build runtime capability: task_planning :: planning",
+            "Build runtime capability: task_planning :: execution",
+            "Build runtime capability: task_planning :: validation"
+        ]
+    },
+    {
+        "prompt": "Build runtime capability: self_validation",
+        "expanded": [
+            "Build runtime capability: self_validation :: planning",
+            "Build runtime capability: self_validation :: execution",
+            "Build runtime capability: self_validation :: validation"
+        ]
+    },
+    {
+        "prompt": "Build runtime capability: runtime_expansion",
+        "expanded": [
+            "Build runtime capability: runtime_expansion :: planning",
+            "Build runtime capability: runtime_expansion :: execution",
+            "Build runtime capability: runtime_expansion :: validation"
+        ]
+    },
+    {
+        "prompt": "Build runtime capability: agent_orchestration",
+        "expanded": [
+            "Build runtime capability: agent_orchestration :: planning",
+            "Build runtime capability: agent_orchestration :: execution",
+            "Build runtime capability: agent_orchestration :: validation"
+        ]
+    },
+    {
+        "prompt": "Build runtime capability: persistent_memory",
+        "expanded": [
+            "Build runtime capability: persistent_memory :: planning",
+            "Build runtime capability: persistent_memory :: execution",
+            "Build runtime capability: persistent_memory :: validation"
+        ]
+    },
+    {
+        "prompt": "Build runtime capability: safe_execution",
+        "expanded": [
+            "Build runtime capability: safe_execution :: planning",
+            "Build runtime capability: safe_execution :: execution",
+            "Build runtime capability: safe_execution :: validation"
+        ]
+    },
+    {
+        "prompt": "Build runtime capability: task_planning",
+        "expanded": [
+            "Build runtime capability: task_planning :: planning",
+            "Build runtime capability: task_planning :: execution",
+            "Build runtime capability: task_planning :: validation"
+        ]
+    },
+    {
+        "prompt": "Build runtime capability: self_validation",
+        "expanded": [
+            "Build runtime capability: self_validation :: planning",
+            "Build runtime capability: self_validation :: execution",
+            "Build runtime capability: self_validation :: validation"
+        ]
+    },
+    {
+        "prompt": "Build runtime capability: runtime_expansion",
+        "expanded": [
+            "Build runtime capability: runtime_expansion :: planning",
+            "Build runtime capability: runtime_expansion :: execution",
+            "Build runtime capability: runtime_expansion :: validation"
+        ]
+    },
+    {
+        "prompt": "Build runtime capability: agent_orchestration",
+        "expanded": [
+            "Build runtime capability: agent_orchestration :: planning",
+            "Build runtime capability: agent_orchestration :: execution",
+            "Build runtime capability: agent_orchestration :: validation"
+        ]
+    },
+    {
+        "prompt": "Build runtime capability: persistent_memory",
+        "expanded": [
+            "Build runtime capability: persistent_memory :: planning",
+            "Build runtime capability: persistent_memory :: execution",
+            "Build runtime capability: persistent_memory :: validation"
+        ]
+    },
+    {
+        "prompt": "Build runtime capability: safe_execution",
+        "expanded": [
+            "Build runtime capability: safe_execution :: planning",
+            "Build runtime capability: safe_execution :: execution",
+            "Build runtime capability: safe_execution :: validation"
+        ]
+    },
+    {
+        "prompt": "Build runtime capability: task_planning",
+        "expanded": [
+            "Build runtime capability: task_planning :: planning",
+            "Build runtime capability: task_planning :: execution",
+            "Build runtime capability: task_planning :: validation"
+        ]
+    },
+    {
+        "prompt": "Build runtime capability: self_validation",
+        "expanded": [
+            "Build runtime capability: self_validation :: planning",
+            "Build runtime capability: self_validation :: execution",
+            "Build runtime capability: self_validation :: validation"
+        ]
+    },
+    {
+        "prompt": "Build runtime capability: runtime_expansion",
+        "expanded": [
+            "Build runtime capability: runtime_expansion :: planning",
+            "Build runtime capability: runtime_expansion :: execution",
+            "Build runtime capability: runtime_expansion :: validation"
+        ]
+    },
+    {
+        "prompt": "Build runtime capability: agent_orchestration",
+        "expanded": [
+            "Build runtime capability: agent_orchestration :: planning",
+            "Build runtime capability: agent_orchestration :: execution",
+            "Build runtime capability: agent_orchestration :: validation"
+        ]
+    },
+    {
+        "prompt": "Build runtime capability: persistent_memory",
+        "expanded": [
+            "Build runtime capability: persistent_memory :: planning",
+            "Build runtime capability: persistent_memory :: execution",
+            "Build runtime capability: persistent_memory :: validation"
+        ]
+    },
+    {
+        "prompt": "Build runtime capability: safe_execution",
+        "expanded": [
+            "Build runtime capability: safe_execution :: planning",
+            "Build runtime capability: safe_execution :: execution",
+            "Build runtime capability: safe_execution :: validation"
+        ]
+    },
+    {
+        "prompt": "Build runtime capability: task_planning",
+        "expanded": [
+            "Build runtime capability: task_planning :: planning",
+            "Build runtime capability: task_planning :: execution",
+            "Build runtime capability: task_planning :: validation"
+        ]
+    },
+    {
+        "prompt": "Build runtime capability: self_validation",
+        "expanded": [
+            "Build runtime capability: self_validation :: planning",
+            "Build runtime capability: self_validation :: execution",
+            "Build runtime capability: self_validation :: validation"
+        ]
+    },
+    {
+        "prompt": "Build runtime capability: runtime_expansion",
+        "expanded": [
+            "Build runtime capability: runtime_expansion :: planning",
+            "Build runtime capability: runtime_expansion :: execution",
+            "Build runtime capability: runtime_expansion :: validation"
+        ]
+    },
+    {
+        "prompt": "Build runtime capability: agent_orchestration",
+        "expanded": [
+            "Build runtime capability: agent_orchestration :: planning",
+            "Build runtime capability: agent_orchestration :: execution",
+            "Build runtime capability: agent_orchestration :: validation"
+        ]
+    },
+    {
+        "prompt": "Build runtime capability: persistent_memory",
+        "expanded": [
+            "Build runtime capability: persistent_memory :: planning",
+            "Build runtime capability: persistent_memory :: execution",
+            "Build runtime capability: persistent_memory :: validation"
+        ]
+    },
+    {
+        "prompt": "Build runtime capability: safe_execution",
+        "expanded": [
+            "Build runtime capability: safe_execution :: planning",
+            "Build runtime capability: safe_execution :: execution",
+            "Build runtime capability: safe_execution :: validation"
+        ]
+    },
+    {
+        "prompt": "Build runtime capability: task_planning",
+        "expanded": [
+            "Build runtime capability: task_planning :: planning",
+            "Build runtime capability: task_planning :: execution",
+            "Build runtime capability: task_planning :: validation"
+        ]
+    },
+    {
+        "prompt": "Build runtime capability: self_validation",
+        "expanded": [
+            "Build runtime capability: self_validation :: planning",
+            "Build runtime capability: self_validation :: execution",
+            "Build runtime capability: self_validation :: validation"
+        ]
+    },
+    {
+        "prompt": "Build runtime capability: runtime_expansion",
+        "expanded": [
+            "Build runtime capability: runtime_expansion :: planning",
+            "Build runtime capability: runtime_expansion :: execution",
+            "Build runtime capability: runtime_expansion :: validation"
+        ]
+    }
+]

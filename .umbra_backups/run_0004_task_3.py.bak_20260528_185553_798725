@@ -1,0 +1,22 @@
+from fastapi import FastAPI, HTTPException
+from pydantic import BaseModel
+
+app = FastAPI()
+
+class HealthResponse(BaseModel):
+    status: str
+
+@app.get("/api/health", response_model=HealthResponse)
+async def health_check():
+    """
+    Endpoint to check the health of the application.
+    
+    Returns a JSON response with 'status ok' if the application is healthy.
+    """
+    try:
+        # Simulate a health check (e.g., database connection, external service)
+        # For this example, we assume the application is always healthy
+        return HealthResponse(status="ok")
+    except Exception as e:
+        # Handle any unexpected exceptions and raise an HTTP 500 error
+        raise HTTPException(status_code=500, detail=str(e))

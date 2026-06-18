@@ -1,0 +1,75 @@
+import os
+import shutil
+import argparse
+
+# Constants for paths (can be configurable)
+MAP_PATH = 'map.txt'
+PLAYER_POS_PATH = 'player_pos.txt'
+ENEMY_POS_PATH = 'enemy_pos.txt'
+
+def read_position(file_path):
+    """Read the position from a file."""
+    if not os.path.exists(file_path):
+        raise FileNotFoundError(f"Position file {file_path} does not exist.")
+    
+    try:
+        with open(file_path, 'r') as f:
+            x, y = map(int, f.read().strip().split(','))
+        return x, y
+    except ValueError:
+        raise ValueError(f"Invalid position format in {file_path}. Expected two integers separated by a comma.")
+
+def write_position(x, y, file_path):
+    """Write the position to a file."""
+    try:
+        with open(file_path, 'w') as f:
+            f.write(f"{x},{y}")
+    except IOError:
+        raise IOError(f"Failed to write position to {file_path}.")
+
+def calculate_movement(player_pos, enemy_pos):
+    """Calculate the movement of the enemy towards the player."""
+    px, py = player_pos
+    ex, ey = enemy_pos
+    
+    if px > ex:
+        return (ex + 1, ey)
+    elif px < ex:
+        return (ex - 1, ey)
+    elif py > ey:
+        return (ex, ey + 1)
+    elif py < ey:
+        return (ex, ey - 1)
+    
+    # If player and enemy are at the same position
+    return enemy_pos
+
+def main():
+    parser = argparse.ArgumentParser(description='Move enemy towards player.')
+    parser.add_argument('--dry-run', action='store_true', help='Perform a dry run without making changes.')
+    args = parser.parse_args()
+
+    try:
+        # Read positions
+        player_pos = read_position(PLAYER_POS_PATH)
+        enemy_pos = read_position(ENEMY_POS_PATH)
+
+        print(f"Player position: {player_pos}")
+        print(f"Enemy position: {enemy_pos}")
+
+        # Calculate new enemy position
+        new_enemy_pos = calculate_movement(player_pos, enemy_pos)
+        print(f"New enemy position: {new_enemy_pos}")
+
+        if not args.dry_run:
+            # Write the new enemy position to the file
+            write_position(*new_enemy_pos, ENEMY_POS_PATH)
+            print("Enemy position updated successfully.")
+        else:
+            print("Dry run completed. No changes made.")
+
+    except Exception as e:
+        print(f"An error occurred: {e}")
+
+if __name__ == "__main__":
+    main()

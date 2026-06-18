@@ -1,0 +1,23 @@
+import sqlite3
+
+def create_database(db_name):
+    """
+    Create a new SQLite database.
+
+    Args:
+        db_name (str): The name of the database file to create.
+    """
+    try:
+        # Connect to the SQLite database (it will be created if it doesn't exist)
+        conn = sqlite3.connect(db_name)
+        print(f"Database '{db_name}' created successfully.")
+        
+        # Close the connection
+        conn.close()
+    except sqlite3.Error as e:
+        print(f"An error occurred: {e}")
+
+if __name__ == "__main__":
+    # Example usage
+    database_name = "example.db"
+    create_database(database_name)

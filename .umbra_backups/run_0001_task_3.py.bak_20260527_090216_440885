@@ -1,0 +1,75 @@
+import os
+import sys
+import argparse
+from pathlib import Path
+
+# Constants for paths
+DEFAULT_ENEMY_PATH = "enemy.txt"
+DEFAULT_PLAYER_PATH = "player.txt"
+
+def parse_arguments():
+    parser = argparse.ArgumentParser(description="Move an enemy towards the player.")
+    parser.add_argument('--enemy-path', type=str, default=DEFAULT_ENEMY_PATH,
+                        help='Path to the enemy position file (default: {})'.format(DEFAULT_ENEMY_PATH))
+    parser.add_argument('--player-path', type=str, default=DEFAULT_PLAYER_PATH,
+                        help='Path to the player position file (default: {})'.format(DEFAULT_PLAYER_PATH))
+    parser.add_argument('--dry-run', action='store_true',
+                        help='Perform a dry run without actually moving the enemy')
+    args = parser.parse_args()
+    return args
+
+def read_position(file_path):
+    try:
+        with open(file_path, 'r') as file:
+            x, y = map(int, file.readline().strip().split(','))
+        print(f"Read position from {file_path}: ({x}, {y})")
+        return x, y
+    except FileNotFoundError:
+        print(f"Error: File {file_path} not found.")
+        sys.exit(1)
+    except ValueError:
+        print(f"Error: Invalid format in file {file_path}. Expected 'x,y'.")
+        sys.exit(1)
+
+def write_position(file_path, x, y):
+    try:
+        with open(file_path, 'w') as file:
+            file.write(f"{x},{y}")
+        print(f"Wrote position to {file_path}: ({x}, {y})")
+    except IOError as e:
+        print(f"Error: Failed to write to {file_path}. {e}")
+        sys.exit(1)
+
+def move_enemy_towards_player(enemy_x, enemy_y, player_x, player_y):
+    # Simple movement logic: move towards the player by adjusting coordinates
+    if enemy_x < player_x:
+        enemy_x += 1
+    elif enemy_x > player_x:
+        enemy_x -= 1
+    
+    if enemy_y < player_y:
+        enemy_y += 1
+    elif enemy_y > player_y:
+        enemy_y -= 1
+    
+    return enemy_x, enemy_y
+
+def main():
+    args = parse_arguments()
+    
+    # Read player position (fixed at (0, 0))
+    player_x, player_y = 0, 0
+    
+    # Read enemy position
+    enemy_x, enemy_y = read_position(args.enemy_path)
+    
+    # Move enemy towards player
+    new_enemy_x, new_enemy_y = move_enemy_towards_player(enemy_x, enemy_y, player_x, player_y)
+    
+    if not args.dry_run:
+        write_position(args.enemy_path, new_enemy_x, new_enemy_y)
+    else:
+        print("Dry run: Enemy would move to ({}, {})".format(new_enemy_x, new_enemy_y))
+
+if __name__ == "__main__":
+    main()

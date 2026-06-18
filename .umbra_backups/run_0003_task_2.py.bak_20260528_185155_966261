@@ -1,0 +1,67 @@
+import pandas as pd
+import numpy as np
+
+def generate_sample_data(rows=100, cols=5):
+    """
+    Generates a DataFrame with random sample data for demonstration purposes.
+    
+    Parameters:
+        rows (int): Number of rows in the generated DataFrame.
+        cols (int): Number of columns in the generated DataFrame.
+        
+    Returns:
+        pd.DataFrame: A DataFrame containing randomly generated data.
+    """
+    # Define column names
+    columns = [f'feature_{i+1}' for i in range(cols)]
+    
+    # Generate random data
+    # - 30% of columns will be categorical (with missing values)
+    # - The rest will be numerical with some missing values
+    num_categorical_cols = int(0.3 * cols)
+    categorical_data = pd.DataFrame(np.random.choice(['A', 'B', None], size=(rows, num_categorical_cols)), columns=columns[:num_categorical_cols])
+    numerical_data = pd.DataFrame(np.random.randn(rows, cols-num_categorical_cols), columns=columns[num_categorical_cols:])
+    
+    # Combine the data
+    df = pd.concat([categorical_data, numerical_data], axis=1)
+    
+    # Introduce some missing values in random cells
+    for col in df.columns:
+        df[col] = df[col].mask(np.random.rand(rows) < 0.1)
+    
+    return df
+
+def analyze_dataframe(df):
+    """
+    Analyzes the provided DataFrame and prints out various statistics.
+    
+    Parameters:
+        df (pd.DataFrame): The DataFrame to be analyzed.
+        
+    Returns:
+        None
+    """
+    # Display basic information about the DataFrame
+    print("DataFrame Information:")
+    print(df.info())
+    print("\n")
+    
+    # Check for missing values
+    print("Missing Values per Column:")
+    print(df.isnull().sum())
+    print("\n")
+    
+    # Describe numerical columns
+    print("Descriptive Statistics for Numerical Columns:")
+    print(df.select_dtypes(include=[np.number]).describe())
+    print("\n")
+    
+    # Detect and display column types
+    print("Column Types:")
+    print(df.dtypes)
+    print("\n")
+
+# Example usage:
+if __name__ == "__main__":
+    sample_df = generate_sample_data(rows=100, cols=5)
+    analyze_dataframe(sample_df)

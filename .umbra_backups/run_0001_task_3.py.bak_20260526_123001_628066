@@ -1,0 +1,48 @@
+import os
+from collections import defaultdict
+
+def find_duplicate_files(directory):
+    """
+    Scans a directory and finds duplicate files by comparing file sizes.
+    
+    Args:
+        directory (str): The path to the directory to scan.
+        
+    Returns:
+        dict: A dictionary where keys are file sizes and values are lists of file paths with that size.
+    """
+    if not os.path.isdir(directory):
+        raise ValueError(f"The provided path {directory} is not a valid directory.")
+    
+    file_size_dict = defaultdict(list)
+    
+    # Walk through all directories and files in the given directory
+    for root, _, files in os.walk(directory):
+        for file in files:
+            file_path = os.path.join(root, file)
+            file_size = os.path.getsize(file_path)
+            file_size_dict[file_size].append(file_path)
+    
+    # Filter out sizes that have only one file
+    duplicates = {size: paths for size, paths in file_size_dict.items() if len(paths) > 1}
+    
+    return duplicates
+
+def main():
+    directory_to_scan = input("Enter the directory path to scan for duplicate files: ")
+    
+    try:
+        duplicate_files = find_duplicate_files(directory_to_scan)
+        if not duplicate_files:
+            print("No duplicate files found.")
+        else:
+            print("Duplicate files found based on size:")
+            for size, paths in duplicate_files.items():
+                print(f"Size: {size} bytes")
+                for path in paths:
+                    print(f"  - {path}")
+    except Exception as e:
+        print(f"An error occurred: {e}")
+
+if __name__ == "__main__":
+    main()

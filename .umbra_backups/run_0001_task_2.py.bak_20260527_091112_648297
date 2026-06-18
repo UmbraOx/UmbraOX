@@ -1,0 +1,80 @@
+import curses
+import sys
+
+# Constants for paths (configurable)
+CONFIG_PATH = "config.json"
+SAVE_PATH = "save.txt"
+
+def read_config(path):
+    """Read configuration from a file."""
+    try:
+        with open(path, 'r') as f:
+            config = json.load(f)
+            print("Configuration loaded.")
+            return config
+    except FileNotFoundError:
+        print(f"Config file not found at {path}. Using default settings.")
+        return {}
+    except json.JSONDecodeError:
+        print(f"Failed to decode JSON from {path}. Using default settings.")
+        return {}
+
+def save_state(path, state):
+    """Save the game state to a file."""
+    try:
+        with open(path, 'w') as f:
+            json.dump(state, f)
+            print("Game state saved.")
+    except IOError as e:
+        print(f"Failed to save state: {e}")
+
+def main(stdscr):
+    # Initialize screen
+    curses.curs_set(0)  # Hide the cursor
+    stdscr.nodelay(1)   # Make getch() non-blocking
+
+    # Initial player position
+    x, y = 0, 0
+
+    while True:
+        # Clear the screen
+        stdscr.clear()
+
+        # Draw the player character
+        stdscr.addch(y, x, 'O')
+
+        # Refresh the screen
+        stdscr.refresh()
+
+        # Get user input
+        key = stdscr.getch()
+
+        # Handle arrow keys
+        if key == curses.KEY_UP:
+            y -= 1
+        elif key == curses.KEY_DOWN:
+            y += 1
+        elif key == curses.KEY_LEFT:
+            x -= 1
+        elif key == curses.KEY_RIGHT:
+            x += 1
+
+        # Exit on 'q'
+        elif key == ord('q'):
+            print("Exiting game.")
+            break
+
+# Entry point of the program
+if __name__ == "__main__":
+    import json
+
+    # Load configuration
+    config = read_config(CONFIG_PATH)
+
+    # Start the curses application
+    try:
+        curses.wrapper(main)
+    except KeyboardInterrupt:
+        print("\nGame interrupted by user.")
+
+    # Save the final state (not implemented in this simple example, but you can add it as needed)

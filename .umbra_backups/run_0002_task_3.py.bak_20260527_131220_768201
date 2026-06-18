@@ -1,0 +1,64 @@
+from typing import Dict, List, Optional
+
+class AgentCapabilityMatrix:
+    """
+    Represents an agent's capability matrix, storing information about the agent's skills and competencies.
+    
+    Attributes:
+        agent_id (str): The unique identifier for the agent.
+        capabilities (Dict[str, bool]): A dictionary mapping capability names to a boolean indicating if the agent has that capability.
+        domains (List[str]): A list of domains in which the agent operates.
+    """
+    
+    def __init__(self, agent_id: str, capabilities: Optional[Dict[str, bool]] = None, domains: Optional[List[str]] = None):
+        """
+        Initializes a new instance of AgentCapabilityMatrix.
+
+        Args:
+            agent_id (str): The unique identifier for the agent.
+            capabilities (Optional[Dict[str, bool]]): A dictionary mapping capability names to a boolean indicating if the agent has that capability. Defaults to an empty dictionary.
+            domains (Optional[List[str]]): A list of domains in which the agent operates. Defaults to an empty list.
+
+        Raises:
+            ValueError: If agent_id is not a string or is empty.
+            TypeError: If capabilities is not a dictionary or domains is not a list.
+        """
+        if not isinstance(agent_id, str) or not agent_id.strip():
+            raise ValueError("agent_id must be a non-empty string.")
+        
+        if capabilities is None:
+            capabilities = {}
+        elif not isinstance(capabilities, dict):
+            raise TypeError("capabilities must be a dictionary.")
+        
+        if domains is None:
+            domains = []
+        elif not isinstance(domains, list):
+            raise TypeError("domains must be a list.")
+        
+        self.agent_id = agent_id
+        self.capabilities = capabilities
+        self.domains = domains
+    
+    def to_dict(self) -> Dict[str, any]:
+        """
+        Converts the AgentCapabilityMatrix instance into a dictionary.
+
+        Returns:
+            Dict[str, any]: A dictionary representation of the agent's capability matrix.
+        """
+        return {
+            "agent_id": self.agent_id,
+            "capabilities": self.capabilities,
+            "domains": self.domains
+        }
+
+# Example usage:
+if __name__ == "__main__":
+    try:
+        capabilities = {"data_analysis": True, "machine_learning": False}
+        domains = ["finance", "technology"]
+        agent_matrix = AgentCapabilityMatrix("agent123", capabilities, domains)
+        print(agent_matrix.to_dict())
+    except (ValueError, TypeError) as e:
+        print(f"Error: {e}")

@@ -1,0 +1,62 @@
+# Import necessary libraries
+import pandas as pd
+
+def load_data(file_path):
+    """ Load data from a CSV file into a DataFrame """
+    return pd.read_csv(file_path)
+
+def inspect_data(df):
+    """ Inspect the first few rows of the DataFrame """
+    print("Inspecting the first few rows of the dataset:")
+    print(df.head())
+    print("\n")
+
+def detect_column_types(df):
+    """ Detect and print the data types of each column """
+    print("Data types of each column:")
+    print(df.dtypes)
+    print("\n")
+
+def handle_missing_data(df):
+    """ Check for missing values and report them """
+    missing_values = df.isnull().sum()
+    if missing_values.sum() > 0:
+        print("Missing values detected in the dataset:")
+        print(missing_values[missing_values > 0])
+        # Example strategy: Drop rows with any missing values
+        df = df.dropna()
+        print("\nAfter handling missing data, the shape of the DataFrame is:", df.shape)
+    else:
+        print("No missing values found in the dataset.")
+    print("\n")
+    return df
+
+def generate_statistical_summary(df):
+    """ Generate and print a statistical summary for numerical columns """
+    print("Statistical summary for numerical columns:")
+    print(df.describe())
+    print("\n")
+
+# Main function to execute the analysis
+def main():
+    # Define the path to the dataset
+    file_path = 'path_to_your_dataset.csv'
+    
+    # Load the data
+    df = load_data(file_path)
+    
+    # Inspect the data
+    inspect_data(df)
+    
+    # Detect column types
+    detect_column_types(df)
+    
+    # Handle missing data
+    df = handle_missing_data(df)
+    
+    # Generate statistical summary
+    generate_statistical_summary(df)
+
+# Execute the main function
+if __name__ == "__main__":
+    main()

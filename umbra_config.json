@@ -1,0 +1,18 @@
+{
+  "llm_provider": "ollama",
+  "llm_model": "qwen2.5-coder:32b",
+  "llm_api_key": "9273ba21855741a7801c44af16086719.3nun4O_grnw13MLAuQe_-mZQ",
+  "max_recursion_depth": 10,
+  "max_calls_per_task": 50,
+  "max_total_calls": 500,
+  "subprocess_timeout": 300,
+  "workspace_dir": "workspaces",
+  "sessions_dir": "sessions",
+  "continuations_dir": "continuations",
+  "snapshots_dir": "snapshots",
+  "auto_run_tests": false,
+  "auto_commit_to_git": false,
+  "max_tasks_per_run": 6,
+  "code_runner_timeout": 300,
+  "log_level": "INFO"
+}

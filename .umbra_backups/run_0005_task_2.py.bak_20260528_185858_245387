@@ -1,0 +1,60 @@
+import os
+from pathlib import Path
+import shutil
+
+# Constants for paths and categories
+SOURCE_DIR = Path('/path/to/source')
+DESTINATION_DIR = Path('/path/to/destination')
+CATEGORIES = {
+    'images': ['.jpg', '.jpeg', '.png', '.gif'],
+    'documents': ['.pdf', '.docx', '.txt'],
+    'videos': ['.mp4', '.avi', '.mov'],
+    # Add more categories as needed
+}
+
+def categorize_files(source=SOURCE_DIR, destination=DESTINATION_DIR, dry_run=False):
+    """
+    Categorizes files based on their extensions into predefined folders.
+
+    :param source: Path to the source directory.
+    :param destination: Path to the destination directory where categorized files will be moved.
+    :param dry_run: If True, no actual file operations are performed. Only prints what would happen.
+    """
+    if not source.exists() or not source.is_dir():
+        print(f"Source directory {source} does not exist or is not a directory.")
+        return
+
+    # Ensure destination directory exists
+    destination.mkdir(parents=True, exist_ok=True)
+
+    # Process each category
+    for category, extensions in CATEGORIES.items():
+        category_dir = destination / category
+        if not dry_run:
+            category_dir.mkdir(parents=True, exist_ok=True)
+        
+        files_count = 0
+
+        # Traverse the source directory
+        for root, _, files in os.walk(source):
+            for file in files:
+                if Path(file).suffix.lower() in extensions:
+                    src_path = Path(root) / file
+                    dest_path = category_dir / file
+
+                    # Handle dry run or actual move
+                    if dry_run:
+                        print(f"Dry Run: Would move {src_path} to {dest_path}")
+                    else:
+                        try:
+                            shutil.move(src_path, dest_path)
+                            print(f"Moved {src_path} to {dest_path}")
+                            files_count += 1
+                        except Exception as e:
+                            print(f"Error moving {src_path}: {e}")
+
+        print(f"Processed {files_count} files for category: {category}")
+
+# Example usage
+if __name__ == "__main__":
+    categorize_files(dry_run=True)  # Set dry_run to False to perform actual operations

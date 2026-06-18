@@ -1,0 +1,464 @@
+{
+  "run:run_0001": {
+    "key": "run:run_0001",
+    "value": {
+      "prompt": "make a gif of a cat in armour dancing",
+      "status": "completed_with_failures",
+      "files": 0
+    },
+    "tags": [
+      "run",
+      "completed_with_failures"
+    ],
+    "source": "pipeline",
+    "created_at": "2026-05-30T09:36:32.501326",
+    "access_count": 0
+  },
+  "run:run_0003": {
+    "key": "run:run_0003",
+    "value": {
+      "prompt": "write a single complete Python script for a world building AI agent.The agent should: accept a world",
+      "status": "completed",
+      "files": 6
+    },
+    "tags": [
+      "run",
+      "completed"
+    ],
+    "source": "pipeline",
+    "created_at": "2026-05-28T18:52:43.059060",
+    "access_count": 0
+  },
+  "run:run_0004": {
+    "key": "run:run_0004",
+    "value": {
+      "prompt": "write a single complete Python script for a game mechanics AI agent.The agent should: accept a game ",
+      "status": "completed",
+      "files": 6
+    },
+    "tags": [
+      "run",
+      "completed"
+    ],
+    "source": "pipeline",
+    "created_at": "2026-05-28T18:56:32.208705",
+    "access_count": 0
+  },
+  "run:run_0005": {
+    "key": "run:run_0005",
+    "value": {
+      "prompt": "write a single complete Python script that generates desktop overlay applications.The agent should: ",
+      "status": "completed",
+      "files": 6
+    },
+    "tags": [
+      "run",
+      "completed"
+    ],
+    "source": "pipeline",
+    "created_at": "2026-05-28T18:59:54.752043",
+    "access_count": 0
+  },
+  "run:run_0006": {
+    "key": "run:run_0006",
+    "value": {
+      "prompt": "write a single complete Python script for an AI companion personality agent.The agent should: accept",
+      "status": "completed",
+      "files": 8
+    },
+    "tags": [
+      "run",
+      "completed"
+    ],
+    "source": "pipeline",
+    "created_at": "2026-05-28T19:17:58.605871",
+    "access_count": 0
+  },
+  "run:run_0007": {
+    "key": "run:run_0007",
+    "value": {
+      "prompt": "Build all of the following as separate Python files in C:\\Umbra\\gui:",
+      "status": "completed",
+      "files": 5
+    },
+    "tags": [
+      "run",
+      "completed"
+    ],
+    "source": "pipeline",
+    "created_at": "2026-05-27T03:47:50.510923",
+    "access_count": 0
+  },
+  "run:run_0008": {
+    "key": "run:run_0008",
+    "value": {
+      "prompt": "gui_server.py",
+      "status": "completed",
+      "files": 4
+    },
+    "tags": [
+      "run",
+      "completed"
+    ],
+    "source": "pipeline",
+    "created_at": "2026-05-27T03:49:01.622757",
+    "access_count": 0
+  },
+  "run:run_0009": {
+    "key": "run:run_0009",
+    "value": {
+      "prompt": "Flask-based web server (or use http.server if Flask not installed)",
+      "status": "completed",
+      "files": 6
+    },
+    "tags": [
+      "run",
+      "completed"
+    ],
+    "source": "pipeline",
+    "created_at": "2026-05-27T03:50:25.805486",
+    "access_count": 0
+  },
+  "run:run_0010": {
+    "key": "run:run_0010",
+    "value": {
+      "prompt": "Serves a dashboard at http://localhost:7860",
+      "status": "completed",
+      "files": 6
+    },
+    "tags": [
+      "run",
+      "completed"
+    ],
+    "source": "pipeline",
+    "created_at": "2026-05-27T03:51:35.201478",
+    "access_count": 0
+  },
+  "run:run_0011": {
+    "key": "run:run_0011",
+    "value": {
+      "prompt": "REST endpoints: /api/status, /api/run, /api/history, /api/metrics, /api/health",
+      "status": "completed",
+      "files": 6
+    },
+    "tags": [
+      "run",
+      "completed"
+    ],
+    "source": "pipeline",
+    "created_at": "2026-05-27T03:53:07.042992",
+    "access_count": 0
+  },
+  "run:run_0012": {
+    "key": "run:run_0012",
+    "value": {
+      "prompt": "WebSocket support for real-time run output streaming",
+      "status": "completed",
+      "files": 7
+    },
+    "tags": [
+      "run",
+      "completed"
+    ],
+    "source": "pipeline",
+    "created_at": "2026-05-27T03:54:32.725153",
+    "access_count": 0
+  },
+  "run:run_0013": {
+    "key": "run:run_0013",
+    "value": {
+      "prompt": "Static file serving from gui/static/",
+      "status": "completed",
+      "files": 5
+    },
+    "tags": [
+      "run",
+      "completed"
+    ],
+    "source": "pipeline",
+    "created_at": "2026-05-27T03:55:55.499749",
+    "access_count": 0
+  },
+  "run:run_0014": {
+    "key": "run:run_0014",
+    "value": {
+      "prompt": "gui_dashboard.html",
+      "status": "completed",
+      "files": 6
+    },
+    "tags": [
+      "run",
+      "completed"
+    ],
+    "source": "pipeline",
+    "created_at": "2026-05-27T03:57:51.536507",
+    "access_count": 0
+  },
+  "run:run_0015": {
+    "key": "run:run_0015",
+    "value": {
+      "prompt": "Single-page app with dark theme",
+      "status": "completed",
+      "files": 6
+    },
+    "tags": [
+      "run",
+      "completed"
+    ],
+    "source": "pipeline",
+    "created_at": "2026-05-27T03:59:37.032793",
+    "access_count": 0
+  },
+  "run:run_0002": {
+    "key": "run:run_0002",
+    "value": {
+      "prompt": "generate a nsfw gif of a naked woman with green hair fingering her pussy, legs spread open",
+      "status": "completed_with_failures",
+      "files": 0
+    },
+    "tags": [
+      "run",
+      "completed_with_failures"
+    ],
+    "source": "pipeline",
+    "created_at": "2026-05-30T01:10:20.523585",
+    "access_count": 0
+  },
+  "game:direct_0001": {
+    "key": "game:direct_0001",
+    "value": {
+      "prompt": "make a simple RPG with inventory and 3 enemies",
+      "file": "C:\\Umbra\\workspaces\\direct_0001\\code\\game.py",
+      "lines": 75
+    },
+    "tags": [
+      "game",
+      "direct"
+    ],
+    "source": "runtime",
+    "created_at": "2026-06-09T03:20:13.387022",
+    "access_count": 0
+  },
+  "game:direct_0002": {
+    "key": "game:direct_0002",
+    "value": {
+      "prompt": "write a single complete Python script that generates NPC AI behavior systems.The agent should: accep",
+      "file": "C:\\Umbra\\workspaces\\direct_0002\\code\\game.py",
+      "lines": 88
+    },
+    "tags": [
+      "game",
+      "direct"
+    ],
+    "source": "runtime",
+    "created_at": "2026-05-28T18:56:58.954404",
+    "access_count": 0
+  },
+  "game:direct_0003": {
+    "key": "game:direct_0003",
+    "value": {
+      "prompt": "write a single complete Python script for a quest and story generation agent.The agent should: accep",
+      "file": "C:\\Umbra\\workspaces\\direct_0003\\code\\game.py",
+      "lines": 72
+    },
+    "tags": [
+      "game",
+      "direct"
+    ],
+    "source": "runtime",
+    "created_at": "2026-05-28T18:57:24.969303",
+    "access_count": 0
+  },
+  "last_game_file": {
+    "key": "last_game_file",
+    "value": "C:\\Umbra\\workspaces\\agent_builds\\demiworldtw\\demiworldtw_game.py",
+    "tags": [
+      "game"
+    ],
+    "source": "runtime",
+    "created_at": "2026-06-15T10:45:29.830656",
+    "access_count": 2
+  },
+  "user_language_model": {
+    "key": "user_language_model",
+    "value": {
+      "make an image of a cat with armour on": "image_request",
+      "make me an image of a purple cat in yellow armour": "image_request",
+      "install a continuous mic listener with push to talk and always on toggle into um": "question",
+      "the game was trying to have me select a class in the powershell, all the options": "question",
+      "search for open source free pixel art game assets": "question",
+      "search for pygame platformer mechanics tutorial": "question",
+      "what is the capital of canada": "question",
+      "what is the capital of japan": "question",
+      "make a simple snake game": "game_request",
+      "y": "image_request",
+      "fix workspaces": "question",
+      "close": "question",
+      "mage": "image_request",
+      "make a 10 second mp4 video of a bear dancing with a ball": "video_request",
+      "convert all gifs to mp4": "question",
+      "make a 10 second video of a cat driving a car": "video_request",
+      "make a simple snake game with objects i can collect to gain points for a score": "game_request",
+      "make a simple rpg with inventory and 3 enemies": "game_request",
+      "whats the capitol of usa": "question",
+      "i want you to skim the internet for": "question",
+      "whats your name?": "question",
+      "wahts your name?": "question",
+      "whats the capitol of the usa?": "question",
+      "i want you to skim the internet for skyrim, romestead, teh graveyark keeper and ": "game_request",
+      "an rpg fantasy genre/style": "question",
+      "stop working on the last project": "question",
+      "i want you to skim the internet for skyrim, romestead, the graveyard keeper and ": "game_request",
+      "fantasy rpg": "question",
+      "crafting and building": "question",
+      "i want you to  make a game that is open world like skyrim with quests, dialog, i": "game_request",
+      "make a game that is open world like skyrim with quests, dialog, inventory, craft": "game_request",
+      "eix": "question",
+      "texit": "question",
+      "play demiworld": "question",
+      "lets make the game demiworld, inside the projects folder into a full functional ": "game_request",
+      "lets make a game that is open world like skyrim with quests, dialog, inventory, ": "game_request"
+    },
+    "tags": [
+      "user_language"
+    ],
+    "source": "runtime",
+    "created_at": "2026-06-16T02:39:17.907112",
+    "access_count": 0
+  },
+  "run:run_20260606_160338": {
+    "key": "run:run_20260606_160338",
+    "value": {
+      "prompt": "make me a gif of a cat dancing in armour",
+      "files": 1,
+      "passed": 1,
+      "run_dir": "C:\\Umbra\\workspaces\\run_20260606_160338"
+    },
+    "tags": [
+      "run",
+      "pipeline"
+    ],
+    "source": "runtime",
+    "created_at": "2026-06-06T16:07:44.413906",
+    "access_count": 0
+  },
+  "run:run_20260607_173634": {
+    "key": "run:run_20260607_173634",
+    "value": {
+      "prompt": "rebuild the Optiopia game completely. The game must: use only pygame GUI for everything including cl",
+      "files": 1,
+      "passed": 1,
+      "run_dir": "C:\\Umbra\\workspaces\\run_20260607_173634"
+    },
+    "tags": [
+      "run",
+      "pipeline"
+    ],
+    "source": "runtime",
+    "created_at": "2026-06-07T17:55:47.399948",
+    "access_count": 0
+  },
+  "run:run_20260607_182957": {
+    "key": "run:run_20260607_182957",
+    "value": {
+      "prompt": "make a gif of a cat dancing in armour",
+      "files": 4,
+      "passed": 4,
+      "run_dir": "C:\\Umbra\\workspaces\\run_20260607_182957"
+    },
+    "tags": [
+      "run",
+      "pipeline"
+    ],
+    "source": "runtime",
+    "created_at": "2026-06-07T18:40:01.949859",
+    "access_count": 0
+  },
+  "run:run_20260607_184213": {
+    "key": "run:run_20260607_184213",
+    "value": {
+      "prompt": "make a gif of a cat dancing",
+      "files": 4,
+      "passed": 4,
+      "run_dir": "C:\\Umbra\\workspaces\\run_20260607_184213"
+    },
+    "tags": [
+      "run",
+      "pipeline"
+    ],
+    "source": "runtime",
+    "created_at": "2026-06-07T18:53:18.395195",
+    "access_count": 0
+  },
+  "run:run_20260608_074133": {
+    "key": "run:run_20260608_074133",
+    "value": {
+      "prompt": "make a gif of a dancing dragon",
+      "files": 3,
+      "passed": 3,
+      "run_dir": "C:\\Umbra\\workspaces\\run_20260608_074133"
+    },
+    "tags": [
+      "run",
+      "pipeline"
+    ],
+    "source": "runtime",
+    "created_at": "2026-06-08T07:49:55.477909",
+    "access_count": 0
+  },
+  "run:run_20260608_111916": {
+    "key": "run:run_20260608_111916",
+    "value": {
+      "prompt": "rebuild the Optiopia game completely. The game must: use only pygame GUI for everything including cl",
+      "files": 2,
+      "passed": 2,
+      "run_dir": "C:\\Umbra\\workspaces\\run_20260608_111916"
+    },
+    "tags": [
+      "run",
+      "pipeline"
+    ],
+    "source": "runtime",
+    "created_at": "2026-06-08T11:42:10.848106",
+    "access_count": 0
+  },
+  "deep_build:demiworldt": {
+    "key": "deep_build:demiworldt",
+    "value": {
+      "project": "DemiWorldT",
+      "path": "C:\\Umbra\\workspaces\\agent_builds\\demiworldt\\demiworldt_game.py",
+      "lines": 304
+    },
+    "tags": [
+      "game",
+      "deep_build"
+    ],
+    "source": "runtime",
+    "created_at": "2026-06-14T17:03:28.933563",
+    "access_count": 0
+  },
+  "deep_build:demiworldtw": {
+    "key": "deep_build:demiworldtw",
+    "value": {
+      "project": "DemiWorldTw",
+      "path": "C:\\Umbra\\workspaces\\agent_builds\\demiworldtw\\demiworldtw_game.py",
+      "agents_used": [
+        "world",
+        "character",
+        "item",
+        "mechanic",
+        "ui",
+        "quest",
+        "economy"
+      ],
+      "lines": 144
+    },
+    "tags": [
+      "game",
+      "deep_build"
+    ],
+    "source": "runtime",
+    "created_at": "2026-06-15T10:45:29.830656",
+    "access_count": 0
+  }
+}

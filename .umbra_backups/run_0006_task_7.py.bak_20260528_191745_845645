@@ -1,0 +1,49 @@
+class ChatBot:
+    def __init__(self):
+        """
+        Initialize the ChatBot with an empty conversation history.
+        """
+        self.conversation_history = []
+
+    def add_message(self, message):
+        """
+        Add a message to the conversation history.
+
+        :param message: The message to be added to the history.
+        """
+        if not isinstance(message, str):
+            raise ValueError("Message must be a string.")
+        self.conversation_history.append(message)
+
+    def get_history(self):
+        """
+        Retrieve the current conversation history.
+
+        :return: A list of messages representing the conversation history.
+        """
+        return self.conversation_history
+
+    def handle_command(self, command):
+        """
+        Handle commands for the chatbot. Currently supports '/history'.
+
+        :param command: The command to be processed.
+        :return: A response based on the command.
+        """
+        if command == "/history":
+            history = self.get_history()
+            return "\n".join(history) or "No conversation history available."
+        else:
+            return f"Unknown command: {command}"
+
+# Example usage
+if __name__ == "__main__":
+    bot = ChatBot()
+    
+    # Simulate a conversation
+    bot.add_message("Hello, how are you?")
+    bot.add_message("I'm doing well, thanks!")
+    
+    # Display the history
+    response = bot.handle_command("/history")
+    print(response)

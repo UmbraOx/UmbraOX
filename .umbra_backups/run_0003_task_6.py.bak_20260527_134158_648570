@@ -1,0 +1,58 @@
+import subprocess
+import sys
+
+def check_umbra_version():
+    """
+    Check the current installed version of Umbra.
+    
+    Returns:
+        str: The version of Umbra installed.
+    Raises:
+        Exception: If unable to retrieve the version.
+    """
+    try:
+        # Run the command to get the version of Umbra
+        result = subprocess.run(['umbra', '--version'], capture_output=True, text=True, check=True)
+        return result.stdout.strip()
+    except subprocess.CalledProcessError as e:
+        raise Exception(f"Failed to retrieve Umbra version: {e.stderr}")
+
+def verify_umbra_installation():
+    """
+    Verify the installation of Umbra and check its functionality.
+    
+    Returns:
+        bool: True if successful, False otherwise.
+    Raises:
+        Exception: If any step fails.
+    """
+    try:
+        # Check the version to ensure it's installed
+        version = check_umbra_version()
+        print(f"Umbra is installed. Version: {version}")
+        
+        # Run a basic command to verify functionality
+        result = subprocess.run(['umbra', 'health-check'], capture_output=True, text=True, check=True)
+        if "OK" in result.stdout:
+            print("Umbra is functioning correctly.")
+            return True
+        else:
+            raise Exception("Health check failed. Umbra may not be functioning correctly.")
+    except subprocess.CalledProcessError as e:
+        raise Exception(f"Failed to run health check: {e.stderr}")
+
+def main():
+    """
+    Main function to verify the installation and functionality of the upgraded Umbra.
+    """
+    try:
+        if verify_umbra_installation():
+            print("Umbra is successfully installed and functioning.")
+        else:
+            print("Verification failed. Please check your installation.")
+    except Exception as e:
+        print(f"An error occurred: {e}")
+        sys.exit(1)
+
+if __name__ == "__main__":
+    main()

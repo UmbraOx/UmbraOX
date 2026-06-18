@@ -1,0 +1,19 @@
+# UMBRA — Autonomous AI Runtime OS
+# Runtime Core v2
+# All stdlib-based — no external dependencies required for core.
+#
+# Optional (install for better experience):
+# pip install pytest pytest-timeout  -- for running tests
+# pip install requests               -- alternative HTTP client (not required)
+#
+# LLM Providers (all free options):
+#   Ollama: download from https://ollama.com (no pip needed)
+#   Groq:   no pip needed (uses built-in urllib)
+#
+# The core runtime uses ONLY Python stdlib:
+#   os, sys, json, ast, re, threading, subprocess, pathlib,
+#   datetime, collections, heapq, tempfile, shutil, logging,
+#   urllib.request, urllib.error, ctypes (Windows only)
+
+pytest>=7.0.0
+pytest-timeout>=2.0.0

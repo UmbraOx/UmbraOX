@@ -1,0 +1,57 @@
+# app.py
+
+from flask import Flask, request, jsonify
+
+app = Flask(__name__)
+
+@app.route('/api/data', methods=['GET'])
+def get_data():
+    """
+    This endpoint retrieves data based on query parameters.
+    
+    Query Parameters:
+    - name (str): The name of the person to retrieve data for.
+    - age (int): The age of the person.
+
+    Returns:
+    - 200: JSON response with the provided data if valid.
+    - 400: If required query parameters are missing or invalid.
+
+    Example:
+    GET /api/data?name=John&age=30
+    {
+        "name": "John",
+        "age": 30
+    }
+    """
+    # Validate request parameters
+    name = request.args.get('name')
+    age = request.args.get('age')
+
+    if not name or not age:
+        return jsonify({"error": "Missing required query parameters"}), 400
+
+    try:
+        age = int(age)
+    except ValueError:
+        return jsonify({"error": "Invalid age parameter. Must be an integer."}), 400
+
+    # Return JSON response
+    return jsonify({"name": name, "age": age}), 200
+
+@app.errorhandler(404)
+def not_found_error(error):
+    """
+    Handle 404 Not Found errors.
+    """
+    return jsonify({"error": "Resource not found"}), 404
+
+@app.errorhandler(500)
+def internal_error(error):
+    """
+    Handle 500 Internal Server Error.
+    """
+    return jsonify({"error": "Internal server error"}), 500
+
+if __name__ == '__main__':
+    app.run(debug=True)

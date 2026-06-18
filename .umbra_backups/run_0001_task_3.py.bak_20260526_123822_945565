@@ -1,0 +1,77 @@
+from typing import Dict, Any, List
+
+class ActiveObjectiveRegistry:
+    """
+    This class manages active objectives within the Umbra autonomous AI system.
+    It provides methods to register, retrieve, and remove objectives.
+    """
+
+    def __init__(self):
+        """
+        Initialize an empty registry for active objectives.
+        """
+        self._objectives: Dict[str, Any] = {}
+
+    def register_objective(self, objective_id: str, objective_data: Any) -> None:
+        """
+        Register a new objective in the registry.
+
+        :param objective_id: Unique identifier for the objective
+        :param objective_data: Data associated with the objective
+        :raises ValueError: If the objective ID already exists
+        """
+        if objective_id in self._objectives:
+            raise ValueError(f"Objective with ID '{objective_id}' already exists.")
+        self._objectives[objective_id] = objective_data
+
+    def get_objective(self, objective_id: str) -> Any:
+        """
+        Retrieve an objective by its ID.
+
+        :param objective_id: Unique identifier for the objective
+        :return: Data associated with the objective
+        :raises KeyError: If the objective ID does not exist
+        """
+        if objective_id not in self._objectives:
+            raise KeyError(f"Objective with ID '{objective_id}' does not exist.")
+        return self._objectives[objective_id]
+
+    def remove_objective(self, objective_id: str) -> None:
+        """
+        Remove an objective from the registry.
+
+        :param objective_id: Unique identifier for the objective
+        :raises KeyError: If the objective ID does not exist
+        """
+        if objective_id not in self._objectives:
+            raise KeyError(f"Objective with ID '{objective_id}' does not exist.")
+        del self._objectives[objective_id]
+
+    def list_objectives(self) -> List[str]:
+        """
+        List all registered objective IDs.
+
+        :return: A list of objective IDs
+        """
+        return list(self._objectives.keys())
+
+    def to_dict(self) -> Dict[str, Any]:
+        """
+        Convert the registry to a dictionary representation.
+
+        :return: Dictionary containing all objectives
+        """
+        return self._objectives.copy()
+
+# Example usage:
+if __name__ == "__main__":
+    registry = ActiveObjectiveRegistry()
+    try:
+        registry.register_objective("objective1", {"description": "Task 1"})
+        registry.register_objective("objective2", {"description": "Task 2"})
+        print(registry.to_dict())
+        print(registry.get_objective("objective1"))
+        registry.remove_objective("objective1")
+        print(registry.list_objectives())
+    except Exception as e:
+        print(f"An error occurred: {e}")

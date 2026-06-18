@@ -1,0 +1,44 @@
+import os
+import argparse
+from pathlib import Path
+
+def process_file(file_path: Path, dry_run: bool = False) -> None:
+    if not file_path.exists():
+        print(f"Error: The file {file_path} does not exist.")
+        return
+    
+    if not file_path.is_file():
+        print(f"Error: The path {file_path} is not a file.")
+        return
+
+    try:
+        with open(file_path, 'r') as file:
+            content = file.read()
+            print(f"Processing file: {file_path}")
+            
+            # Simulate some processing
+            processed_content = content.upper()  # Example processing
+            
+            if dry_run:
+                print("Dry run mode. Skipping actual write operation.")
+            else:
+                with open(file_path, 'w') as file:
+                    file.write(processed_content)
+                    print(f"File processed and saved: {file_path}")
+    
+    except Exception as e:
+        print(f"An error occurred while processing the file {file_path}: {e}")
+
+def main():
+    parser = argparse.ArgumentParser(description="Process a given file path.")
+    parser.add_argument('file_path', type=str, help='The path to the file')
+    parser.add_argument('--dry-run', action='store_true', help='Run in dry mode without making changes')
+
+    args = parser.parse_args()
+    
+    file_path = Path(args.file_path)
+    
+    process_file(file_path, dry_run=args.dry_run)
+
+if __name__ == "__main__":
+    main()

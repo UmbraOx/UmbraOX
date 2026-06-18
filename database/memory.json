@@ -1,0 +1,287 @@
+[
+  {
+    "item": "create a folder named system_test_1"
+  },
+  {
+    "item": "create a file named hello.py with print(\"hello\")"
+  },
+  {
+    "item": "create a folder named nested/project/test"
+  },
+  {
+    "item": "create a python file named combat.py"
+  },
+  {
+    "item": "create a coder task for an inventory system"
+  },
+  {
+    "item": "create a folder named rpg_core"
+  },
+  {
+    "item": "create an inventory system for an RPG"
+  },
+  {
+    "item": "create a python file named player_stats.py"
+  },
+  {
+    "item": "build a combat system with mana and hp"
+  },
+  {
+    "item": "create a folder named test_1"
+  },
+  {
+    "item": "create a python file named combat.py"
+  },
+  {
+    "item": "create an inventory system"
+  },
+  {
+    "item": "create an inventory system"
+  },
+  {
+    "item": "create a combat system with mana and hp"
+  },
+  {
+    "item": "build a survival game backend"
+  },
+  {
+    "item": "create a folder named test_1"
+  },
+  {
+    "item": "create a folder named tool_test"
+  },
+  {
+    "item": "create a folder named tool_test"
+  },
+  {
+    "item": "create a python file named test_tool.py"
+  },
+  {
+    "item": "create a folder named system_alpha"
+  },
+  {
+    "item": "create a file named test.py with print(\"hello\")"
+  },
+  {
+    "item": "create a folder named alpha_test"
+  },
+  {
+    "item": "create a file named hello.py with print(\"hello world\")"
+  },
+  {
+    "item": "create a folder named retry_test"
+  },
+  {
+    "item": "create a file named test_retry.py with print(\"retry system active\")"
+  },
+  {
+    "item": "create a folder named feedback_test"
+  },
+  {
+    "item": "create a file named test_feedback.py with print(\"feedback active\")"
+  },
+  {
+    "item": "create a folder named adaptive_test"
+  },
+  {
+    "item": "create a file named test_adaptive.py with print(\"adaptive system active\")"
+  },
+  {
+    "item": "create a folder named collab_test"
+  },
+  {
+    "item": "create a file named test_collab.py with print(\"collaboration active\")"
+  },
+  {
+    "item": "create a folder named stability_test"
+  },
+  {
+    "item": "create a file named test.py with print(\"stable system\")"
+  },
+  {
+    "item": "create a folder named system_core_test"
+  },
+  {
+    "item": "create a file named test.py with print(\"system stable\")"
+  },
+  {
+    "item": "create a folder named stability_check"
+  },
+  {
+    "item": "create a file named test.py with print(\"stable\")"
+  },
+  {
+    "item": "create a folder named final_stability_test"
+  },
+  {
+    "item": "create a file named test.py with print(\"system stable\")"
+  },
+  {
+    "item": "create a folder named retry_clean_test"
+  },
+  {
+    "item": "create a file named test_retry.py with print(\"system stable\")"
+  },
+  {
+    "item": "create a folder named system_lock_test"
+  },
+  {
+    "item": "create a file named hello.py with print(\"hello world\")"
+  },
+  {
+    "item": "create a folder named retry_clean_test_1"
+  },
+  {
+    "item": "create a folder named stability_core_test"
+  },
+  {
+    "item": "create a folder named stability_core_test"
+  },
+  {
+    "item": "create a file named test.py with print(\"hello\")"
+  },
+  {
+    "item": "create a folder named stability_core_test"
+  },
+  {
+    "item": "create a file named test.py with print(\"hello\")"
+  },
+  {
+    "item": "create a folder named stability_core_test_1"
+  },
+  {
+    "item": "create a file named test_1.py with print(\"hello\")"
+  },
+  {
+    "item": "create a file named test_2.py with print(\"hello\")"
+  },
+  {
+    "item": "create a folder named stability_core_test_2"
+  },
+  {
+    "item": "create a folder named test_alpha"
+  },
+  {
+    "item": "create a file named hello.py with print(\"hello world\")"
+  },
+  {
+    "item": "create a folder named systems/test/core"
+  },
+  {
+    "item": "create a folder named alpha_test"
+  },
+  {
+    "item": "create a file named hello.py with print(\"hello world\")"
+  },
+  {
+    "item": "create a folder named systems/test/core"
+  },
+  {
+    "item": "create a folder named test_alpha_1"
+  },
+  {
+    "item": "create a file named hello_1.py with print(\"hello world\")"
+  },
+  {
+    "item": "create a folder named systems/test/core_1"
+  },
+  {
+    "item": "create a folder named alpha_test"
+  },
+  {
+    "item": "create a file named hello.py with print(\"hello world\")"
+  },
+  {
+    "item": "create a folder named systems/test/core"
+  },
+  {
+    "item": "create a folder named test"
+  },
+  {
+    "item": "create a folder named alpha_final_2"
+  },
+  {
+    "item": "create a file named hello_2.py with print(\"hello\")"
+  },
+  {
+    "item": "create a folder named systems/test/core_final_2"
+  },
+  {
+    "item": "create a folder named test_router_1"
+  },
+  {
+    "item": "create a folder named router_clean_test"
+  },
+  {
+    "item": "create a folder named router_final_test"
+  },
+  {
+    "item": "create a folder named final_lock_test"
+  },
+  {
+    "item": ""
+  },
+  {
+    "item": ""
+  },
+  {
+    "item": ""
+  },
+  {
+    "item": "create a file named hello.py with print(\"hello world\")"
+  },
+  {
+    "item": "create a file named test_graph.py with print(\"graph test\")"
+  },
+  {
+    "item": "create a file named agent_test.py with print(\"agent system test\")"
+  },
+  {
+    "item": "create a file named agent_test.py with print(\"agent system test\")"
+  },
+  {
+    "item": "create a folder named test_system"
+  },
+  {
+    "item": "create a file named hello.py with print(\"hello world\")"
+  },
+  {
+    "item": "create a folder named systems/test/core"
+  },
+  {
+    "item": "create a file named agent_test_1.py with print(\"agent system test\")"
+  },
+  {
+    "item": "create a file named hello_1.py with print(\"hello world\")"
+  },
+  {
+    "item": "create a folder named systems/test/core_1"
+  },
+  {
+    "item": "create a folder named test_system_1"
+  },
+  {
+    "item": "create a folder named systems/test/core_final_3"
+  },
+  {
+    "item": "create a file named hello_3.py with print(\"hello\")"
+  },
+  {
+    "item": "create a folder named alpha_final_3"
+  },
+  {
+    "item": "create a file named hello_4.py with print(\"hello world\")"
+  },
+  {
+    "item": "create a folder named systems/test/core_4"
+  },
+  {
+    "item": "create a folder named test_system_4"
+  },
+  {
+    "item": "create a folder named systems/test/core_final_5"
+  },
+  {
+    "item": "create a file named hello_5.py with print(\"hello world\")"
+  }
+]

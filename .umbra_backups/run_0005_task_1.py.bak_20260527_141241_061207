@@ -1,0 +1,47 @@
+import os
+from pathlib import Path
+import argparse
+
+def verify_directory_presence(directory_path, dry_run=False):
+    """
+    Verify the presence of a directory at the specified path.
+    
+    :param directory_path: The path to the directory to verify.
+    :param dry_run: If True, simulate the check without performing any actions.
+    :return: True if the directory exists, False otherwise.
+    """
+    try:
+        print(f"Checking for directory: {directory_path}")
+        
+        if dry_run:
+            print("Dry run mode enabled. Not checking actual existence.")
+            return True
+        
+        # Use pathlib to check if the directory exists
+        directory = Path(directory_path)
+        if directory.exists() and directory.is_dir():
+            print(f"Directory '{directory_path}' exists.")
+            return True
+        else:
+            print(f"Directory '{directory_path}' does not exist.")
+            return False
+    
+    except Exception as e:
+        print(f"An error occurred: {e}")
+        return False
+
+def main():
+    # Set up command-line argument parsing
+    parser = argparse.ArgumentParser(description="Verify the presence of a directory.")
+    parser.add_argument('--path', type=str, default='C:\\Umbra\\core\\runtime',
+                        help="The path to the directory to verify (default: C:\\Umbra\\core\\runtime)")
+    parser.add_argument('--dry-run', action='store_true',
+                        help="Simulate the check without performing any actions.")
+    
+    args = parser.parse_args()
+    
+    # Verify the directory presence
+    verify_directory_presence(args.path, dry_run=args.dry_run)
+
+if __name__ == "__main__":
+    main()

@@ -1,0 +1,62 @@
+{
+    "objective": "Build runtime capability: task_planning :: planning",
+    "result": {
+        "success": true,
+        "objective": "Build runtime capability: task_planning :: planning",
+        "written": "generated\\build_runtime_capability_task_planning_planning.py",
+        "validation": {
+            "safe": true,
+            "valid": true,
+            "approved": true
+        },
+        "modules": {
+            "build_runtime_capability_agent_orchestration_planning": "generated\\build_runtime_capability_agent_orchestration_planning.py",
+            "build_runtime_capability_agent_orchestration_execution": "generated\\build_runtime_capability_agent_orchestration_execution.py",
+            "build_runtime_capability_agent_orchestration_validation": "generated\\build_runtime_capability_agent_orchestration_validation.py",
+            "build_runtime_capability_agent_orchestration_deployment": "generated\\build_runtime_capability_agent_orchestration_deployment.py",
+            "build_runtime_capability_safe_execution_planning": "generated\\build_runtime_capability_safe_execution_planning.py",
+            "build_runtime_capability_safe_execution_execution": "generated\\build_runtime_capability_safe_execution_execution.py",
+            "build_runtime_capability_safe_execution_validation": "generated\\build_runtime_capability_safe_execution_validation.py",
+            "build_runtime_capability_safe_execution_deployment": "generated\\build_runtime_capability_safe_execution_deployment.py",
+            "build_runtime_capability_task_planning_planning": "generated\\build_runtime_capability_task_planning_planning.py"
+        },
+        "dependencies": {
+            "build_runtime_capability_agent_orchestration_planning": [],
+            "build_runtime_capability_agent_orchestration_execution": [
+                "build_runtime_capability_agent_orchestration_planning"
+            ],
+            "build_runtime_capability_agent_orchestration_validation": [
+                "build_runtime_capability_agent_orchestration_execution"
+            ],
+            "build_runtime_capability_agent_orchestration_deployment": [
+                "build_runtime_capability_agent_orchestration_validation"
+            ],
+            "build_runtime_capability_safe_execution_planning": [
+                "build_runtime_capability_agent_orchestration_deployment"
+            ],
+            "build_runtime_capability_safe_execution_execution": [
+                "build_runtime_capability_safe_execution_planning"
+            ],
+            "build_runtime_capability_safe_execution_validation": [
+                "build_runtime_capability_safe_execution_execution"
+            ],
+            "build_runtime_capability_safe_execution_deployment": [
+                "build_runtime_capability_safe_execution_validation"
+            ],
+            "build_runtime_capability_task_planning_planning": [
+                "build_runtime_capability_safe_execution_deployment"
+            ]
+        },
+        "capabilities": [
+            "autonomous_generation",
+            "recursive_execution",
+            "persistent_memory",
+            "multi_agent_orchestration",
+            "runtime_expansion",
+            "safe_validation"
+        ],
+        "project": {
+            "files": 261783
+        }
+    }
+}

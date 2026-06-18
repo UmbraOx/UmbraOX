@@ -1,0 +1,50 @@
+import re
+
+def is_nsfw_content(text):
+    """
+    Determines if the given text contains Not Safe For Work (NSFW) content.
+    
+    This function checks for common keywords and patterns that are typically associated with NSFW content.
+    It's a basic implementation and may not cover all cases, but it provides a starting point.
+    
+    Parameters:
+    - text (str): The input text to be checked.
+    
+    Returns:
+    - bool: True if the text contains NSFW content, False otherwise.
+    """
+    # Define common NSFW keywords
+    nsfw_keywords = [
+        "sex", "porn", "nude", "xxx", "adult", "erotic", "hentai",
+        "fetish", "rape", "incest", "pedophilia", "prostitution", "stripclub"
+    ]
+    
+    # Convert text to lowercase for case-insensitive matching
+    text_lower = text.lower()
+    
+    # Check for any NSFW keyword in the text
+    for keyword in nsfw_keywords:
+        if re.search(r'\b' + re.escape(keyword) + r'\b', text_lower):
+            return True
+    
+    return False
+
+def main():
+    """
+    Main function to demonstrate the usage of is_nsfw_content.
+    """
+    test_texts = [
+        "I love looking at beautiful art.",
+        "Check out this adult video online.",
+        "He wrote a book about sex and relationships.",
+        "This website sells erotic novels."
+    ]
+    
+    for text in test_texts:
+        if is_nsfw_content(text):
+            print(f"NSFW content detected: {text}")
+        else:
+            print(f"No NSFW content detected: {text}")
+
+if __name__ == "__main__":
+    main()

@@ -1,0 +1,76 @@
+import os
+import shutil
+from pathlib import Path
+import argparse
+
+# Constants for paths (can be overridden by command-line arguments)
+SOURCE_DIR = Path("C:/Umbra/source")
+DEST_DIR = Path("C:/Umbra/destination")
+
+def parse_arguments():
+    """Parse command-line arguments."""
+    parser = argparse.ArgumentParser(description="Copy files from source to destination directory.")
+    parser.add_argument("--source", type=Path, help=f"Source directory (default: {SOURCE_DIR})")
+    parser.add_argument("--dest", type=Path, help=f"Destination directory (default: {DEST_DIR})")
+    parser.add_argument("--dry-run", action="store_true", help="Perform a dry run without copying files.")
+    return parser.parse_args()
+
+def ensure_directory_exists(directory):
+    """Ensure the given directory exists, creating it if necessary."""
+    try:
+        directory.mkdir(parents=True, exist_ok=True)
+    except Exception as e:
+        print(f"Error creating directory {directory}: {e}")
+        raise
+
+def copy_files(source_dir, dest_dir, dry_run=False):
+    """Copy files from source to destination directory."""
+    if not source_dir.exists():
+        print(f"Source directory {source_dir} does not exist.")
+        return
+
+    if not dest_dir.exists():
+        print(f"Destination directory {dest_dir} does not exist. Creating it now.")
+        ensure_directory_exists(dest_dir)
+
+    total_files = sum(1 for _ in source_dir.rglob("*"))
+    copied_count = 0
+
+    for src_file in source_dir.rglob("*"):
+        if src_file.is_file():
+            relative_path = src_file.relative_to(source_dir)
+            dest_file = dest_dir / relative_path
+            print(f"Processing file: {src_file}")
+
+            if dry_run:
+                print(f"Dry-run: Would copy {src_file} to {dest_file}")
+            else:
+                try:
+                    ensure_directory_exists(dest_file.parent)
+                    shutil.copy2(src_file, dest_file)
+                    print(f"Copied {src_file} to {dest_file}")
+                except Exception as e:
+                    print(f"Error copying {src_file} to {dest_file}: {e}")
+
+            copied_count += 1
+            print(f"Progress: {copied_count}/{total_files} files processed")
+
+    print("File copy operation completed.")
+
+def main():
+    args = parse_arguments()
+    
+    if args.source:
+        SOURCE_DIR = args.source
+
+    if args.dest:
+        DEST_DIR = args.dest
+
+    print(f"Source Directory: {SOURCE_DIR}")
+    print(f"Destination Directory: {DEST_DIR}")
+    print(f"Dry-run Mode: {'Enabled' if args.dry_run else 'Disabled'}")
+
+    copy_files(SOURCE_DIR, DEST_DIR, dry_run=args.dry_run)
+
+if __name__ == "__main__":
+    main()

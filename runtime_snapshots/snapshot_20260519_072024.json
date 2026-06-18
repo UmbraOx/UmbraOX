@@ -1,0 +1,62 @@
+{
+    "objective": "Build procedural dungeon runtime :: planning",
+    "result": {
+        "success": true,
+        "objective": "Build procedural dungeon runtime :: planning",
+        "written": "generated\\build_procedural_dungeon_runtime_planning.py",
+        "validation": {
+            "safe": true,
+            "valid": true,
+            "approved": true
+        },
+        "modules": {
+            "build_open_world_biome_system_planning": "generated\\build_open_world_biome_system_planning.py",
+            "build_open_world_biome_system_execution": "generated\\build_open_world_biome_system_execution.py",
+            "build_open_world_biome_system_validation": "generated\\build_open_world_biome_system_validation.py",
+            "build_open_world_biome_system_deployment": "generated\\build_open_world_biome_system_deployment.py",
+            "build_enemy_faction_framework_planning": "generated\\build_enemy_faction_framework_planning.py",
+            "build_enemy_faction_framework_execution": "generated\\build_enemy_faction_framework_execution.py",
+            "build_enemy_faction_framework_validation": "generated\\build_enemy_faction_framework_validation.py",
+            "build_enemy_faction_framework_deployment": "generated\\build_enemy_faction_framework_deployment.py",
+            "build_procedural_dungeon_runtime_planning": "generated\\build_procedural_dungeon_runtime_planning.py"
+        },
+        "dependencies": {
+            "build_open_world_biome_system_planning": [],
+            "build_open_world_biome_system_execution": [
+                "build_open_world_biome_system_planning"
+            ],
+            "build_open_world_biome_system_validation": [
+                "build_open_world_biome_system_execution"
+            ],
+            "build_open_world_biome_system_deployment": [
+                "build_open_world_biome_system_validation"
+            ],
+            "build_enemy_faction_framework_planning": [
+                "build_open_world_biome_system_deployment"
+            ],
+            "build_enemy_faction_framework_execution": [
+                "build_enemy_faction_framework_planning"
+            ],
+            "build_enemy_faction_framework_validation": [
+                "build_enemy_faction_framework_execution"
+            ],
+            "build_enemy_faction_framework_deployment": [
+                "build_enemy_faction_framework_validation"
+            ],
+            "build_procedural_dungeon_runtime_planning": [
+                "build_enemy_faction_framework_deployment"
+            ]
+        },
+        "capabilities": [
+            "autonomous_generation",
+            "recursive_execution",
+            "persistent_memory",
+            "multi_agent_orchestration",
+            "runtime_expansion",
+            "safe_validation"
+        ],
+        "project": {
+            "files": 68923
+        }
+    }
+}

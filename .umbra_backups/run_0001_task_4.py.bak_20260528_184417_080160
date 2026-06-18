@@ -1,0 +1,123 @@
+import pygame
+import sys
+
+# Initialize Pygame
+pygame.init()
+
+# Screen dimensions
+SCREEN_WIDTH = 800
+SCREEN_HEIGHT = 600
+
+# Colors
+WHITE = (255, 255, 255)
+RED = (255, 0, 0)
+
+# Player settings
+PLAYER_SIZE = 50
+PLAYER_SPEED = 5
+
+# Enemy settings
+ENEMY_SIZE = 50
+ENEMY_SPEED = 3
+
+# Damage and invincibility frames
+DAMAGE_AMOUNT = 1
+INVINCIBILITY_FRAMES = 60  # About 2 seconds at 30 FPS
+
+# Initialize screen
+screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
+pygame.display.set_caption("Red Square Enemy")
+
+# Player class
+class Player(pygame.sprite.Sprite):
+    def __init__(self):
+        super().__init__()
+        self.image = pygame.Surface((PLAYER_SIZE, PLAYER_SIZE))
+        self.image.fill(WHITE)
+        self.rect = self.image.get_rect(center=(SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2))
+        self.invincible_frames_left = 0
+
+    def update(self, keys):
+        if keys[pygame.K_LEFT]:
+            self.rect.x -= PLAYER_SPEED
+        if keys[pygame.K_RIGHT]:
+            self.rect.x += PLAYER_SPEED
+        if keys[pygame.K_UP]:
+            self.rect.y -= PLAYER_SPEED
+        if keys[pygame.K_DOWN]:
+            self.rect.y += PLAYER_SPEED
+
+        # Keep player on screen
+        if self.rect.left < 0:
+            self.rect.left = 0
+        if self.rect.right > SCREEN_WIDTH:
+            self.rect.right = SCREEN_WIDTH
+        if self.rect.top < 0:
+            self.rect.top = 0
+        if self.rect.bottom > SCREEN_HEIGHT:
+            self.rect.bottom = SCREEN_HEIGHT
+
+    def take_damage(self):
+        if self.invincible_frames_left == 0:
+            print("Player took damage!")
+            # Implement your player health system here
+            self.invincible_frames_left = INVINCIBILITY_FRAMES
+
+# Enemy class
+class Enemy(pygame.sprite.Sprite):
+    def __init__(self, target):
+        super().__init__()
+        self.image = pygame.Surface((ENEMY_SIZE, ENEMY_SIZE))
+        self.image.fill(RED)
+        self.rect = self.image.get_rect(center=(SCREEN_WIDTH // 2, SCREEN_HEIGHT // 4))
+        self.target = target
+
+    def update(self):
+        # Simple chase logic
+        if self.rect.x < self.target.rect.x:
+            self.rect.x += ENEMY_SPEED
+        elif self.rect.x > self.target.rect.x:
+            self.rect.x -= ENEMY_SPEED
+
+        if self.rect.y < self.target.rect.y:
+            self.rect.y += ENEMY_SPEED
+        elif self.rect.y > self.target.rect.y:
+            self.rect.y -= ENEMY_SPEED
+
+# Create player and enemy
+player = Player()
+enemy = Enemy(player)
+
+# Sprite groups
+all_sprites = pygame.sprite.Group()
+all_sprites.add(player)
+all_sprites.add(enemy)
+
+# Main game loop
+clock = pygame.time.Clock()
+
+while True:
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            pygame.quit()
+            sys.exit()
+
+    keys = pygame.key.get_pressed()
+    player.update(keys)
+
+    # Check collision
+    if pygame.sprite.collide_rect(player, enemy):
+        player.take_damage()
+
+    # Update invincibility frames
+    if player.invincible_frames_left > 0:
+        player.invincible_frames_left -= 1
+
+    all_sprites.update()
+
+    # Draw everything
+    screen.fill(WHITE)
+    all_sprites.draw(screen)
+
+    pygame.display.flip()
+    clock.tick(30)

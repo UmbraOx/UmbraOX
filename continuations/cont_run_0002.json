@@ -1,0 +1,24 @@
+{
+  "continuation_id": "cont_run_0002",
+  "original_prompt": "check system health",
+  "remaining_tasks": [
+    {
+      "task_id": "run_0002_task_1",
+      "objective": "run_0002_task_1",
+      "error": "LLM call failed: timed out"
+    },
+    {
+      "task_id": "run_0002_task_2",
+      "objective": "run_0002_task_2",
+      "error": "LLM call failed: timed out"
+    },
+    {
+      "task_id": "run_0002_task_3",
+      "objective": "run_0002_task_3",
+      "error": "LLM call failed: timed out"
+    }
+  ],
+  "completed_tasks": [],
+  "created_at": "2026-05-28T11:53:49.559676",
+  "resumed_count": 0
+}

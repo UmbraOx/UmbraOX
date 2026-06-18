@@ -1,0 +1,49 @@
+import pygame
+import sys
+
+def main():
+    """
+    Main function to display the player's health in white text at the top-left corner of the screen.
+    """
+    # Initialize Pygame
+    pygame.init()
+
+    # Set up the display
+    screen_width, screen_height = 800, 600
+    screen = pygame.display.set_mode((screen_width, screen_height))
+    pygame.display.set_caption("Player Health Display")
+
+    # Define colors
+    WHITE = (255, 255, 255)
+
+    # Player's initial health
+    player_health = 10
+
+    # Font setup
+    font = pygame.font.Font(None, 36)  # Use default font with size 36
+
+    # Main game loop
+    running = True
+    while running:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                running = False
+
+        # Fill the screen with black (or any other background color)
+        screen.fill((0, 0, 0))
+
+        # Render the health text
+        health_text = font.render(f"Health: {player_health}", True, WHITE)
+
+        # Display the health text at the top-left corner of the screen
+        screen.blit(health_text, (10, 10))
+
+        # Update the display
+        pygame.display.flip()
+
+    # Quit Pygame
+    pygame.quit()
+    sys.exit()
+
+if __name__ == "__main__":
+    main()

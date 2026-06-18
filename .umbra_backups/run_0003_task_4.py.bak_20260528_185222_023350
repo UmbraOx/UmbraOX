@@ -1,0 +1,36 @@
+import pandas as pd
+
+def calculate_basic_statistics(df):
+    """
+    Calculate and print basic statistics (mean, median, min, max) for numeric columns in a DataFrame.
+    
+    Parameters:
+    df (pd.DataFrame): The input DataFrame to analyze.
+    
+    Returns:
+    None. Prints the calculated statistics for each numeric column.
+    """
+    # Check if the input is a pandas DataFrame
+    if not isinstance(df, pd.DataFrame):
+        raise ValueError("Input must be a pandas DataFrame.")
+    
+    # Select only numeric columns
+    numeric_df = df.select_dtypes(include=['number'])
+    
+    # Handle missing data by dropping rows with any missing values in numeric columns
+    clean_df = numeric_df.dropna()
+    
+    # Calculate basic statistics for each numeric column
+    stats = clean_df.agg(['mean', 'median', 'min', 'max'])
+    
+    # Print the results in a clear, formatted manner
+    print("Basic Statistics for Numeric Columns:")
+    print(stats)
+
+# Example usage:
+# df = pd.DataFrame({
+#     'A': [1, 2, 3, None, 5],
+#     'B': [5.5, None, 7.8, 9.1, 6.2],
+#     'C': ['text', 'data', 'science', 'is', 'fun']
+# })
+# calculate_basic_statistics(df)

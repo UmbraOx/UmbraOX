@@ -1,0 +1,76 @@
+import os
+import time
+from shutil import get_terminal_size
+
+# Configuration constants
+RECTANGLE_SIZE = (40, 40)
+SCREEN_WIDTH = 80
+SCREEN_HEIGHT = 25
+START_POSITION = (SCREEN_WIDTH - RECTANGLE_SIZE[0], 0)  # Top-right corner
+PLAYER_POSITION = (SCREEN_WIDTH // 2, SCREEN_HEIGHT - 1)  # Bottom-middle
+MOVE_SPEED = 2
+DRY_RUN = False
+
+def print_screen(screen):
+    os.system('cls' if os.name == 'nt' else 'clear')
+    for line in screen:
+        print(line)
+
+def create_rectangle(position, size):
+    rect = [[' ' for _ in range(size[0])] for _ in range(size[1])]
+    for i in range(size[1]):
+        for j in range(size[0]):
+            if i == 0 or i == size[1] - 1 or j == 0 or j == size[0] - 1:
+                rect[i][j] = '#'
+    return rect
+
+def draw_rectangle(screen, position, rectangle):
+    x, y = position
+    for i in range(len(rectangle)):
+        for j in range(len(rectangle[0])):
+            screen[y + i][x + j] = rectangle[i][j]
+
+def move_towards_player(position, player_position, speed):
+    dx = player_position[0] - position[0]
+    dy = player_position[1] - position[1]
+    if abs(dx) > abs(dy):
+        step_x = speed * (dx // abs(dx)) if dx != 0 else 0
+        step_y = round((dy / abs(dx)) * step_x)
+    else:
+        step_y = speed * (dy // abs(dy)) if dy != 0 else 0
+        step_x = round((dx / abs(dy)) * step_y)
+    
+    new_position = (position[0] + step_x, position[1] + step_y)
+    return new_position
+
+def main():
+    screen_width, screen_height = get_terminal_size()
+    if SCREEN_WIDTH > screen_width or SCREEN_HEIGHT > screen_height:
+        print("Screen size is too small. Please increase your terminal size.")
+        return
+    
+    screen = [[' ' for _ in range(SCREEN_WIDTH)] for _ in range(SCREEN_HEIGHT)]
+    
+    rectangle = create_rectangle((0, 0), RECTANGLE_SIZE)
+    position = START_POSITION
+    draw_rectangle(screen, position, rectangle)
+    
+    while True:
+        print_screen(screen)
+        
+        if DRY_RUN:
+            time.sleep(1)  # Simulate frame delay
+            continue
+        
+        new_position = move_towards_player(position, PLAYER_POSITION, MOVE_SPEED)
+        screen = [[' ' for _ in range(SCREEN_WIDTH)] for _ in range(SCREEN_HEIGHT)]
+        draw_rectangle(screen, new_position, rectangle)
+        position = new_position
+        
+        time.sleep(0.1)  # Simulate frame delay
+
+if __name__ == "__main__":
+    try:
+        main()
+    except Exception as e:
+        print(f"An error occurred: {e}")

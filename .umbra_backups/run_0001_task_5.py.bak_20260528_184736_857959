@@ -1,0 +1,82 @@
+import pygame
+import sys
+
+# Initialize Pygame
+pygame.init()
+
+# Screen dimensions
+SCREEN_WIDTH = 800
+SCREEN_HEIGHT = 600
+
+# Colors
+WHITE = (255, 255, 255)
+GREEN = (0, 255, 0)
+RED = (255, 0, 0)
+
+# Set up the display
+screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
+pygame.display.set_caption("Game with Countdown")
+
+# Font for text rendering
+font = pygame.font.Font(None, 36)
+
+# Initial countdown time in seconds
+countdown_time = 10
+
+# Player health
+player_health = 100
+
+def display_text(text, color, x, y):
+    """Display text on the screen."""
+    text_surface = font.render(text, True, color)
+    screen.blit(text_surface, (x, y))
+
+def main():
+    global player_health, countdown_time
+    
+    running = True
+    clock = pygame.time.Clock()
+    
+    while running:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                running = False
+            
+            # Simulate decreasing health (for demonstration purposes)
+            if event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:
+                player_health -= 10
+                if player_health <= 0:
+                    display_text("PLAYER LOSES", RED, SCREEN_WIDTH // 2 - 85, SCREEN_HEIGHT // 2)
+                    pygame.display.flip()
+                    pygame.time.wait(3000)  # Display "PLAYER LOSES" for 3 seconds
+                    running = False
+        
+        # Decrease countdown time
+        if countdown_time > 0:
+            countdown_time -= clock.get_rawtime() / 1000
+            if countdown_time <= 0:
+                display_text("PLAYER WINS", GREEN, SCREEN_WIDTH // 2 - 65, SCREEN_HEIGHT // 2)
+                pygame.display.flip()
+                pygame.time.wait(3000)  # Display "PLAYER WINS" for 3 seconds
+                running = False
+        
+        # Reset clock raw time
+        clock.tick()
+        
+        # Clear the screen
+        screen.fill((0, 0, 0))
+        
+        # Display countdown timer
+        display_text(f"Time: {int(countdown_time)}", WHITE, SCREEN_WIDTH - 120, 30)
+        
+        # Display player health (for demonstration purposes)
+        display_text(f"Health: {player_health}", WHITE, 20, 30)
+        
+        # Update the display
+        pygame.display.flip()
+    
+    pygame.quit()
+    sys.exit()
+
+if __name__ == "__main__":
+    main()

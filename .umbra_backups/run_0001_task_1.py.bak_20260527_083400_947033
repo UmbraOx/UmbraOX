@@ -1,0 +1,96 @@
+from flask import Flask, jsonify, request, Response, render_template
+from flask_socketio import SocketIO, emit
+import subprocess
+import json
+from datetime import datetime
+
+app = Flask(__name__)
+socketio = SocketIO(app)
+
+# In-memory storage for simplicity
+processes = []
+history = []
+
+def run_command(command):
+    process = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+    processes.append(process)
+    return process
+
+@app.route('/api/status', methods=['GET'])
+def status():
+    """
+    Get the current status of all running processes.
+    """
+    try:
+        status_list = [{"pid": p.pid, "command": str(p.args), "running": p.poll() is None} for p in processes]
+        return jsonify({"status": "success", "data": status_list}), 200
+    except Exception as e:
+        return jsonify({"status": "error", "message": str(e)}), 500
+
+@app.route('/api/run', methods=['POST'])
+def run():
+    """
+    Run a command and stream the output via WebSocket.
+    """
+    data = request.get_json()
+    if not data or 'command' not in data:
+        return jsonify({"status": "error", "message": "Missing 'command' parameter"}), 400
+
+    command = data['command']
+    process = run_command(command)
+    
+    history.append({"timestamp": datetime.now().isoformat(), "command": command, "pid": process.pid})
+    socketio.emit('new_run', {"pid": process.pid, "command": command})
+
+    return jsonify({"status": "success", "data": {"pid": process.pid}}), 201
+
+@app.route('/api/history', methods=['GET'])
+def history():
+    """
+    Get the execution history of all commands.
+    """
+    try:
+        return jsonify({"status": "success", "data": history}), 200
+    except Exception as e:
+        return jsonify({"status": "error", "message": str(e)}), 500
+
+@app.route('/api/metrics', methods=['GET'])
+def metrics():
+    """
+    Get system metrics (for simplicity, just a placeholder).
+    """
+    try:
+        # Placeholder for actual metrics gathering
+        metrics_data = {"cpu_usage": "25%", "memory_usage": "50%"}
+        return jsonify({"status": "success", "data": metrics_data}), 200
+    except Exception as e:
+        return jsonify({"status": "error", "message": str(e)}), 500
+
+@app.route('/api/health', methods=['GET'])
+def health():
+    """
+    Check the health of the server.
+    """
+    try:
+        return jsonify({"status": "success", "data": {"uptime": "Server is up and running"}}), 200
+    except Exception as e:
+        return jsonify({"status": "error", "message": str(e)}), 500
+
+@socketio.on('connect')
+def handle_connect():
+    print("Client connected")
+    socketio.emit('history', {"data": history})
+
+@socketio.on('disconnect')
+def handle_disconnect():
+    print("Client disconnected")
+
+@app.route('/', methods=['GET'])
+def index():
+    """
+    Serve the HTML page with a simple interface.
+    """
+    return render_template('index.html')
+
+if __name__ == '__main__':
+    socketio.run(app, debug=True, host='0.0.0.0', port=7860)

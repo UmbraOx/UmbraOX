@@ -1,0 +1,73 @@
+import pygame
+
+class Entity:
+    def __init__(self, x, y, width, height):
+        self.rect = pygame.Rect(x, y, width, height)
+
+class Player(Entity):
+    def __init__(self, x, y, width, height, health=3):
+        super().__init__(x, y, width, height)
+        self.health = health
+
+    def take_damage(self):
+        if self.health > 0:
+            self.health -= 1
+            print(f"Player took damage! Health: {self.health}")
+        else:
+            print("Player is already at zero health!")
+
+class Enemy(Entity):
+    pass
+
+def check_collision(player, enemy):
+    """Check for collision between player and enemy."""
+    if player.rect.colliderect(enemy.rect):
+        return True
+    return False
+
+def main():
+    # Initialize Pygame
+    pygame.init()
+    
+    # Screen dimensions
+    screen_width = 800
+    screen_height = 600
+    
+    # Create the screen
+    screen = pygame.display.set_mode((screen_width, screen_height))
+    
+    # Player and enemy setup
+    player = Player(100, 100, 50, 50)
+    enemy = Enemy(200, 200, 30, 30)
+    
+    # Clock to control the frame rate
+    clock = pygame.time.Clock()
+    
+    running = True
+    while running:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                running = False
+        
+        # Check for collision and take damage
+        if check_collision(player, enemy):
+            player.take_damage()
+        
+        # Clear the screen
+        screen.fill((0, 0, 0))
+        
+        # Draw player and enemy
+        pygame.draw.rect(screen, (255, 0, 0), player.rect)
+        pygame.draw.rect(screen, (0, 255, 0), enemy.rect)
+        
+        # Update the display
+        pygame.display.flip()
+        
+        # Cap the frame rate
+        clock.tick(60)
+    
+    # Quit Pygame
+    pygame.quit()
+
+if __name__ == "__main__":
+    main()
