@@ -1,9 +1,0 @@
-{
-    "objective": "Build runtime capability: safe_execution :: deployment",
-    "result": {
-        "success": true,
-        "goal": "Build runtime capability: safe_execution :: deployment",
-        "dependencies": [],
-        "timestamp": "2026-05-19T22:58:21.003895+00:00"
-    }
-}

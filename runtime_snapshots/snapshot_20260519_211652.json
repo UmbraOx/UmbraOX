@@ -1,9 +1,0 @@
-{
-    "objective": "Build runtime capability: task_planning :: execution",
-    "result": {
-        "success": true,
-        "goal": "Build runtime capability: task_planning :: execution",
-        "dependencies": [],
-        "timestamp": "2026-05-19T21:16:52.655010+00:00"
-    }
-}

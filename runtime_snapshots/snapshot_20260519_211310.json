@@ -1,9 +1,0 @@
-{
-    "objective": "Build runtime capability: agent_orchestration :: planning",
-    "result": {
-        "success": true,
-        "goal": "Build runtime capability: agent_orchestration :: planning",
-        "dependencies": [],
-        "timestamp": "2026-05-19T21:13:10.850649+00:00"
-    }
-}

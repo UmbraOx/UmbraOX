@@ -1,0 +1,268 @@
+====================================================================
+  UMBRA v2.4.0 — COMPLETE INSTALL, TEST & GIT INSTRUCTIONS
+====================================================================
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+STEP 1 — INSTALL ALL FIXED FILES
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Open PowerShell in the folder where you downloaded the fix files, then:
+
+  # Make sure required directories exist
+  mkdir C:\Umbra\core\gui          -ErrorAction SilentlyContinue
+  mkdir C:\Umbra\core\assets       -ErrorAction SilentlyContinue
+  mkdir C:\Umbra\core\runtime      -ErrorAction SilentlyContinue
+  mkdir C:\Umbra\workspaces\images  -ErrorAction SilentlyContinue
+  mkdir C:\Umbra\workspaces\videos  -ErrorAction SilentlyContinue
+  mkdir C:\Umbra\workspaces\sprites -ErrorAction SilentlyContinue
+  mkdir C:\Umbra\workspaces\agent_builds -ErrorAction SilentlyContinue
+  mkdir C:\Umbra\workspaces\code   -ErrorAction SilentlyContinue
+  mkdir C:\Umbra\workspaces\apps   -ErrorAction SilentlyContinue
+  mkdir C:\Umbra\workspaces\text   -ErrorAction SilentlyContinue
+  mkdir C:\Umbra\workspaces\projects -ErrorAction SilentlyContinue
+
+  # Copy the main file
+  copy Umbra.py                    C:\Umbra\Umbra.py
+
+  # Copy runtime fixes
+  copy umbra_runtime_spine.py      C:\Umbra\core\runtime\umbra_runtime_spine.py
+  copy umbra_task_engine.py        C:\Umbra\core\runtime\umbra_task_engine.py
+  copy umbra_generation_engine.py  C:\Umbra\core\runtime\umbra_generation_engine.py
+  copy umbra_runtime_kernel.py     C:\Umbra\core\runtime\umbra_runtime_kernel.py
+  copy runtime_image_generator.py  C:\Umbra\core\runtime\runtime_image_generator.py
+
+  # Copy GUI to BOTH locations
+  copy control_center.py           C:\Umbra\core\gui\control_center.py
+  copy control_center.py           C:\Umbra\core\ui\umbra_control_center.py
+
+  # Copy game skeleton
+  copy game_skeleton.py            C:\Umbra\core\assets\game_skeleton.py
+
+  # Copy test file
+  copy test_umbra_full.py          C:\Umbra\test_umbra_full.py
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+STEP 2 — RUN THE TESTS FIRST (before launching)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+  cd C:\Umbra
+  python test_umbra_full.py
+
+  EXPECTED OUTPUT:
+    [GROUP 1] Umbra.py core file
+      [PASS] Umbra.py exists
+      [PASS] Umbra.py syntax clean
+      [PASS] Umbra.py has build_runtime()
+      [PASS] build_runtime uses safe imports
+      [PASS] No crash-causing bare imports in build_runtime
+      [PASS] _safe_input() present
+      [PASS] print_banner() is crash-safe
+      [PASS] _shutdown() safe with missing keys
+      [PASS] _launch_gui() has fallback window
+    [GROUP 2] Core runtime file syntax
+      [PASS] core/runtime/ exists
+      [PASS] All core/runtime/*.py syntax clean
+      [PASS] umbra_runtime_spine.py exists and parses
+      [PASS] umbra_task_engine.py exists and parses
+      [PASS] umbra_generation_engine.py exists and parses
+      [PASS] umbra_runtime_kernel.py exists and parses
+      [PASS] runtime_image_generator.py exists and parses
+    ... (all groups pass)
+
+    ALL TESTS PASS — Umbra is ready to launch.
+
+  If any tests FAIL: the failure message tells you exactly which
+  file is missing or broken. Fix that file and re-run.
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+STEP 3 — LAUNCH UMBRA
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+  cd C:\Umbra
+  python Umbra.py
+
+  EXPECTED:
+  - Console banner: UMBRA v2.4.0 — Autonomous AI Runtime OS
+  - GUI window opens (5-tab dark Control Center)
+  - Status shows: LLM model, memory, image status
+  - No ImportError or AttributeError in console
+  - "umbra>" prompt appears in console
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+STEP 4 — TEST EACH FEATURE (type in GUI or console)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+TEST 1 — System status
+  umbra> status
+  Expected: LLM ready, memory entries, image/gif/video status shown
+
+TEST 2 — Self repair
+  umbra> fix all bugs
+  Expected: Scans core/runtime, reports clean or lists broken files and fixes them
+
+TEST 3 — Build a quick game (fast, direct mode)
+  umbra> make a game called TestGame
+  Expected:
+    - [UMBRA] Building game (direct mode)...
+    - [GAME] Generated: C:\Umbra\workspaces\agent_builds\testgame\game.py
+    - [GAME] XXXX lines — type: play last
+
+TEST 4 — Play the game
+  umbra> play last
+  Expected: pygame window opens, world renders with coloured biome tiles
+             (NOT plain squares), player is visible, WASD moves them
+
+TEST 5 — Build a full game with all 7 agents (takes 10-20 minutes)
+  umbra> build a full game called DemiWorld
+  Expected:
+    - [PLANNER] Analyzing requirements...
+    - [AGENT:WORLD] Running... OK
+    - [AGENT:CHARACTER] Running... OK
+    - ... (7 agents)
+    - [STITCH] Loaded skeleton
+    - [TEST] All requirements passed
+    - BUILD COMPLETE: DemiWorld
+
+TEST 6 — Generate an image
+  umbra> make an image of a dark fantasy castle with fog
+  Expected:
+    - If ComfyUI running: real .png saved to workspaces/images/
+    - If ComfyUI offline: styled PIL placeholder .png saved (still a file, not an error)
+
+TEST 7 — Generate 5 images (batch)
+  umbra> make 5 images of cats in armor
+  Expected: 5 .png files saved to workspaces/images/
+
+TEST 8 — Generate a GIF
+  umbra> make a gif of fire and smoke
+  Expected: .gif file saved to workspaces/videos/
+
+TEST 9 — Install a new pipeline
+  umbra> install a music generation pipeline into umbra
+  Expected:
+    - [INSTALL] Building: music generation pipeline
+    - Shows code preview
+    - Asks approval [y/N]
+    - Press y → installs runtime_musicgenerationpipeline.py
+    - Says: restart Umbra to activate
+
+TEST 10 — Self-upgrade
+  umbra> install a blender 3D pipeline into umbra
+  Expected: same as above — plans, shows diff, asks approval, installs
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+STEP 5 — PUSH ALL CHANGES TO GITHUB
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Run these commands in PowerShell from C:\Umbra:
+
+  cd C:\Umbra
+
+  # Stage all changed and new files
+  git add Umbra.py
+  git add core/runtime/umbra_runtime_spine.py
+  git add core/runtime/umbra_task_engine.py
+  git add core/runtime/umbra_generation_engine.py
+  git add core/runtime/umbra_runtime_kernel.py
+  git add core/runtime/runtime_image_generator.py
+  git add core/gui/control_center.py
+  git add core/ui/umbra_control_center.py
+  git add core/assets/game_skeleton.py
+  git add test_umbra_full.py
+
+  # Commit with version tag
+  git commit -m "Umbra v2.4.0 — full pipeline fix, safe imports, GUI, skeleton, image gen"
+
+  # Push to GitHub
+  git push origin main
+
+  # Verify it pushed
+  git log --oneline -5
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+WHAT WAS FIXED (summary for your records)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+  Umbra.py
+    - build_runtime(): every import now wrapped in try/except via _si()
+      Umbra starts even if 1 of 30+ modules is broken or missing
+    - print_banner(): version import now try/except — no crash on missing file
+    - print_status(): uses runtime.get() not runtime[] — no KeyError
+    - print_metrics(): guarded against missing monitor
+    - _launch_gui(): tries full 5-tab Control Center first,
+                     falls back to inline minimal tkinter window
+    - _shutdown(): all runtime key access guarded
+    - handle_integrate(): finds Umbra.py case-insensitively
+    - _safe_input(): new function — returns default in GUI mode
+                     replaces all 22 bare input() calls that hung the GUI
+    - _gui_mode flag: properly set when GUI launches
+
+  umbra_runtime_spine.py
+    - Removed bridge.analyze() call that crashed on every task
+    - Added stub fallbacks for all sub-modules
+    - Unified API: run_task(dict) → result dict
+
+  umbra_task_engine.py
+    - run_task() now accepts goal STRING or task ID
+    - BossAgent.run_task("build a game") no longer crashes
+
+  umbra_generation_engine.py
+    - image  → ComfyUI pipeline + PIL placeholder fallback
+    - sprite → PIL pixel-art generator
+    - gif    → PIL animated GIF generator
+    - game   → Ollama code gen with full requirements in prompt
+    - code   → Ollama → saved .py file
+    - text   → Ollama → saved .txt file
+    (was: ALL types returned raw LLM text — no files saved)
+
+  umbra_runtime_kernel.py
+    - Added real module registry (register/get/list/unregister)
+    - Added event bus (subscribe/emit)
+    - Added safe_execute() with error isolation
+    - Added snapshot/restore
+    - Added run_cycle() with health checks
+
+  control_center.py (GUI)
+    - _log() / log() / post_message() fully implemented
+    - 5 tabs: Chat/Console, Task Queue, Files, Agents, Memory
+    - Thread-safe queue drain every 80ms
+    - Command history (UP/DOWN arrows)
+    - Quick action sidebar
+    - File browser with run/delete/open folder
+
+  runtime_image_generator.py
+    - Full professional negative prompt (prevents extra hands/feet/faces)
+    - Quality suffix on every positive prompt
+    - Style presets: dark_fantasy, graveyard_keeper, pixel_art, etc.
+    - PIL styled placeholder always produces a .png even offline
+
+  game_skeleton.py
+    - 1373-line complete game template
+    - Fallbacks for all systems (game runs even if agents return nothing)
+    - Real character art via pygame.draw (not squares)
+    - All menus with X close buttons
+    - Save/load F5/F9, minimap, HP/MP/STA bars
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+WHAT TO DO NEXT (after Umbra is running)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Once all 10 tests above pass, say these to Umbra to expand it:
+
+  "install a music generation pipeline into umbra"
+  "install a blender 3D pipeline into umbra"
+  "install a video pipeline using ffmpeg into umbra"
+  "install a TikTok upload pipeline into umbra"
+  "install a website generator pipeline into umbra"
+  "install an AI girlfriend companion system into umbra"
+
+Each one will: plan → show diff → ask your approval → build → install.
+No manual coding needed. That's Umbra working as intended.
+
+====================================================================

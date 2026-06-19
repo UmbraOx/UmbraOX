@@ -1,9 +1,0 @@
-{
-    "objective": "Build runtime capability: task_planning :: validation",
-    "result": {
-        "success": true,
-        "goal": "Build runtime capability: task_planning :: validation",
-        "dependencies": [],
-        "timestamp": "2026-05-19T21:17:15.213416+00:00"
-    }
-}

@@ -1,9 +1,0 @@
-{
-    "objective": "Build runtime capability: task_planning :: deployment",
-    "result": {
-        "success": true,
-        "goal": "Build runtime capability: task_planning :: deployment",
-        "dependencies": [],
-        "timestamp": "2026-05-19T22:58:23.951725+00:00"
-    }
-}

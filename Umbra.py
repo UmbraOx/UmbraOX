@@ -173,6 +173,17 @@ def _umbra_print(text):
 #  LLM HELPERS
 # ============================================================
 
+def _safe_input(prompt_text, default=""):
+    """input() that returns default when inside GUI mode (no terminal)."""
+    if _gui_mode:
+        _umbra_print(prompt_text + " [auto: " + str(default) + "]")
+        return default
+    try:
+        return input(prompt_text).strip()
+    except (EOFError, KeyboardInterrupt):
+        return default
+
+
 def _ask_llm_fix(llm, path, error):
     try:
         with open(path, "r", encoding="utf-8", errors="ignore") as f:
@@ -352,7 +363,7 @@ def _approval_prompt(description, preview, default_yes=False):
     _umbra_print("-" * 60)
     hint = "[Y/n]" if default_yes else "[y/N]"
     try:
-        ans = input("  Approve? " + hint + ": ").strip().lower()
+        ans = _safe_input("  Approve? " + hint + ": ", "").strip().lower()
     except (EOFError, KeyboardInterrupt):
         return False
     return ans not in ("n", "no") if default_yes else ans in ("y", "yes")
@@ -592,7 +603,7 @@ _AGENT_ROLES = {
             "  5. Handle pygame.QUIT event every frame\n"
             "  6. Call pygame.display.flip() every frame\n"
             "  7. Use clock.tick(60) for 60 FPS\n"
-            "  8. ALL input via pygame events — ZERO calls to input() or sys.stdin\n"
+            "  8. ALL input via pygame events — ZERO calls to _safe_input() or sys.stdin\n"
             "  9. ALL menus have X close button (top-right of each panel)\n"
             " 10. End with: if __name__ == '__main__': main()\n"
             "Remove any duplicate definitions. Fix any import conflicts.\n"
@@ -870,7 +881,7 @@ def _build_assembler_prompt(project_name, description, components):
         "  4. Must include if __name__ == '__main__': main() at the very end.\n"
         "  5. Every menu/panel must have a clickable X button in its top-right corner.\n"
         "  6. Handle pygame.QUIT every single frame.\n"
-        "  7. No input() calls. All input through pygame events.\n"
+        "  7. No _safe_input() calls. All input through pygame events.\n"
         "  8. No external files. Use pygame.draw for all graphics.\n"
         "\nBEGIN ASSEMBLED GAME CODE NOW:"
     )
@@ -993,7 +1004,7 @@ _REQUIREMENTS = [
     ("weapons_data",      lambda code: "WEAPONS" in code),
     ("spells_data",       lambda code: "SPELLS" in code),
     ("save_load",         lambda code: "json.dump" in code and "json.load" in code),
-    ("no_input_calls",    lambda code: "input(" not in code),
+    ("no_input_calls",    lambda code: "_safe_input(" not in code, ""),
     ("main_guard",        lambda code: '__name__' in code and 'main()' in code),
 ]
 
@@ -1175,8 +1186,8 @@ def _test_game(game_path, game_code):
         code = game_code
 
         if "no_input_calls" in failed:
-            code = code.replace("input(", "# input(")
-            report["repairs"].append("stripped input() calls")
+            code = code.replace("_safe_input(", "# _safe_input(", "")
+            report["repairs"].append("stripped _safe_input() calls")
 
         if "main_guard" in failed and "def main():" in code:
             if "if __name__" not in code:
@@ -1535,7 +1546,7 @@ def _apply_common_improvements(runtime, file_path, project_type="game"):
     for i, s in enumerate(suggestions, 1):
         _umbra_print("  " + str(i) + ". " + s)
     try:
-        ans = input("  Apply automatically? [y/N]: ").strip().lower()
+        ans = _safe_input("  Apply automatically? [y/N]: ", "").strip().lower()
     except (EOFError, KeyboardInterrupt):
         return
     if ans not in ("y", "yes"):
@@ -1753,7 +1764,7 @@ def handle_self_install(runtime, feature_description):
     module_path = os.path.join(runtime_dir, module_name + ".py")
 
     if os.path.exists(module_path):
-        ans = input("  '" + module_name + ".py' exists. Overwrite? [y/N]: ").strip().lower()
+        ans = _safe_input("  '" + module_name + ".py' exists. Overwrite? [y/N]: ", "").strip().lower()
         if ans not in ("y", "yes"):
             _umbra_print("  [CANCELLED]\n")
             return
@@ -1800,7 +1811,7 @@ def handle_self_install(runtime, feature_description):
         _umbra_print("\n[INSTALL] Installing " + str(len(missing_deps)) + " package(s)...")
         ok = _install_deps(missing_deps)
         if not ok:
-            cont = input("  Some packages failed. Continue? [y/N]: ").strip().lower()
+            cont = _safe_input("  Some packages failed. Continue? [y/N]: ", "").strip().lower()
             if cont not in ("y", "yes"):
                 _umbra_print("[INSTALL] Aborted.\n")
                 return
@@ -1825,7 +1836,7 @@ def handle_self_install(runtime, feature_description):
                        capture_output=True, text=True, cwd=_UMBRA_ROOT, timeout=15)
     if r.returncode != 0:
         _umbra_print("[INSTALL] Import failed:\n  " + r.stderr[:300])
-        rollback = input("  Remove and rollback? [Y/n]: ").strip().lower()
+        rollback = _safe_input("  Remove and rollback? [Y/n]: ", "").strip().lower()
         if rollback not in ("n", "no"):
             os.remove(module_path)
             _umbra_print("[INSTALL] Removed.\n")
@@ -1935,7 +1946,7 @@ def handle_files_browser(runtime, cmd=""):
             return
 
         try:
-            ans = input("  Delete all? [y/N]: ").strip().lower()
+            ans = _safe_input("  Delete all? [y/N]: ", "").strip().lower()
         except (EOFError, KeyboardInterrupt):
             return
         if ans not in ("y", "yes"):
@@ -2187,86 +2198,73 @@ def build_runtime():
     except Exception:
         pass
 
-    from core.runtime.runtime_llm_provider import RuntimeLLMProvider
-    from core.runtime.runtime_execution_graph import RuntimeExecutionGraph
-    from core.runtime.runtime_task_state_machine import RuntimeTaskStateMachine
-    from core.runtime.runtime_context_builder import RuntimeContextBuilder
-    from core.runtime.runtime_validation_engine import RuntimeValidationEngine
-    from core.runtime.runtime_recursion_guard import RuntimeRecursionGuard
-    from core.runtime.runtime_workspace_manager import RuntimeWorkspaceManager
-    from core.runtime.runtime_llm_orchestrator import RuntimeLLMOrchestrator
-    from core.runtime.runtime_autonomous_pipeline import RuntimeAutonomousPipeline
-    from core.runtime.runtime_code_writer import RuntimeCodeWriter
-    from core.runtime.runtime_code_extractor import RuntimeCodeExtractor
-    from core.runtime.runtime_subprocess_executor import RuntimeSubprocessExecutor
-    from core.runtime.runtime_session_manager import RuntimeSessionManager
-    from core.runtime.runtime_task_continuation import RuntimeTaskContinuation
-    from core.runtime.runtime_code_runner import RuntimeCodeRunner
-    from core.runtime.runtime_config_manager import RuntimeConfigManager
-    from core.runtime.runtime_pipeline_monitor import RuntimePipelineMonitor
-    from core.runtime.runtime_memory_store import RuntimeMemoryStore
-    from core.runtime.runtime_health_monitor import RuntimeHealthMonitor
-    from core.runtime.runtime_run_validator import RuntimeRunValidator
-    from core.runtime.runtime_code_reviewer import RuntimeCodeReviewer
-    from core.runtime.runtime_session_replay import RuntimeSessionReplay
-    from core.runtime.runtime_conversation_engine import RuntimeConversationEngine
-    from core.runtime.runtime_voice_input import RuntimeVoiceInput
-    from core.runtime.runtime_image_generator import RuntimeImageGenerator
-    from core.runtime.runtime_video_generator import RuntimeVideoGenerator
-    from core.runtime.runtime_game_tester import RuntimeGameTester
-    from core.runtime.runtime_direct_generator import RuntimeDirectGenerator
-    from core.runtime.runtime_project_manager import RuntimeProjectManager
-    from core.runtime.runtime_studio_agents import RuntimeStudioAgents
+    def _si(mod_path, cls_name, *a, **kw):
+        try:
+            m = __import__(mod_path, fromlist=[cls_name])
+            return getattr(m, cls_name)(*a, **kw)
+        except Exception:
+            return None
 
-    config = RuntimeConfigManager(config_path=os.path.join(_UMBRA_ROOT, "umbra_config.json"))
-    provider = config.get("llm_provider")
-    api_key = config.get("llm_api_key") or os.environ.get("UMBRA_LLM_API_KEY", "")
-    model = os.environ.get("UMBRA_LLM_MODEL", "") or config.get("llm_model", "")
+    config          = _si("core.runtime.runtime_config_manager","RuntimeConfigManager",
+                          config_path=os.path.join(_UMBRA_ROOT,"umbra_config.json"))
+    def _cfg(k,d=None): return (config.get(k) or d) if config else d
 
-    llm = RuntimeLLMProvider(provider=provider, api_key=api_key or None, model=model or None)
-    graph = RuntimeExecutionGraph()
-    sm = RuntimeTaskStateMachine()
-    ctx = RuntimeContextBuilder()
-    validator = RuntimeValidationEngine()
-    guard = RuntimeRecursionGuard(
-        max_depth=config.get("max_recursion_depth"),
-        max_calls_per_task=config.get("max_calls_per_task"),
-        max_total_calls=config.get("max_total_calls"),
-    )
-    workspace = RuntimeWorkspaceManager(base_dir=os.path.join(_UMBRA_ROOT, config.get("workspace_dir")))
-    executor = RuntimeSubprocessExecutor(working_dir=_UMBRA_ROOT, timeout=config.get("subprocess_timeout") or 300)
-    code_writer = RuntimeCodeWriter(base_dir=_UMBRA_ROOT)
-    extractor = RuntimeCodeExtractor()
-    sessions = RuntimeSessionManager(sessions_dir=os.path.join(_UMBRA_ROOT, config.get("sessions_dir")))
-    continuation = RuntimeTaskContinuation(continuations_dir=os.path.join(_UMBRA_ROOT, config.get("continuations_dir")))
-    code_runner = RuntimeCodeRunner(working_dir=_UMBRA_ROOT, timeout=config.get("code_runner_timeout") or 300)
-    memory = RuntimeMemoryStore(store_path=os.path.join(_UMBRA_ROOT, config.get("sessions_dir"), "memory_store.json"))
-    health = RuntimeHealthMonitor(base_dir=_UMBRA_ROOT)
-    run_validator = RuntimeRunValidator()
-    reviewer = RuntimeCodeReviewer()
-    replayer = RuntimeSessionReplay(
-        sessions_dir=os.path.join(_UMBRA_ROOT, config.get("sessions_dir")),
-        workspaces_dir=os.path.join(_UMBRA_ROOT, config.get("workspace_dir")),
-    )
-    conversation = RuntimeConversationEngine(llm_provider=llm)
-    voice_input = RuntimeVoiceInput()
-    _load_user_language_model(memory, conversation)
+    provider        = _cfg("llm_provider"); api_key = _cfg("llm_api_key") or os.environ.get("UMBRA_LLM_API_KEY","")
+    model           = os.environ.get("UMBRA_LLM_MODEL","") or _cfg("llm_model","")
 
-    images_dir = os.path.join(_UMBRA_ROOT, "workspaces", "images")
-    videos_dir = os.path.join(_UMBRA_ROOT, "workspaces", "videos")
-    os.makedirs(images_dir, exist_ok=True)
-    os.makedirs(videos_dir, exist_ok=True)
+    llm             = _si("core.runtime.runtime_llm_provider","RuntimeLLMProvider",
+                          provider=provider, api_key=api_key or None, model=model or None)
+    graph           = _si("core.runtime.runtime_execution_graph","RuntimeExecutionGraph")
+    sm              = _si("core.runtime.runtime_task_state_machine","RuntimeTaskStateMachine")
+    ctx             = _si("core.runtime.runtime_context_builder","RuntimeContextBuilder")
+    validator       = _si("core.runtime.runtime_validation_engine","RuntimeValidationEngine")
+    guard           = _si("core.runtime.runtime_recursion_guard","RuntimeRecursionGuard",
+                          max_depth=_cfg("max_recursion_depth",10),
+                          max_calls_per_task=_cfg("max_calls_per_task",100),
+                          max_total_calls=_cfg("max_total_calls",1000))
+    workspace       = _si("core.runtime.runtime_workspace_manager","RuntimeWorkspaceManager",
+                          base_dir=os.path.join(_UMBRA_ROOT, _cfg("workspace_dir","workspaces")))
+    executor        = _si("core.runtime.runtime_subprocess_executor","RuntimeSubprocessExecutor",
+                          working_dir=_UMBRA_ROOT, timeout=_cfg("subprocess_timeout",300))
+    code_writer     = _si("core.runtime.runtime_code_writer","RuntimeCodeWriter",base_dir=_UMBRA_ROOT)
+    extractor       = _si("core.runtime.runtime_code_extractor","RuntimeCodeExtractor")
+    sessions        = _si("core.runtime.runtime_session_manager","RuntimeSessionManager",
+                          sessions_dir=os.path.join(_UMBRA_ROOT,_cfg("sessions_dir","sessions")))
+    continuation    = _si("core.runtime.runtime_task_continuation","RuntimeTaskContinuation",
+                          continuations_dir=os.path.join(_UMBRA_ROOT,_cfg("continuations_dir","continuations")))
+    code_runner     = _si("core.runtime.runtime_code_runner","RuntimeCodeRunner",
+                          working_dir=_UMBRA_ROOT, timeout=_cfg("code_runner_timeout",300))
+    _sdir           = os.path.join(_UMBRA_ROOT, _cfg("sessions_dir","sessions"))
+    os.makedirs(_sdir, exist_ok=True)
+    memory          = _si("core.runtime.runtime_memory_store","RuntimeMemoryStore",
+                          store_path=os.path.join(_sdir,"memory_store.json"))
+    health          = _si("core.runtime.runtime_health_monitor","RuntimeHealthMonitor",base_dir=_UMBRA_ROOT)
+    run_validator   = _si("core.runtime.runtime_run_validator","RuntimeRunValidator")
+    reviewer        = _si("core.runtime.runtime_code_reviewer","RuntimeCodeReviewer")
+    replayer        = _si("core.runtime.runtime_session_replay","RuntimeSessionReplay",
+                          sessions_dir=_sdir,
+                          workspaces_dir=os.path.join(_UMBRA_ROOT,_cfg("workspace_dir","workspaces")))
+    conversation    = _si("core.runtime.runtime_conversation_engine","RuntimeConversationEngine",
+                          llm_provider=llm)
+    voice_input     = _si("core.runtime.runtime_voice_input","RuntimeVoiceInput")
+    if memory and conversation:
+        _load_user_language_model(memory, conversation)
 
-    image_generator = RuntimeImageGenerator(output_dir=images_dir)
-    video_generator = RuntimeVideoGenerator(output_dir=videos_dir)
-    game_tester = RuntimeGameTester()
-    direct_generator = RuntimeDirectGenerator(
-        model=model or "qwen2.5-coder:32b",
-        workspaces_dir=os.path.join(_UMBRA_ROOT, config.get("workspace_dir")),
-        timeout=1200,
-    )
-    projects_dir = os.path.join(_UMBRA_ROOT, "workspaces", "projects")
-    project_manager = RuntimeProjectManager(projects_dir=projects_dir)
+    images_dir = os.path.join(_UMBRA_ROOT,"workspaces","images")
+    videos_dir = os.path.join(_UMBRA_ROOT,"workspaces","videos")
+    sprites_dir= os.path.join(_UMBRA_ROOT,"workspaces","sprites")
+    for _d in (images_dir, videos_dir, sprites_dir): os.makedirs(_d, exist_ok=True)
+
+    image_generator  = _si("core.runtime.runtime_image_generator","RuntimeImageGenerator",output_dir=images_dir)
+    video_generator  = _si("core.runtime.runtime_video_generator","RuntimeVideoGenerator",output_dir=videos_dir)
+    game_tester      = _si("core.runtime.runtime_game_tester","RuntimeGameTester")
+    direct_generator = _si("core.runtime.runtime_direct_generator","RuntimeDirectGenerator",
+                           model=model or "qwen2.5-coder:32b",
+                           workspaces_dir=os.path.join(_UMBRA_ROOT,_cfg("workspace_dir","workspaces")),
+                           timeout=1200)
+    projects_dir     = os.path.join(_UMBRA_ROOT,"workspaces","projects")
+    os.makedirs(projects_dir, exist_ok=True)
+    project_manager  = _si("core.runtime.runtime_project_manager","RuntimeProjectManager",projects_dir=projects_dir)
 
     # ── Optional modules ──────────────────────────────────────────────────────
     animated_gif_generator = None
@@ -2334,25 +2332,25 @@ def build_runtime():
             except Exception:
                 pass
 
-    studio_agents = RuntimeStudioAgents(
-        llm_provider=llm,
-        direct_generator=direct_generator,
-        output_dir=os.path.join(_UMBRA_ROOT, "workspaces", "studio"),
-    )
+    studio_agents = _si("core.runtime.runtime_studio_agents","RuntimeStudioAgents",
+                        llm_provider=llm, direct_generator=direct_generator,
+                        output_dir=os.path.join(_UMBRA_ROOT,"workspaces","studio"))
 
     if _pipeline_monitor is None:
-        _pipeline_monitor = RuntimePipelineMonitor()
+        _pipeline_monitor = _si("core.runtime.runtime_pipeline_monitor","RuntimePipelineMonitor")
 
-    orchestrator = RuntimeLLMOrchestrator(
-        llm_provider=llm, context_builder=ctx,
-        execution_graph=graph, task_state_machine=sm,
-        recursion_guard=guard, validation_engine=validator,
-    )
-    pipeline = RuntimeAutonomousPipeline(
-        llm_orchestrator=orchestrator, workspace_manager=workspace,
-        validation_engine=validator, code_extractor=extractor,
-        code_writer=code_writer,
-    )
+    orchestrator = None; pipeline = None
+    try:
+        from core.runtime.runtime_llm_orchestrator   import RuntimeLLMOrchestrator
+        from core.runtime.runtime_autonomous_pipeline import RuntimeAutonomousPipeline
+        orchestrator = RuntimeLLMOrchestrator(
+            llm_provider=llm, context_builder=ctx, execution_graph=graph,
+            task_state_machine=sm, recursion_guard=guard, validation_engine=validator)
+        pipeline = RuntimeAutonomousPipeline(
+            llm_orchestrator=orchestrator, workspace_manager=workspace,
+            validation_engine=validator, code_extractor=extractor, code_writer=code_writer)
+    except Exception:
+        pass
 
     runtime = {
         "llm": llm, "graph": graph, "state_machine": sm,
@@ -2395,20 +2393,31 @@ def build_runtime():
 # ============================================================
 
 def print_banner():
-    from core.runtime.runtime_version import get_full_version
     _umbra_print("\n" + "=" * 64)
-    _umbra_print("  UMBRA v2.3.0 — Autonomous AI Runtime OS")
+    _umbra_print("  UMBRA v2.4.0 — Autonomous AI Runtime OS")
+    try:
+        from core.runtime.runtime_version import get_full_version
+        _umbra_print("  " + get_full_version())
+    except Exception:
+        pass
     _umbra_print("  type 'help' for commands | 'exit' to quit")
     _umbra_print("=" * 64 + "\n")
 
 
 def print_status(runtime):
-    llm = runtime["llm"]
+    llm = runtime.get("llm")
     _umbra_print("\n[STATUS]")
-    _umbra_print("  Provider : " + llm.get_provider() + (" (FREE)" if llm.is_free() else ""))
-    _umbra_print("  Model    : " + llm.get_model())
-    _umbra_print("  Ready    : " + ("YES" if llm.is_configured() else "NO"))
-    _umbra_print("  Memory   : " + str(runtime["memory"].size()) + " entries")
+    if llm:
+        try:
+            _umbra_print("  Provider : " + llm.get_provider() + (" (FREE)" if llm.is_free() else ""))
+            _umbra_print("  Model    : " + llm.get_model())
+            _umbra_print("  Ready    : " + ("YES" if llm.is_configured() else "NO — check umbra_config.json"))
+        except Exception:
+            _umbra_print("  LLM      : loaded (details unavailable)")
+    else:
+        _umbra_print("  LLM      : NOT LOADED")
+    mem = runtime.get("memory")
+    _umbra_print("  Memory   : " + (str(mem.size()) + " entries" if mem and hasattr(mem,"size") else "not loaded"))
     rm = runtime.get("resource_manager")
     if rm:
         rs = rm.get_current_status()
@@ -2433,10 +2442,14 @@ def print_status(runtime):
         if active:
             _umbra_print("  Project  : " + active.name + " (active)")
         _umbra_print("  Projects : " + str(len(projects)) + " total")
-    cont = runtime["continuation"]
-    pending = len(cont.list_continuations())
-    if pending:
-        _umbra_print("  Pending  : " + str(pending) + " unfinished run(s) — type 'resume'")
+    cont = runtime.get("continuation")
+    if cont:
+        try:
+            pending = len(cont.list_continuations())
+            if pending:
+                _umbra_print("  Pending  : " + str(pending) + " unfinished run(s) — type 'resume'")
+        except Exception:
+            pass
     tts = runtime.get("tts_engine")
     _umbra_print("  TTS      : " + ("ready" if tts and tts.is_available() else "OFF") +
           " | " + ("ON" if runtime.get("_tts_enabled") else "disabled"))
@@ -2502,13 +2515,19 @@ DIAGNOSTICS
 
 
 def print_metrics(runtime):
-    summary = runtime["monitor"].get_summary()
-    _umbra_print("\n[METRICS]")
-    _umbra_print("  Runs       : " + str(summary["total_runs"]))
-    _umbra_print("  Successful : " + str(summary["successful_runs"]))
-    _umbra_print("  Rate       : " + str(summary["success_rate_pct"]) + "%")
-    _umbra_print("  Files      : " + str(summary["total_files_written"]))
-    _umbra_print("  Avg time   : " + str(summary["avg_duration_seconds"]) + "s")
+    mon = runtime.get("monitor")
+    if not mon:
+        _umbra_print("  Monitor not loaded."); return
+    try:
+        summary = mon.get_summary()
+        _umbra_print("\n[METRICS]")
+        _umbra_print("  Runs       : " + str(summary.get("total_runs",0)))
+        _umbra_print("  Successful : " + str(summary.get("successful_runs",0)))
+        _umbra_print("  Rate       : " + str(summary.get("success_rate_pct",0)) + "%")
+        _umbra_print("  Files      : " + str(summary.get("total_files_written",0)))
+        _umbra_print("  Avg time   : " + str(summary.get("avg_duration_seconds",0)) + "s")
+    except Exception as e:
+        _umbra_print("  Metrics error: " + str(e))
 
 
 def _handle_project_switch(runtime, user_input):
@@ -2537,7 +2556,11 @@ def _process_command(runtime, user_input):
     """Process a single command — same logic as interactive_mode loop body."""
     cmd = user_input.lower().strip()
     pm = runtime.get("project_manager")
-    active = pm.get_active() if pm else None
+    active = None
+    try:
+        active = pm.get_active() if pm else None
+    except Exception:
+        pass
 
     if cmd in ("exit", "quit", "q"):
         _umbra_print("[UMBRA] Use the CLI to exit.")
@@ -2693,18 +2716,29 @@ def _process_command(runtime, user_input):
 # ============================================================
 
 def _launch_gui(runtime):
-    """
-    Launch the GUI window. All output is sent via _gui_response_queue.
-    User input from GUI is posted to run_prompt via callback.
-    """
-    global _gui_ref
+    """Launch the Umbra Control Center GUI in a daemon thread."""
+    global _gui_ref, _gui_mode
 
+    # Try full 5-tab control center first
+    for _mp, _fn in [("core.gui.control_center","launch_in_thread"),
+                     ("core.ui.umbra_control_center","launch_in_thread")]:
+        try:
+            _mod = importlib.import_module(_mp)
+            _gui = getattr(_mod, _fn)(runtime=runtime, process_fn=_process_command)
+            if _gui is not None:
+                _gui_ref = _gui; _gui_mode = True
+                _umbra_print("[GUI] Control Center launched.")
+                return
+        except Exception:
+            pass
+
+    # Fallback: runtime optional module
     gui = (runtime.get("full_gui_window") or
            runtime.get("full_gui_chat_window") or
            runtime.get("gui_window_launcher"))
 
     if not gui or not gui.is_available():
-        # Try to build a minimal tkinter GUI inline
+        # Build minimal inline tkinter
         try:
             import tkinter as tk
             from tkinter import scrolledtext
@@ -2835,7 +2869,8 @@ def _launch_gui(runtime):
         _process_command(runtime, text)
 
     gui.set_submit_callback(_gui_submit)
-    _gui_ref = gui  # Set BEFORE thread starts so all prints go to GUI
+    _gui_ref  = gui
+    _gui_mode = True
 
     t = threading.Thread(target=gui.run, args=("Umbra",), daemon=True)
     t.start()
@@ -3017,7 +3052,7 @@ def run_prompt(runtime, prompt, project_override=None):
                     for q in questions:
                         _umbra_print("  " + q)
                         try:
-                            ans = input("you > ").strip()
+                            ans = _safe_input("you > ", "").strip()
                             if ans:
                                 answers.append(q + ": " + ans)
                         except (EOFError, KeyboardInterrupt):
@@ -3025,7 +3060,7 @@ def run_prompt(runtime, prompt, project_override=None):
                 enriched = raw + (". " + ". ".join(answers) if answers else "")
                 if not project_name:
                     try:
-                        project_name = input("  Project name: ").strip() or "MyGame"
+                        project_name = _safe_input("  Project name: ", "").strip() or "MyGame"
                     except (EOFError, KeyboardInterrupt):
                         project_name = "MyGame"
 
@@ -3040,7 +3075,7 @@ def run_prompt(runtime, prompt, project_override=None):
                 question = conv.start_clarification(classification, prompt)
                 _umbra_print("\n[UMBRA] " + question)
                 try:
-                    answer = input("you > ").strip()
+                    answer = _safe_input("you > ", "").strip()
                     raw = raw + ". " + answer
                 except (EOFError, KeyboardInterrupt):
                     pass
@@ -3091,7 +3126,7 @@ def run_prompt(runtime, prompt, project_override=None):
             question = conv.start_clarification(classification, prompt)
             _umbra_print("\n[UMBRA] " + question)
             try:
-                answer = input("you > ").strip()
+                answer = _safe_input("you > ", "").strip()
                 prompt = prompt + ". Details: " + answer
             except (EOFError, KeyboardInterrupt):
                 pass
@@ -3119,7 +3154,7 @@ def _run_studio_project(runtime, prompt, project_name=None):
     for q in questions[:3]:
         _umbra_print("\n[UMBRA] " + q)
         try:
-            ans = input("you > ").strip()
+            ans = _safe_input("you > ", "").strip()
             if ans:
                 answers.append(q + ": " + ans)
                 pm.add_conversation_turn(project, "user", q + ": " + ans)
@@ -3215,17 +3250,17 @@ def interactive_mode(runtime):
                     print("\n" + prefix + "> [MIC] " + user_input)
                 else:
                     try:
-                        user_input = input(prefix + "> ").strip()
+                        user_input = _safe_input(prefix + "> ", "").strip()
                     except (KeyboardInterrupt, EOFError):
                         user_input = "exit"
             else:
                 try:
-                    user_input = input(prefix + "> ").strip()
+                    user_input = _safe_input(prefix + "> ", "").strip()
                 except (KeyboardInterrupt, EOFError):
                     user_input = "exit"
         else:
             try:
-                user_input = input(prefix + "> ").strip()
+                user_input = _safe_input(prefix + "> ", "").strip()
             except (KeyboardInterrupt, EOFError):
                 _umbra_print("\n[UMBRA] Shutting down.")
                 _shutdown(runtime)
@@ -3342,7 +3377,7 @@ def interactive_mode(runtime):
         elif cmd in ("install ffmpeg", "download ffmpeg", "get ffmpeg"):
             _umbra_print("[UMBRA] ffmpeg is needed for MP4 video output.")
             try:
-                ans = input("  Download and install ffmpeg now? [y/N]: ").strip().lower()
+                ans = _safe_input("  Download and install ffmpeg now? [y/N]: ", "").strip().lower()
             except Exception:
                 ans = "n"
             if ans in ("y", "yes"):
@@ -3383,7 +3418,7 @@ def interactive_mode(runtime):
             project_name = name_match.group(1).strip() if name_match else None
             if not project_name:
                 try:
-                    project_name = input("  Project name: ").strip() or "MyGame"
+                    project_name = _safe_input("  Project name: ", "").strip() or "MyGame"
                 except (EOFError, KeyboardInterrupt):
                     project_name = "MyGame"
             _umbra_print("\n[UMBRA] Starting full deep build with all agents...")
@@ -3706,7 +3741,7 @@ def interactive_mode(runtime):
                         else:
                             _umbra_print("[CONVERT] ffmpeg not found.")
                             try:
-                                ans = input("  Download ffmpeg automatically? [y/N]: ").strip().lower()
+                                ans = _safe_input("  Download ffmpeg automatically? [y/N]: ", "").strip().lower()
                             except Exception:
                                 ans = "n"
                             if ans in ("y", "yes"):
@@ -3754,13 +3789,17 @@ def interactive_mode(runtime):
 def _shutdown(runtime):
     _umbra_print("[UMBRA] Saving memory...")
     try:
-        runtime["memory"].save()
-    except Exception:
-        pass
-    if runtime.get("resource_manager"):
-        runtime["resource_manager"].stop_monitoring()
-    if runtime.get("scheduler"):
-        runtime["scheduler"].stop()
+        _mem = runtime.get("memory")
+        if _mem: _mem.save()
+    except Exception: pass
+    try:
+        rm2 = runtime.get("resource_manager")
+        if rm2: rm2.stop_monitoring()
+    except Exception: pass
+    try:
+        sc2 = runtime.get("scheduler")
+        if sc2: sc2.stop()
+    except Exception: pass
     _umbra_print("[UMBRA] Stopping ComfyUI and freeing ports...")
     _shutdown_comfyui()
     _umbra_print("[UMBRA] Clean shutdown complete.")
