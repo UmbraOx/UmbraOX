@@ -2708,8 +2708,11 @@ def _process_command(runtime, user_input):
         return
 
     # Default: run_prompt handles everything else
-    run_prompt(runtime, user_input)
-
+    # Default: run_prompt handles everything else
+    try:
+        run_prompt(runtime, user_input)
+    except Exception as _e:
+        _umbra_print("[UMBRA] Error: " + str(_e))
 
 # ============================================================
 #  GUI LAUNCH (thread-safe via queue)
@@ -3236,9 +3239,19 @@ def interactive_mode(runtime):
     _umbra_print("  'list files'  |  'clean up old files'")
     _umbra_print("  Type 'exit' to quit.\n")
 
+    # GUI mode: block here, let GUI handle all input
+    if _gui_mode:
+        _umbra_print('[UMBRA] GUI active — use the Control Center window.')
+        import time as _tm2
+        try:
+            while True: _tm2.sleep(1)
+        except KeyboardInterrupt: pass
+        return
+
     while True:
         pm = runtime.get("project_manager")
-        active = pm.get_active() if pm else None
+        try: active = pm.get_active() if pm else None
+        except Exception: active = None
         prefix = ("umbra [" + active.name + "]") if active else "umbra"
 
         if runtime.get("_continuous_voice"):

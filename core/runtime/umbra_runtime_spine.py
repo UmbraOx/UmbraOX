@@ -26,7 +26,7 @@ class UmbraRuntimeSpine:
             from core.runtime.umbra_generation_engine import UmbraGenerationEngine
             self.generation_engine=UmbraGenerationEngine()
         except Exception: self.generation_engine=_StubGen()
-        # boss agent — NO bridge.analyze() call anywhere
+        # boss agent — no bridge analyze call here
         try:
             from core.agents.boss_agent import BossAgent
             self.boss_agent=BossAgent(base_path)
