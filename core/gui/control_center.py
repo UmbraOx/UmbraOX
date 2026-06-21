@@ -1,685 +1,434 @@
-# C:\Umbra\core\gui\control_center.py   AND   C:\Umbra\core\ui\umbra_control_center.py
-# Copy this file to BOTH locations.
-# Umbra GUI Control Center v2.0 — Full working tkinter GUI
-# FIXED: _log was incomplete, all methods now fully implemented
+# C:\Umbra\core\gui\control_center.py
+# C:\Umbra\core\ui\umbra_control_center.py  — copy to BOTH
+# Umbra Control Center v3.1 — uses tk.Tk() composition, not inheritance
+# launch_in_thread() creates window, interactive_mode calls .mainloop() on main thread
 
-import os
-import sys
-import json
-import time
-import queue
-import threading
-import subprocess
+import os,sys,json,time,queue,threading,subprocess
 import tkinter as tk
-from tkinter import ttk, scrolledtext, filedialog, messagebox
+from tkinter import ttk,scrolledtext,filedialog,messagebox
 
-_UMBRA_ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+_ROOT=os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+BG="#0d0d1a";PANEL="#13132a";BORDER="#2a2a5a";ACCENT="#6a40d4";ACCENT2="#4060c0"
+GREEN="#30c060";RED="#c03040";YELLOW="#c0a020";TEXT="#d0d0e8";DIM="#707090"
+INP="#1a1a30";BTN="#2a2a50";LOG_BG="#0a0a18";LOG_FG="#a0c0a0"
+FM=("Consolas",11);FL=("Segoe UI",10);FT=("Segoe UI",13,"bold");FS=("Consolas",9)
 
+class UmbraControlCenter:
+    def __init__(self,runtime=None,process_fn=None):
+        self.runtime=runtime;self.process_fn=process_fn
+        self._q=queue.Queue();self._history=[];self._hist_idx=0
+        self._ws=os.path.join(_ROOT,"workspaces");self._jobs=[];self._job_id=0
+        self._running=True;self._prev_photo=None
+        self.root=tk.Tk()
+        self.root.title("UMBRA — Autonomous AI Runtime OS v2.4.0")
+        self.root.configure(bg=BG);self.root.geometry("1400x860");self.root.minsize(1000,600)
+        self.root.protocol("WM_DELETE_WINDOW",self._on_close)
+        try: self.root.iconbitmap(os.path.join(_ROOT,"core","assets","umbra.ico"))
+        except Exception: pass
+        self._build_ui();self._start_drain()
+        self.log("[UMBRA] Control Center v3.1 ready.",GREEN)
 
-# ─────────────────────────────────────────────────────────────────────────────
-# Colour scheme (dark theme)
-# ─────────────────────────────────────────────────────────────────────────────
-C = {
-    "bg":       "#0d0d1a",
-    "panel":    "#13132a",
-    "border":   "#2a2a5a",
-    "accent":   "#6a40d4",
-    "accent2":  "#4060c0",
-    "green":    "#30c060",
-    "red":      "#c03040",
-    "yellow":   "#c0a020",
-    "text":     "#d0d0e8",
-    "dim":      "#707090",
-    "input_bg": "#1a1a30",
-    "btn":      "#2a2a50",
-    "btn_h":    "#3a3a70",
-    "log_bg":   "#0a0a18",
-    "log_text": "#a0c0a0",
-}
-
-FONT_MONO  = ("Consolas", 11)
-FONT_LABEL = ("Segoe UI", 10)
-FONT_TITLE = ("Segoe UI", 14, "bold")
-FONT_SMALL = ("Consolas", 9)
-
-
-class UmbraControlCenter(tk.Tk):
-    """
-    Umbra GUI Control Center.
-
-    Wired to Umbra's runtime via:
-      - _output_queue: thread-safe queue; Umbra posts log messages here
-      - post_message(text): called by Umbra runtime to display output
-      - submit_command(text): sends command to Umbra's _process_command()
-    """
-
-    def __init__(self, runtime=None, process_fn=None):
-        super().__init__()
-        self.runtime     = runtime
-        self.process_fn  = process_fn       # _process_command from Umbra.py
-        self._out_queue  = queue.Queue()    # Umbra -> GUI messages
-        self._cmd_queue  = queue.Queue()    # GUI -> Umbra commands
-        self._history    = []               # command history
-        self._hist_idx   = -1
-        self._workspace  = os.path.join(_UMBRA_ROOT, "workspaces")
-        self._running    = True
-
-        self._setup_window()
-        self._build_ui()
-        self._start_queue_drain()
-        self.log("[UMBRA] Control Center ready.", colour=C["green"])
-
-    # ─────────────────────────────────────────────────────────────────────────
-    # WINDOW SETUP
-    # ─────────────────────────────────────────────────────────────────────────
-
-    def _setup_window(self):
-        self.title("UMBRA — Autonomous AI Runtime OS v2.3.0")
-        self.configure(bg=C["bg"])
-        self.geometry("1280x800")
-        self.minsize(900, 600)
-        try:
-            self.iconbitmap(os.path.join(_UMBRA_ROOT, "core", "assets", "umbra.ico"))
-        except Exception:
-            pass
-        self.protocol("WM_DELETE_WINDOW", self._on_close)
-
-    # ─────────────────────────────────────────────────────────────────────────
-    # UI BUILD
-    # ─────────────────────────────────────────────────────────────────────────
+    def mainloop(self): self.root.mainloop()
+    def post_message(self,text): self._q.put((str(text),None))
+    def log(self,msg,colour=None): self._q.put((str(msg),colour))
+    def is_available(self): return True
 
     def _build_ui(self):
-        # ── Title bar ────────────────────────────────────────────────────────
-        title_frame = tk.Frame(self, bg=C["panel"], height=48)
-        title_frame.pack(fill=tk.X, side=tk.TOP)
-        title_frame.pack_propagate(False)
-        tk.Label(title_frame, text="⬡  UMBRA", font=FONT_TITLE,
-                 fg=C["accent"], bg=C["panel"]).pack(side=tk.LEFT, padx=16, pady=10)
-        tk.Label(title_frame, text="Autonomous AI Runtime OS",
-                 font=FONT_LABEL, fg=C["dim"], bg=C["panel"]).pack(side=tk.LEFT)
-        self._status_lbl = tk.Label(title_frame, text="● READY",
-                                    font=FONT_LABEL, fg=C["green"], bg=C["panel"])
-        self._status_lbl.pack(side=tk.RIGHT, padx=16)
+        r=self.root
+        tb=tk.Frame(r,bg=PANEL,height=50);tb.pack(fill=tk.X);tb.pack_propagate(False)
+        tk.Label(tb,text="⬡  UMBRA",font=FT,fg=ACCENT,bg=PANEL).pack(side=tk.LEFT,padx=16,pady=12)
+        tk.Label(tb,text="Autonomous AI Runtime OS",font=FL,fg=DIM,bg=PANEL).pack(side=tk.LEFT)
+        self._status_lbl=tk.Label(tb,text="● READY",font=FL,fg=GREEN,bg=PANEL)
+        self._status_lbl.pack(side=tk.RIGHT,padx=16)
+        self._prog=ttk.Progressbar(r,mode="indeterminate",length=200)
+        pw=tk.PanedWindow(r,orient=tk.HORIZONTAL,bg=BG,sashwidth=5)
+        pw.pack(fill=tk.BOTH,expand=True,padx=4,pady=4)
+        left=tk.Frame(pw,bg=PANEL,width=200);pw.add(left,minsize=180);self._build_sidebar(left)
+        right=tk.Frame(pw,bg=BG);pw.add(right,minsize=700);self._build_tabs(right)
 
-        # ── Main paned layout ─────────────────────────────────────────────────
-        paned = tk.PanedWindow(self, orient=tk.HORIZONTAL, bg=C["bg"],
-                               sashwidth=5, sashrelief=tk.FLAT)
-        paned.pack(fill=tk.BOTH, expand=True, padx=4, pady=4)
+    def _build_sidebar(self,p):
+        tk.Label(p,text="QUICK ACTIONS",font=FS,fg=DIM,bg=PANEL).pack(pady=(12,4),padx=8,anchor="w")
+        for lbl,cmd in [("📊 Status","status"),("🔧 Fix Bugs","fix all bugs"),
+                        ("🎮 Build Game","make a game called MyGame"),
+                        ("🖼 Make Image","make an image of a fantasy landscape"),
+                        ("🎬 Make GIF","make a gif of fire"),
+                        ("📁 List Files","list files"),("🧹 Clean","clean up old files"),
+                        ("💾 Projects","projects"),("▶ Play Last","play last"),("📋 Help","help")]:
+            tk.Button(p,text=lbl,font=FS,fg=TEXT,bg=BTN,activebackground="#3a3a70",
+                      activeforeground=TEXT,relief=tk.FLAT,cursor="hand2",anchor="w",
+                      padx=10,command=lambda c=cmd:self._quick(c)).pack(fill=tk.X,padx=6,pady=2)
+        tk.Frame(p,bg=BORDER,height=1).pack(fill=tk.X,padx=8,pady=8)
+        tk.Button(p,text="✖ Close Umbra",font=FS,fg=TEXT,bg=BTN,activebackground="#3a3a70",
+                  activeforeground=TEXT,relief=tk.FLAT,cursor="hand2",anchor="w",
+                  padx=10,command=self._on_close).pack(fill=tk.X,padx=6,pady=2)
+        tk.Frame(p,bg=BORDER,height=1).pack(fill=tk.X,padx=8,pady=8)
+        self._side_info=tk.Label(p,text="Ollama: checking...\nComfyUI: offline",
+                                 font=FS,fg=DIM,bg=PANEL,justify=tk.LEFT,wraplength=180)
+        self._side_info.pack(padx=8,anchor="w")
+        self.root.after(3000,self._update_side_info)
 
-        # Left sidebar
-        left = tk.Frame(paned, bg=C["panel"], width=200)
-        paned.add(left, minsize=160)
-        self._build_sidebar(left)
+    def _build_tabs(self,p):
+        style=ttk.Style();style.theme_use("default")
+        style.configure("TNotebook",background=BG,borderwidth=0)
+        style.configure("TNotebook.Tab",background=BTN,foreground=DIM,font=FL,padding=[10,5])
+        style.map("TNotebook.Tab",background=[("selected",ACCENT)],foreground=[("selected","#ffffff")])
+        self._nb=ttk.Notebook(p);self._nb.pack(fill=tk.BOTH,expand=True)
+        for label,attr in [("  💬 Console  ","_tc"),("  📋 Task Queue  ","_tq"),
+                           ("  📁 Files  ","_tf"),("  🖼 Preview  ","_tp"),
+                           ("  🤖 Agents  ","_ta"),("  🧠 Memory  ","_tm")]:
+            f=tk.Frame(self._nb,bg=BG);setattr(self,attr,f);self._nb.add(f,text=label)
+        self._build_console(self._tc);self._build_taskqueue(self._tq)
+        self._build_files(self._tf);self._build_preview(self._tp)
+        self._build_agents(self._ta);self._build_memory(self._tm)
 
-        # Main area (notebook tabs)
-        right = tk.Frame(paned, bg=C["bg"])
-        paned.add(right, minsize=600)
-        self._build_main_area(right)
+    def _build_console(self,p):
+        self._out=scrolledtext.ScrolledText(p,bg=LOG_BG,fg=LOG_FG,font=FM,wrap=tk.WORD,
+                                            state=tk.DISABLED,relief=tk.FLAT,bd=0)
+        self._out.pack(fill=tk.BOTH,expand=True,padx=6,pady=6)
+        for tag,col in [("green",GREEN),("red",RED),("yellow",YELLOW),
+                        ("accent",ACCENT),("dim",DIM),("white",TEXT)]:
+            self._out.tag_config(tag,foreground=col)
+        inp=tk.Frame(p,bg=PANEL,pady=6);inp.pack(fill=tk.X,padx=6,pady=(0,6))
+        tk.Label(inp,text="umbra >",font=FM,fg=ACCENT,bg=PANEL).pack(side=tk.LEFT,padx=(8,4))
+        self._entry=tk.Entry(inp,bg=INP,fg=TEXT,font=FM,relief=tk.FLAT,insertbackground=TEXT,
+                             highlightthickness=1,highlightbackground=BORDER,highlightcolor=ACCENT)
+        self._entry.pack(side=tk.LEFT,fill=tk.X,expand=True,padx=4)
+        self._entry.bind("<Return>",self._on_enter)
+        self._entry.bind("<Up>",self._hist_up);self._entry.bind("<Down>",self._hist_dn)
+        self._entry.focus_set()
+        tk.Button(inp,text="Send ▶",font=FL,fg="#fff",bg=ACCENT,activebackground=ACCENT2,
+                  relief=tk.FLAT,padx=12,cursor="hand2",
+                  command=self._on_enter).pack(side=tk.RIGHT,padx=(4,8))
 
-    # ── SIDEBAR ───────────────────────────────────────────────────────────────
+    def _build_taskqueue(self,p):
+        tk.Label(p,text="Task Queue — Priority Controls",font=FL,fg=DIM,bg=BG).pack(pady=8,padx=10,anchor="w")
+        bar=tk.Frame(p,bg=BG);bar.pack(fill=tk.X,padx=10,pady=(0,4))
+        for lbl,cmd,col in [("🔄 Refresh",self._refresh_jobs,TEXT),("⬆ Priority Up",self._job_up,TEXT),
+                             ("⬇ Priority Down",self._job_dn,TEXT),("🗑 Remove",self._job_remove,RED)]:
+            tk.Button(bar,text=lbl,font=FS,fg=col,bg=BTN,relief=tk.FLAT,padx=8,command=cmd).pack(side=tk.LEFT,padx=2)
+        cols=("ID","Task","Type","Status","Priority")
+        self._jt=ttk.Treeview(p,columns=cols,show="headings",height=22)
+        for c,w in [("ID",50),("Task",380),("Type",100),("Status",100),("Priority",80)]:
+            self._jt.heading(c,text=c);self._jt.column(c,width=w)
+        sb=ttk.Scrollbar(p,orient=tk.VERTICAL,command=self._jt.yview)
+        self._jt.configure(yscrollcommand=sb.set)
+        self._jt.pack(side=tk.LEFT,fill=tk.BOTH,expand=True,padx=(10,0),pady=4)
+        sb.pack(side=tk.LEFT,fill=tk.Y,pady=4)
 
-    def _build_sidebar(self, parent):
-        tk.Label(parent, text="QUICK ACTIONS", font=FONT_SMALL,
-                 fg=C["dim"], bg=C["panel"]).pack(pady=(12, 4), padx=8, anchor="w")
+    def _refresh_jobs(self):
+        for i in self._jt.get_children(): self._jt.delete(i)
+        for j in self._jobs:
+            self._jt.insert("","end",values=(j["id"],j["task"][:60],j["type"],j["status"],j["priority"]))
 
-        actions = [
-            ("🔧 Fix All Bugs",         "fix all bugs"),
-            ("📊 Status",               "status"),
-            ("🎮 Build Game",           "build a full game called MyGame"),
-            ("🖼 Make Image",           "make an image of a fantasy landscape"),
-            ("🎬 Make GIF",             "make a gif of a dragon flying"),
-            ("📁 List Files",           "list files"),
-            ("🧹 Clean Old Files",      "clean up old files"),
-            ("💾 List Projects",        "projects"),
-            ("🔍 Scan Modules",         "scan modules"),
-            ("📋 Help / Commands",      "help"),
-        ]
-        for label, cmd in actions:
-            b = tk.Button(parent, text=label, font=FONT_SMALL,
-                          fg=C["text"], bg=C["btn"], activebackground=C["btn_h"],
-                          activeforeground=C["text"], relief=tk.FLAT,
-                          cursor="hand2", anchor="w", padx=10,
-                          command=lambda c=cmd: self._quick_action(c))
-            b.pack(fill=tk.X, padx=6, pady=2)
+    def _job_up(self):
+        sel=self._jt.selection()
+        if not sel: return
+        jid=self._jt.item(sel[0])["values"][0]
+        for j in self._jobs:
+            if j["id"]==jid: j["priority"]=min(10,j["priority"]+1)
+        self._jobs.sort(key=lambda x:-x["priority"]);self._refresh_jobs()
 
-        # Separator
-        tk.Frame(parent, bg=C["border"], height=1).pack(fill=tk.X, padx=8, pady=10)
-        tk.Label(parent, text="SYSTEM", font=FONT_SMALL,
-                 fg=C["dim"], bg=C["panel"]).pack(padx=8, anchor="w")
+    def _job_dn(self):
+        sel=self._jt.selection()
+        if not sel: return
+        jid=self._jt.item(sel[0])["values"][0]
+        for j in self._jobs:
+            if j["id"]==jid: j["priority"]=max(1,j["priority"]-1)
+        self._jobs.sort(key=lambda x:-x["priority"]);self._refresh_jobs()
 
-        sys_btns = [
-            ("▶ Play Last Game",  "run last"),
-            ("🔄 Restart Umbra",  "__restart__"),
-            ("✖ Close GUI",       "__close__"),
-        ]
-        for label, cmd in sys_btns:
-            b = tk.Button(parent, text=label, font=FONT_SMALL,
-                          fg=C["text"], bg=C["btn"], activebackground=C["btn_h"],
-                          activeforeground=C["text"], relief=tk.FLAT,
-                          cursor="hand2", anchor="w", padx=10,
-                          command=lambda c=cmd: self._sys_action(c))
-            b.pack(fill=tk.X, padx=6, pady=2)
+    def _job_remove(self):
+        sel=self._jt.selection()
+        if not sel: return
+        jid=self._jt.item(sel[0])["values"][0]
+        self._jobs=[j for j in self._jobs if j["id"]!=jid];self._refresh_jobs()
 
-        # Bottom status block
-        tk.Frame(parent, bg=C["border"], height=1).pack(fill=tk.X, padx=8, pady=10)
-        self._sidebar_status = tk.Label(parent, text="Model: qwen2.5-coder:32b\nOllama: checking...",
-                                        font=FONT_SMALL, fg=C["dim"], bg=C["panel"],
-                                        justify=tk.LEFT, wraplength=180)
-        self._sidebar_status.pack(padx=8, anchor="w")
+    def add_job(self,task,task_type="general",status="queued",priority=5):
+        self._job_id+=1
+        self._jobs.append({"id":self._job_id,"task":task,"type":task_type,
+                           "status":status,"priority":priority})
+        self._jobs.sort(key=lambda x:-x["priority"])
+        self.root.after(0,self._refresh_jobs)
 
-    # ── MAIN AREA TABS ────────────────────────────────────────────────────────
+    def update_job_status(self,task,status):
+        for j in self._jobs:
+            if task in j["task"]: j["status"]=status
+        self.root.after(0,self._refresh_jobs)
 
-    def _build_main_area(self, parent):
-        style = ttk.Style()
-        style.theme_use("default")
-        style.configure("TNotebook", background=C["bg"], borderwidth=0)
-        style.configure("TNotebook.Tab", background=C["btn"], foreground=C["dim"],
-                        font=FONT_LABEL, padding=[12, 6])
-        style.map("TNotebook.Tab",
-                  background=[("selected", C["accent"])],
-                  foreground=[("selected", "#ffffff")])
-
-        self._nb = ttk.Notebook(parent)
-        self._nb.pack(fill=tk.BOTH, expand=True)
-
-        self._tab_chat    = tk.Frame(self._nb, bg=C["bg"])
-        self._tab_tasks   = tk.Frame(self._nb, bg=C["bg"])
-        self._tab_files   = tk.Frame(self._nb, bg=C["bg"])
-        self._tab_agents  = tk.Frame(self._nb, bg=C["bg"])
-        self._tab_memory  = tk.Frame(self._nb, bg=C["bg"])
-
-        self._nb.add(self._tab_chat,   text="  💬 Chat / Console  ")
-        self._nb.add(self._tab_tasks,  text="  📋 Task Queue  ")
-        self._nb.add(self._tab_files,  text="  📁 Files  ")
-        self._nb.add(self._tab_agents, text="  🤖 Agents  ")
-        self._nb.add(self._tab_memory, text="  🧠 Memory  ")
-
-        self._build_chat_tab(self._tab_chat)
-        self._build_tasks_tab(self._tab_tasks)
-        self._build_files_tab(self._tab_files)
-        self._build_agents_tab(self._tab_agents)
-        self._build_memory_tab(self._tab_memory)
-
-    # ── CHAT TAB ─────────────────────────────────────────────────────────────
-
-    def _build_chat_tab(self, parent):
-        # Output log
-        log_frame = tk.Frame(parent, bg=C["bg"])
-        log_frame.pack(fill=tk.BOTH, expand=True, padx=6, pady=6)
-
-        self._log = scrolledtext.ScrolledText(
-            log_frame, bg=C["log_bg"], fg=C["log_text"],
-            font=FONT_MONO, wrap=tk.WORD, state=tk.DISABLED,
-            relief=tk.FLAT, borderwidth=0, insertbackground=C["text"],
-        )
-        self._log.pack(fill=tk.BOTH, expand=True)
-
-        # Tag colours for log
-        self._log.tag_config("green",  foreground=C["green"])
-        self._log.tag_config("red",    foreground=C["red"])
-        self._log.tag_config("yellow", foreground=C["yellow"])
-        self._log.tag_config("accent", foreground=C["accent"])
-        self._log.tag_config("dim",    foreground=C["dim"])
-        self._log.tag_config("white",  foreground=C["text"])
-
-        # Input area
-        input_frame = tk.Frame(parent, bg=C["panel"], pady=8)
-        input_frame.pack(fill=tk.X, side=tk.BOTTOM, padx=6, pady=(0, 6))
-
-        tk.Label(input_frame, text="umbra >", font=FONT_MONO,
-                 fg=C["accent"], bg=C["panel"]).pack(side=tk.LEFT, padx=(8, 4))
-
-        self._input = tk.Entry(input_frame, bg=C["input_bg"], fg=C["text"],
-                               font=FONT_MONO, relief=tk.FLAT, insertbackground=C["text"],
-                               highlightthickness=1, highlightbackground=C["border"],
-                               highlightcolor=C["accent"])
-        self._input.pack(side=tk.LEFT, fill=tk.X, expand=True, padx=4)
-        self._input.bind("<Return>",    self._on_enter)
-        self._input.bind("<Up>",        self._hist_up)
-        self._input.bind("<Down>",      self._hist_down)
-        self._input.focus_set()
-
-        send_btn = tk.Button(input_frame, text="Send ▶", font=FONT_LABEL,
-                             fg="#ffffff", bg=C["accent"],
-                             activebackground=C["accent2"], relief=tk.FLAT,
-                             padx=12, cursor="hand2", command=self._on_enter)
-        send_btn.pack(side=tk.RIGHT, padx=(4, 8))
-
-    # ── TASKS TAB ────────────────────────────────────────────────────────────
-
-    def _build_tasks_tab(self, parent):
-        tk.Label(parent, text="Task Queue & History", font=FONT_LABEL,
-                 fg=C["dim"], bg=C["bg"]).pack(pady=8, anchor="w", padx=10)
-
-        cols = ("Task", "Type", "Status", "Time")
-        self._task_tree = ttk.Treeview(parent, columns=cols, show="headings", height=20)
-        for c in cols:
-            self._task_tree.heading(c, text=c)
-            self._task_tree.column(c, width=200 if c == "Task" else 100)
-
-        sb = ttk.Scrollbar(parent, orient=tk.VERTICAL, command=self._task_tree.yview)
-        self._task_tree.configure(yscrollcommand=sb.set)
-        self._task_tree.pack(side=tk.LEFT, fill=tk.BOTH, expand=True, padx=(10, 0), pady=4)
-        sb.pack(side=tk.LEFT, fill=tk.Y, pady=4)
-
-        btn_frame = tk.Frame(parent, bg=C["bg"])
-        btn_frame.pack(side=tk.RIGHT, fill=tk.Y, padx=10)
-        tk.Button(btn_frame, text="Refresh", font=FONT_SMALL,
-                  fg=C["text"], bg=C["btn"], relief=tk.FLAT, padx=10,
-                  command=self._refresh_tasks).pack(pady=4, fill=tk.X)
-        tk.Button(btn_frame, text="Clear Done", font=FONT_SMALL,
-                  fg=C["text"], bg=C["btn"], relief=tk.FLAT, padx=10,
-                  command=self._clear_tasks).pack(pady=4, fill=tk.X)
-
-    # ── FILES TAB ────────────────────────────────────────────────────────────
-
-    def _build_files_tab(self, parent):
-        tk.Label(parent, text="Workspace Files", font=FONT_LABEL,
-                 fg=C["dim"], bg=C["bg"]).pack(pady=8, anchor="w", padx=10)
-
-        # Toolbar
-        bar = tk.Frame(parent, bg=C["bg"])
-        bar.pack(fill=tk.X, padx=10, pady=(0, 4))
-        tk.Button(bar, text="🔄 Refresh", font=FONT_SMALL, fg=C["text"], bg=C["btn"],
-                  relief=tk.FLAT, padx=8, command=self._refresh_files).pack(side=tk.LEFT, padx=2)
-        tk.Button(bar, text="📂 Open Folder", font=FONT_SMALL, fg=C["text"], bg=C["btn"],
-                  relief=tk.FLAT, padx=8, command=self._open_workspace).pack(side=tk.LEFT, padx=2)
-        tk.Button(bar, text="▶ Run Selected", font=FONT_SMALL, fg=C["text"], bg=C["btn"],
-                  relief=tk.FLAT, padx=8, command=self._run_selected).pack(side=tk.LEFT, padx=2)
-        tk.Button(bar, text="🗑 Delete Selected", font=FONT_SMALL, fg=C["red"], bg=C["btn"],
-                  relief=tk.FLAT, padx=8, command=self._delete_selected).pack(side=tk.LEFT, padx=2)
-
-        # File tree
-        cols = ("Name", "Size", "Modified", "Type")
-        self._file_tree = ttk.Treeview(parent, columns=cols, show="headings", height=22)
-        for c in cols:
-            self._file_tree.heading(c, text=c)
-        self._file_tree.column("Name", width=280)
-        self._file_tree.column("Size", width=80)
-        self._file_tree.column("Modified", width=140)
-        self._file_tree.column("Type", width=80)
-
-        sb2 = ttk.Scrollbar(parent, orient=tk.VERTICAL, command=self._file_tree.yview)
-        self._file_tree.configure(yscrollcommand=sb2.set)
-        self._file_tree.pack(side=tk.LEFT, fill=tk.BOTH, expand=True, padx=(10, 0), pady=4)
-        sb2.pack(side=tk.LEFT, fill=tk.Y, pady=4)
-        self._file_tree.bind("<Double-1>", self._on_file_double_click)
+    def _build_files(self,p):
+        tk.Label(p,text="Workspace Files",font=FL,fg=DIM,bg=BG).pack(pady=8,padx=10,anchor="w")
+        bar=tk.Frame(p,bg=BG);bar.pack(fill=tk.X,padx=10,pady=(0,4))
+        for lbl,cmd,col in [("🔄 Refresh",self._refresh_files,TEXT),("📂 Open",self._open_ws,TEXT),
+                             ("▶ Run",self._run_sel,TEXT),("🖼 Preview",self._preview_sel,TEXT),
+                             ("🗑 Delete",self._del_sel,RED)]:
+            tk.Button(bar,text=lbl,font=FS,fg=col,bg=BTN,relief=tk.FLAT,padx=8,command=cmd).pack(side=tk.LEFT,padx=2)
+        cols=("Name","Size","Modified","Type")
+        self._ft=ttk.Treeview(p,columns=cols,show="headings",height=22)
+        for c,w in [("Name",320),("Size",80),("Modified",140),("Type",80)]:
+            self._ft.heading(c,text=c);self._ft.column(c,width=w)
+        sb2=ttk.Scrollbar(p,orient=tk.VERTICAL,command=self._ft.yview)
+        self._ft.configure(yscrollcommand=sb2.set)
+        self._ft.pack(side=tk.LEFT,fill=tk.BOTH,expand=True,padx=(10,0),pady=4)
+        sb2.pack(side=tk.LEFT,fill=tk.Y,pady=4)
+        self._ft.bind("<Double-1>",lambda e:self._run_sel())
         self._refresh_files()
 
-    # ── AGENTS TAB ───────────────────────────────────────────────────────────
+    def _refresh_files(self):
+        for i in self._ft.get_children(): self._ft.delete(i)
+        if not os.path.isdir(self._ws): return
+        for root,dirs,files in os.walk(self._ws):
+            dirs[:]=[d for d in dirs if d not in ("__pycache__",".git")]
+            level=root.replace(self._ws,"").count(os.sep)
+            if level>3: continue
+            rel=os.path.relpath(root,self._ws)
+            if rel!=".": self._ft.insert("","end",values=("📁 "+rel+"/","","","folder"),tags=("",))
+            for fn in sorted(files)[:30]:
+                fp=os.path.join(root,fn)
+                try:
+                    sz=os.path.getsize(fp)
+                    mod=time.strftime("%Y-%m-%d %H:%M",time.localtime(os.path.getmtime(fp)))
+                    ext=os.path.splitext(fn)[1]
+                    self._ft.insert("","end",values=(fn,f"{sz//1024}KB" if sz>1024 else f"{sz}B",mod,ext),tags=(fp,))
+                except Exception: pass
 
-    def _build_agents_tab(self, parent):
-        tk.Label(parent, text="Agent Status", font=FONT_LABEL,
-                 fg=C["dim"], bg=C["bg"]).pack(pady=8, anchor="w", padx=10)
+    def _open_ws(self):
+        os.makedirs(self._ws,exist_ok=True)
+        if sys.platform=="win32": os.startfile(self._ws)
+        else: subprocess.Popen(["xdg-open",self._ws])
 
-        agents = [
-            ("World Agent",     "Generates game world, biomes, maps"),
-            ("Character Agent", "Player, enemy, NPC classes and stats"),
-            ("Item Agent",      "Weapons, armor, spells, loot tables"),
-            ("Mechanic Agent",  "Combat, crafting, quests systems"),
-            ("UI Agent",        "HUD, menus, inventory, dialogue panels"),
-            ("Quest Agent",     "Quest data, spawn logic, progression"),
-            ("Economy Agent",   "Shops, crafting recipes, building costs"),
-            ("Image Agent",     "ComfyUI image generation pipeline"),
-            ("Sprite Agent",    "PIL pixel-art sprite generator"),
-            ("GIF Agent",       "PIL animated GIF generator"),
-            ("TTS Agent",       "Text-to-speech via pyttsx3"),
-            ("Voice Agent",     "Speech recognition input"),
-            ("Code Agent",      "Ollama code generation pipeline"),
-            ("Repair Agent",    "Syntax checking and auto-repair"),
-        ]
-        frame = tk.Frame(parent, bg=C["bg"])
-        frame.pack(fill=tk.BOTH, expand=True, padx=10, pady=4)
+    def _sel_path(self):
+        sel=self._ft.selection()
+        if not sel: return None
+        tags=self._ft.item(sel[0],"tags")
+        return tags[0] if tags and tags[0] and os.path.isfile(tags[0]) else None
 
-        cols = ("Agent", "Description", "Status")
-        tree = ttk.Treeview(frame, columns=cols, show="headings", height=20)
-        tree.heading("Agent",       text="Agent")
-        tree.heading("Description", text="Description")
-        tree.heading("Status",      text="Status")
-        tree.column("Agent",       width=160)
-        tree.column("Description", width=380)
-        tree.column("Status",      width=100)
+    def _run_sel(self):
+        fp=self._sel_path()
+        if fp and fp.endswith(".py"):
+            subprocess.Popen([sys.executable,fp],cwd=os.path.dirname(fp))
+            self.log("[GUI] Launched: "+fp,GREEN)
 
-        for name, desc in agents:
-            tree.insert("", tk.END, values=(name, desc, "standby"))
+    def _preview_sel(self):
+        fp=self._sel_path()
+        if not fp: return
+        if os.path.splitext(fp)[1].lower() in (".png",".jpg",".jpeg",".gif",".bmp"):
+            self._show_preview(fp);self._nb.select(self._tp)
 
-        sb3 = ttk.Scrollbar(frame, orient=tk.VERTICAL, command=tree.yview)
-        tree.configure(yscrollcommand=sb3.set)
-        tree.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
-        sb3.pack(side=tk.LEFT, fill=tk.Y)
-        self._agent_tree = tree
+    def _del_sel(self):
+        fp=self._sel_path()
+        if not fp: return
+        if messagebox.askyesno("Delete",f"Delete {os.path.basename(fp)}?"):
+            try: os.remove(fp);self.log("[GUI] Deleted: "+fp,YELLOW);self._refresh_files()
+            except Exception as e: self.log("[GUI] Error: "+str(e),RED)
 
-    # ── MEMORY TAB ───────────────────────────────────────────────────────────
+    def _build_preview(self,p):
+        tk.Label(p,text="Image / Video Preview",font=FL,fg=DIM,bg=BG).pack(pady=8,padx=10,anchor="w")
+        bar=tk.Frame(p,bg=BG);bar.pack(fill=tk.X,padx=10,pady=(0,4))
+        tk.Button(bar,text="📂 Browse",font=FS,fg=TEXT,bg=BTN,relief=tk.FLAT,
+                  padx=8,command=self._browse_img).pack(side=tk.LEFT,padx=2)
+        tk.Button(bar,text="🔄 Latest",font=FS,fg=TEXT,bg=BTN,relief=tk.FLAT,
+                  padx=8,command=self._load_latest).pack(side=tk.LEFT,padx=2)
+        self._prev_lbl=tk.Label(p,bg=BG,fg=DIM,font=FL,wraplength=700,
+                                text="No image loaded.\nGenerate one with: make an image of a dragon")
+        self._prev_lbl.pack(fill=tk.BOTH,expand=True,padx=20,pady=20)
+        self._prev_info=tk.Label(p,text="",fg=DIM,bg=BG,font=FS)
+        self._prev_info.pack(pady=4)
 
-    def _build_memory_tab(self, parent):
-        tk.Label(parent, text="Runtime Memory", font=FONT_LABEL,
-                 fg=C["dim"], bg=C["bg"]).pack(pady=8, anchor="w", padx=10)
-
-        bar = tk.Frame(parent, bg=C["bg"])
-        bar.pack(fill=tk.X, padx=10, pady=(0, 4))
-        tk.Button(bar, text="🔄 Refresh", font=FONT_SMALL, fg=C["text"], bg=C["btn"],
-                  relief=tk.FLAT, padx=8, command=self._refresh_memory).pack(side=tk.LEFT, padx=2)
-        tk.Label(bar, text="Search:", fg=C["dim"], bg=C["bg"],
-                 font=FONT_SMALL).pack(side=tk.LEFT, padx=(10, 4))
-        self._mem_search = tk.Entry(bar, bg=C["input_bg"], fg=C["text"],
-                                    font=FONT_SMALL, width=30, relief=tk.FLAT)
-        self._mem_search.pack(side=tk.LEFT)
-        self._mem_search.bind("<Return>", lambda e: self._refresh_memory())
-
-        cols = ("Key", "Value", "Tags")
-        self._mem_tree = ttk.Treeview(parent, columns=cols, show="headings", height=22)
-        self._mem_tree.heading("Key",   text="Key")
-        self._mem_tree.heading("Value", text="Value")
-        self._mem_tree.heading("Tags",  text="Tags")
-        self._mem_tree.column("Key",   width=200)
-        self._mem_tree.column("Value", width=360)
-        self._mem_tree.column("Tags",  width=160)
-
-        sb4 = ttk.Scrollbar(parent, orient=tk.VERTICAL, command=self._mem_tree.yview)
-        self._mem_tree.configure(yscrollcommand=sb4.set)
-        self._mem_tree.pack(side=tk.LEFT, fill=tk.BOTH, expand=True, padx=(10, 0), pady=4)
-        sb4.pack(side=tk.LEFT, fill=tk.Y, pady=4)
-
-    # ─────────────────────────────────────────────────────────────────────────
-    # LOGGING — thread-safe
-    # ─────────────────────────────────────────────────────────────────────────
-
-    def _log(self, msg: str):
-        """Internal alias; kept for backward compatibility."""
-        self.log(msg)
-
-    def log(self, msg: str, colour: str = None):
-        """Post a message to the output log (thread-safe)."""
-        self._out_queue.put(("log", str(msg), colour))
-
-    def post_message(self, text: str):
-        """Called by Umbra runtime to push output into the GUI."""
-        self.log(text)
-
-    def _drain_queue(self):
-        """Drain the output queue and write to the log widget."""
+    def _show_preview(self,path):
         try:
-            while True:
-                item = self._out_queue.get_nowait()
-                if item[0] == "log":
-                    _, msg, colour = item
-                    self._write_log(msg, colour)
-        except queue.Empty:
-            pass
-        if self._running:
-            self.after(80, self._drain_queue)
+            from PIL import Image,ImageTk
+            img=Image.open(path);img.thumbnail((750,520),Image.LANCZOS)
+            self._prev_photo=ImageTk.PhotoImage(img)
+            self._prev_lbl.configure(image=self._prev_photo,text="")
+            sz=os.path.getsize(path)
+            self._prev_info.configure(text=f"{os.path.basename(path)}  |  {img.size[0]}x{img.size[1]}  |  {sz//1024}KB")
+        except ImportError:
+            self._prev_lbl.configure(text=f"Install Pillow: pip install Pillow\nFile: {path}",image="")
+        except Exception as e:
+            self._prev_lbl.configure(text=f"Cannot preview: {e}",image="")
 
-    def _write_log(self, msg: str, colour: str = None):
-        self._log.configure(state=tk.NORMAL)
-        ts  = time.strftime("%H:%M:%S")
-        tag = "white"
-        # Auto-colour based on message prefix
-        low = msg.lower()
-        if colour:
-            # Map hex colour to tag name
-            rev = {C["green"]: "green", C["red"]: "red",
-                   C["yellow"]: "yellow", C["accent"]: "accent"}
-            tag = rev.get(colour, "white")
-        elif any(x in low for x in ("[error]", "[fail]", "[broken]", "failed")):
-            tag = "red"
-        elif any(x in low for x in ("[ok]", "[done]", "[success]", "complete", "saved", "ready")):
-            tag = "green"
-        elif any(x in low for x in ("[warn]", "[warning]", "missing", "not available")):
-            tag = "yellow"
-        elif any(x in low for x in ("[umbra]", "[build]", "[plan]", "[agent]")):
-            tag = "accent"
-        elif msg.startswith("  ") or msg.startswith("["):
-            tag = "dim"
+    def _browse_img(self):
+        fp=filedialog.askopenfilename(title="Open Image",
+                                      initialdir=os.path.join(self._ws,"images"),
+                                      filetypes=[("Images","*.png *.jpg *.jpeg *.gif *.bmp"),("All","*.*")])
+        if fp: self._show_preview(fp)
 
-        self._log.insert(tk.END, f"[{ts}] {msg}\n", tag)
-        self._log.see(tk.END)
-        self._log.configure(state=tk.DISABLED)
+    def _load_latest(self):
+        img_dir=os.path.join(self._ws,"images")
+        if not os.path.isdir(img_dir): return
+        imgs=[(os.path.getmtime(os.path.join(img_dir,f)),os.path.join(img_dir,f))
+              for f in os.listdir(img_dir) if f.lower().endswith((".png",".jpg",".jpeg",".gif"))]
+        if imgs:
+            imgs.sort(reverse=True);self._show_preview(imgs[0][1]);self._nb.select(self._tp)
 
-    def _start_queue_drain(self):
-        self.after(80, self._drain_queue)
+    def _build_agents(self,p):
+        tk.Label(p,text="Agent Status",font=FL,fg=DIM,bg=BG).pack(pady=8,padx=10,anchor="w")
+        agents=[("World Agent","World map, biomes, towns, bandit camps"),
+                ("Character Agent","Player, Enemy, NPC classes and stats"),
+                ("Item Agent","Weapons, armor, spells, loot tables"),
+                ("Mechanic Agent","Combat, crafting, save/load systems"),
+                ("UI Agent","HUD, menus, inventory, dialogue panels"),
+                ("Quest Agent","Quest data, spawn logic, progression"),
+                ("Economy Agent","Shops, crafting recipes, building costs"),
+                ("Image Agent","ComfyUI image generation pipeline"),
+                ("Sprite Agent","PIL pixel-art sprite generator"),
+                ("GIF Agent","PIL animated GIF generator"),
+                ("TTS Agent","Text-to-speech via pyttsx3"),
+                ("Voice Agent","Speech recognition input"),
+                ("Code Agent","Ollama code generation pipeline"),
+                ("Repair Agent","Syntax checking and auto-repair")]
+        cols=("Agent","Description","Status")
+        self._ag=ttk.Treeview(p,columns=cols,show="headings",height=18)
+        self._ag.heading("Agent",text="Agent");self._ag.column("Agent",width=160)
+        self._ag.heading("Description",text="Description");self._ag.column("Description",width=400)
+        self._ag.heading("Status",text="Status");self._ag.column("Status",width=100)
+        for name,desc in agents: self._ag.insert("","end",values=(name,desc,"standby"))
+        sb3=ttk.Scrollbar(p,orient=tk.VERTICAL,command=self._ag.yview)
+        self._ag.configure(yscrollcommand=sb3.set)
+        self._ag.pack(side=tk.LEFT,fill=tk.BOTH,expand=True,padx=10,pady=4)
+        sb3.pack(side=tk.LEFT,fill=tk.Y,pady=4)
 
-    # ─────────────────────────────────────────────────────────────────────────
-    # COMMAND INPUT
-    # ─────────────────────────────────────────────────────────────────────────
+    def update_agent_status(self,agent_name,status):
+        for item in self._ag.get_children():
+            vals=self._ag.item(item)["values"]
+            if vals and agent_name.lower() in str(vals[0]).lower():
+                self._ag.item(item,values=(vals[0],vals[1],status));break
 
-    def _on_enter(self, event=None):
-        text = self._input.get().strip()
-        if not text:
-            return
-        self._input.delete(0, tk.END)
-        # History
-        if not self._history or self._history[-1] != text:
-            self._history.append(text)
-        self._hist_idx = len(self._history)
-        # Echo to log
-        self.log(f"you > {text}", colour=C["accent"])
-        # Send command
-        self._send_command(text)
+    def _build_memory(self,p):
+        tk.Label(p,text="Runtime Memory",font=FL,fg=DIM,bg=BG).pack(pady=8,padx=10,anchor="w")
+        bar=tk.Frame(p,bg=BG);bar.pack(fill=tk.X,padx=10,pady=(0,4))
+        tk.Button(bar,text="🔄 Refresh",font=FS,fg=TEXT,bg=BTN,relief=tk.FLAT,
+                  padx=8,command=self._refresh_mem).pack(side=tk.LEFT,padx=2)
+        tk.Label(bar,text="Search:",fg=DIM,bg=BG,font=FS).pack(side=tk.LEFT,padx=(10,4))
+        self._mem_srch=tk.Entry(bar,bg=INP,fg=TEXT,font=FS,width=30,relief=tk.FLAT)
+        self._mem_srch.pack(side=tk.LEFT)
+        self._mem_srch.bind("<Return>",lambda e:self._refresh_mem())
+        cols=("Key","Value","Tags")
+        self._mt=ttk.Treeview(p,columns=cols,show="headings",height=22)
+        for c,w in [("Key",200),("Value",400),("Tags",160)]:
+            self._mt.heading(c,text=c);self._mt.column(c,width=w)
+        sb4=ttk.Scrollbar(p,orient=tk.VERTICAL,command=self._mt.yview)
+        self._mt.configure(yscrollcommand=sb4.set)
+        self._mt.pack(side=tk.LEFT,fill=tk.BOTH,expand=True,padx=(10,0),pady=4)
+        sb4.pack(side=tk.LEFT,fill=tk.Y,pady=4)
 
-    def _send_command(self, text: str):
-        """Send a command to Umbra in a background thread."""
+    def _refresh_mem(self):
+        for i in self._mt.get_children(): self._mt.delete(i)
+        if not self.runtime: return
+        mem=(self.runtime.get("memory") if isinstance(self.runtime,dict)
+             else getattr(self.runtime,"memory",None))
+        if not mem: return
+        q=self._mem_srch.get().strip().lower()
+        try:
+            for e in (mem.list_all() if hasattr(mem,"list_all") else []):
+                k=str(e.get("key",""));v=str(e.get("value",""))[:120];t=str(e.get("tags",""))
+                if not q or q in k.lower() or q in v.lower():
+                    self._mt.insert("","end",values=(k,v,t))
+        except Exception: pass
+
+    def _start_drain(self): self.root.after(50,self._drain)
+
+    def _drain(self):
+        if not self._running: return
+        try:
+            count=0
+            while count<50:
+                msg,col=self._q.get_nowait();self._write(msg,col);count+=1
+        except queue.Empty: pass
+        self.root.after(50,self._drain)
+
+    def _write(self,msg,col=None):
+        self._out.configure(state=tk.NORMAL)
+        ts=time.strftime("%H:%M:%S");low=msg.lower()
+        if col:
+            rev={GREEN:"green",RED:"red",YELLOW:"yellow",ACCENT:"accent",DIM:"dim"}
+            tag=rev.get(col,"white")
+        elif any(x in low for x in ["[error]","[fail]","failed","error:"]):tag="red"
+        elif any(x in low for x in ["[ok]","[done]","complete","saved","built","ready","✓"]):tag="green"
+        elif any(x in low for x in ["[warn]","warning","missing","offline","stream error"]):tag="yellow"
+        elif any(x in low for x in ["[umbra]","[agent","[plan]","[build]","[stitch]","[you]","[syntax]","[test]"]):tag="accent"
+        elif msg.startswith("  ") or msg.startswith("[") or msg.startswith("╔") or msg.startswith("╚"):tag="dim"
+        else:tag="white"
+        self._out.insert(tk.END,f"[{ts}] {msg}\n",tag)
+        self._out.see(tk.END);self._out.configure(state=tk.DISABLED)
+
+    def _on_enter(self,event=None):
+        text=self._entry.get().strip()
+        if not text: return
+        self._entry.delete(0,tk.END)
+        if not self._history or self._history[-1]!=text: self._history.append(text)
+        self._hist_idx=len(self._history)
+        self.log(f"[YOU] {text}",ACCENT);self._send(text)
+
+    def _send(self,text):
+        ttype=("game" if any(w in text.lower() for w in ["game","rpg"])
+               else "image" if "image" in text.lower()
+               else "gif" if "gif" in text.lower() else "general")
+        self.add_job(text,ttype,"running")
+        self._prog.pack(fill=tk.X);self._prog.start(10)
+        self._status_lbl.configure(text="● WORKING",fg=YELLOW)
         def _run():
             try:
-                if self.process_fn and callable(self.process_fn):
-                    self.process_fn(self.runtime, text)
+                if self.process_fn and self.runtime: self.process_fn(self.runtime,text)
                 elif self.runtime:
-                    # Try common patterns
-                    for attr in ("run_prompt", "process", "handle"):
-                        fn = getattr(self.runtime, attr, None)
-                        if fn:
-                            fn(text)
-                            return
-                    self.log("[GUI] No process function connected to runtime.", colour=C["yellow"])
-                else:
-                    self.log("[GUI] Runtime not connected.", colour=C["yellow"])
+                    for attr in ("run_prompt","process","handle"):
+                        fn=getattr(self.runtime,attr,None)
+                        if fn: fn(text);break
+                else: self.log("[GUI] No runtime.",YELLOW)
             except Exception as e:
-                self.log(f"[ERROR] Command failed: {e}", colour=C["red"])
+                self.log(f"[ERROR] {e}",RED)
+            finally:
+                self.root.after(0,self._task_done)
+                self.update_job_status(text,"done")
+        threading.Thread(target=_run,daemon=True).start()
 
-        t = threading.Thread(target=_run, daemon=True)
-        t.start()
+    def _task_done(self):
+        try: self._prog.stop();self._prog.pack_forget()
+        except Exception: pass
+        self._status_lbl.configure(text="● READY",fg=GREEN)
+        self._refresh_files()
+        self.root.after(500,self._load_latest)
 
-    def _quick_action(self, cmd: str):
-        self._input.delete(0, tk.END)
-        self._input.insert(0, cmd)
-        self._on_enter()
+    def _quick(self,cmd):
+        self._entry.delete(0,tk.END);self._entry.insert(0,cmd);self._on_enter()
 
-    def _sys_action(self, cmd: str):
-        if cmd == "__close__":
-            self._on_close()
-        elif cmd == "__restart__":
-            self.log("[GUI] Restarting Umbra...", colour=C["yellow"])
-            self.after(500, lambda: subprocess.Popen(
-                [sys.executable, os.path.join(_UMBRA_ROOT, "Umbra.py")],
-                cwd=_UMBRA_ROOT))
-        else:
-            self._quick_action(cmd)
+    def _hist_up(self,e=None):
+        if not self._history: return
+        self._hist_idx=max(0,self._hist_idx-1)
+        self._entry.delete(0,tk.END);self._entry.insert(0,self._history[self._hist_idx])
 
-    def _hist_up(self, event=None):
-        if not self._history:
-            return
-        self._hist_idx = max(0, self._hist_idx - 1)
-        self._input.delete(0, tk.END)
-        self._input.insert(0, self._history[self._hist_idx])
+    def _hist_dn(self,e=None):
+        if not self._history: return
+        self._hist_idx=min(len(self._history),self._hist_idx+1)
+        self._entry.delete(0,tk.END)
+        if self._hist_idx<len(self._history): self._entry.insert(0,self._history[self._hist_idx])
 
-    def _hist_down(self, event=None):
-        if not self._history:
-            return
-        self._hist_idx = min(len(self._history), self._hist_idx + 1)
-        self._input.delete(0, tk.END)
-        if self._hist_idx < len(self._history):
-            self._input.insert(0, self._history[self._hist_idx])
-
-    # ─────────────────────────────────────────────────────────────────────────
-    # TASKS TAB LOGIC
-    # ─────────────────────────────────────────────────────────────────────────
-
-    def _refresh_tasks(self):
-        for item in self._task_tree.get_children():
-            self._task_tree.delete(item)
-        if not self.runtime:
-            return
-        # Pull from task engine if available
-        spine = getattr(self.runtime, "spine", None)
-        if spine:
-            for r in spine.get_history()[-50:]:
-                ts = time.strftime("%H:%M:%S", time.localtime(r.get("timestamp", 0)))
-                self._task_tree.insert("", tk.END, values=(
-                    r.get("prompt", "")[:60],
-                    r.get("task_type", "?"),
-                    r.get("status", "?"),
-                    ts,
-                ))
-
-    def _clear_tasks(self):
-        for item in self._task_tree.get_children():
-            self._task_tree.delete(item)
-
-    # ─────────────────────────────────────────────────────────────────────────
-    # FILES TAB LOGIC
-    # ─────────────────────────────────────────────────────────────────────────
-
-    def _refresh_files(self):
-        for item in self._file_tree.get_children():
-            self._file_tree.delete(item)
-        ws = self._workspace
-        if not os.path.isdir(ws):
-            return
-        for root, dirs, files in os.walk(ws):
-            dirs[:] = [d for d in dirs if d not in ("__pycache__", ".git", "venv")]
-            level = root.replace(ws, "").count(os.sep)
-            if level > 2:
-                continue
-            rel = os.path.relpath(root, ws)
-            if rel != ".":
-                self._file_tree.insert("", tk.END, values=(
-                    "📁 " + rel + "/", "", "", "folder"))
-            for fname in sorted(files)[:40]:
-                fp = os.path.join(root, fname)
-                try:
-                    sz  = os.path.getsize(fp)
-                    mod = time.strftime("%Y-%m-%d %H:%M", time.localtime(os.path.getmtime(fp)))
-                    ext = os.path.splitext(fname)[1]
-                    sz_str = f"{sz//1024}KB" if sz > 1024 else f"{sz}B"
-                    self._file_tree.insert("", tk.END,
-                                           values=(fname, sz_str, mod, ext),
-                                           tags=(fp,))
-                except Exception:
-                    pass
-
-    def _open_workspace(self):
-        ws = self._workspace
-        os.makedirs(ws, exist_ok=True)
-        if sys.platform == "win32":
-            os.startfile(ws)
-        elif sys.platform == "darwin":
-            subprocess.Popen(["open", ws])
-        else:
-            subprocess.Popen(["xdg-open", ws])
-
-    def _run_selected(self):
-        sel = self._file_tree.selection()
-        if not sel:
-            return
-        tags = self._file_tree.item(sel[0], "tags")
-        if tags:
-            fp = tags[0]
-            if fp.endswith(".py") and os.path.isfile(fp):
-                subprocess.Popen([sys.executable, fp], cwd=os.path.dirname(fp))
-                self.log(f"[GUI] Launched: {fp}", colour=C["green"])
-
-    def _delete_selected(self):
-        sel = self._file_tree.selection()
-        if not sel:
-            return
-        tags = self._file_tree.item(sel[0], "tags")
-        if not tags:
-            return
-        fp = tags[0]
-        if not os.path.isfile(fp):
-            return
-        if messagebox.askyesno("Delete", f"Delete {os.path.basename(fp)}?"):
+    def _update_side_info(self):
+        def _chk(url):
             try:
-                os.remove(fp)
-                self.log(f"[GUI] Deleted: {fp}", colour=C["yellow"])
-                self._refresh_files()
-            except Exception as e:
-                self.log(f"[ERROR] Delete failed: {e}", colour=C["red"])
-
-    def _on_file_double_click(self, event=None):
-        self._run_selected()
-
-    # ─────────────────────────────────────────────────────────────────────────
-    # MEMORY TAB LOGIC
-    # ─────────────────────────────────────────────────────────────────────────
-
-    def _refresh_memory(self):
-        for item in self._mem_tree.get_children():
-            self._mem_tree.delete(item)
-        if not self.runtime:
-            return
-        mem = None
-        if isinstance(self.runtime, dict):
-            mem = self.runtime.get("memory")
-        else:
-            mem = getattr(self.runtime, "memory", None)
-        if not mem:
-            return
-        query = self._mem_search.get().strip().lower()
-        try:
-            entries = mem.list_all() if hasattr(mem, "list_all") else []
-        except Exception:
-            entries = []
-        for entry in entries:
-            key   = str(entry.get("key",   ""))
-            value = str(entry.get("value", ""))[:120]
-            tags  = str(entry.get("tags",  ""))
-            if query and query not in key.lower() and query not in value.lower():
-                continue
-            self._mem_tree.insert("", tk.END, values=(key, value, tags))
-
-    # ─────────────────────────────────────────────────────────────────────────
-    # CLOSE
-    # ─────────────────────────────────────────────────────────────────────────
+                import urllib.request;urllib.request.urlopen(url,timeout=1).close();return True
+            except Exception: return False
+        o="online ✓" if _chk("http://localhost:11434/api/tags") else "offline"
+        c="online ✓" if _chk("http://127.0.0.1:8188/system_stats") else "offline"
+        self._side_info.configure(text=f"Ollama: {o}\nComfyUI: {c}")
+        self.root.after(15000,self._update_side_info)
 
     def _on_close(self):
-        self._running = False
-        try:
-            self.destroy()
-        except Exception:
-            pass
+        if messagebox.askyesno("Close Umbra","Close Umbra completely?"):
+            self._running=False
+            try: self.root.destroy()
+            except Exception: pass
+            import os as _os;_os._exit(0)
 
 
-# ─────────────────────────────────────────────────────────────────────────────
-# Standalone launch (for testing)
-# ─────────────────────────────────────────────────────────────────────────────
-def launch_control_center(runtime=None, process_fn=None):
-    """Launch the GUI in the main thread. Called from Umbra._launch_gui()."""
-    app = UmbraControlCenter(runtime=runtime, process_fn=process_fn)
-    app.mainloop()
-    return app
+def launch_in_thread(runtime=None,process_fn=None):
+    """Create GUI window. Caller must call .mainloop() on main thread."""
+    return UmbraControlCenter(runtime=runtime,process_fn=process_fn)
 
+def launch_control_center(runtime=None,process_fn=None):
+    app=UmbraControlCenter(runtime=runtime,process_fn=process_fn)
+    app.mainloop();return app
 
-def launch_in_thread(runtime=None, process_fn=None):
-    """Launch GUI in a daemon thread (non-blocking)."""
-    ref = [None]
-
-    def _run():
-        ref[0] = UmbraControlCenter(runtime=runtime, process_fn=process_fn)
-        ref[0].mainloop()
-
-    t = threading.Thread(target=_run, daemon=True)
-    t.start()
-    # Wait briefly for window to appear
-    for _ in range(20):
-        time.sleep(0.1)
-        if ref[0] is not None:
-            break
-    return ref[0]
-
-
-if __name__ == "__main__":
-    # Test mode — runs with no runtime
-    app = UmbraControlCenter()
-    app.log("Umbra Control Center — test mode", colour=C["green"])
-    app.log("No runtime connected. Commands will echo only.", colour=C["yellow"])
+if __name__=="__main__":
+    app=UmbraControlCenter()
+    app.log("Standalone test — no runtime",YELLOW)
     app.mainloop()

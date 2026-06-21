@@ -207,8 +207,7 @@ def t_val():
         "import pygame,json\n"
         "WORLD_MAP=[];WEAPONS=[];SPELLS=[];QUESTS=[];ENEMY_DEFS=[]\n"
         "atk=1;hp=1;PAUSE='P'\n"
-        "def draw_bar(): pass\n"
-        "def draw_x_button(): pass\n"
+        "def draw_bar(): pass\ndef draw_x_button(): pass\n"
         "def main():\n"
         "    pygame.init()\n"
         "    screen=pygame.display.set_mode((1280,720))\n"
@@ -220,22 +219,14 @@ def t_val():
         "                if e.key==pygame.K_ESCAPE: pass\n"
         "                if e.key==pygame.K_i: pass\n"
         "                if e.key==pygame.K_q: pass\n"
-        "        keys=pygame.key.get_pressed()\n"
-        "        if keys[pygame.K_w]: pass\n"
-        "        if keys[pygame.K_s]: pass\n"
-        "        if keys[pygame.K_a]: pass\n"
-        "        if keys[pygame.K_d]: pass\n"
-        "        json.dump({},open('x','w')); json.load(open('x'))\n"
+        "        k=pygame.key.get_pressed()\n"
+        "        if k[pygame.K_w] or k[pygame.K_s] or k[pygame.K_a] or k[pygame.K_d]: pass\n"
         "        clock.tick(60)\n"
-        "if __name__=='__main__': main()\n"
+        "if __name__==\'__main__\': main()\n"
     )
-    res=m._validate_requirements(sample)
-    # Handles tuple, list, dict — any format
-    try:
-        a,b=res; passed=list(a)
-    except (TypeError,ValueError):
-        passed=list(res[0]) if hasattr(res,"__getitem__") else []
-    assert len(passed)>=6,"Only "+str(len(passed))+" passed"
+    passed, failed = m._validate_requirements(sample)
+    assert len(passed)>=6,"Only "+str(len(passed))+" reqs passed, failed="+str(failed)
+
 test("_validate_requirements() checks game code correctly",t_val)
 
 # ── RESULT ──

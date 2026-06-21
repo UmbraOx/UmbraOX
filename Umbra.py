@@ -158,6 +158,11 @@ def _find_broken_modules():
 _gui_ref = None  # Set after GUI launches
 
 
+def _umbra_mem(rt):
+    """Safe memory accessor."""
+    return rt.get("memory")
+
+
 def _umbra_print(text):
     """Print to CLI and send to GUI if running."""
     print(text)
@@ -1004,7 +1009,7 @@ _REQUIREMENTS = [
     ("weapons_data",      lambda code: "WEAPONS" in code),
     ("spells_data",       lambda code: "SPELLS" in code),
     ("save_load",         lambda code: "json.dump" in code and "json.load" in code),
-    ("no_input_calls",    lambda code: "_safe_input(" not in code, ""),
+    ("no_input_calls",    lambda code: "_safe_input(" not in code),
     ("main_guard",        lambda code: '__name__' in code and 'main()' in code),
 ]
 
@@ -1611,6 +1616,9 @@ def _run_real_pipeline(runtime, prompt, active_project=None, pm=None):
     _umbra_print("[PLAN] " + str(len(steps)) + " step(s):")
     for s in steps:
         _umbra_print("  " + str(s.get("step", "?")) + ". " + s.get("description", "")[:60])
+    if not steps:
+        _umbra_print("[PLAN] LLM returned empty plan — using direct build...")
+        steps = [{"step": prompt, "description": prompt, "filename": "output.py"}]
 
     written_files = []
     for step in steps:
@@ -2198,6 +2206,21 @@ def build_runtime():
     except Exception:
         pass
 
+    # Auto-start Ollama if not running
+    try:
+        import urllib.request as _ur2
+        _ur2.urlopen("http://localhost:11434/api/tags", timeout=2).close()
+    except Exception:
+        try:
+            if sys.platform == "win32":
+                subprocess.Popen(["ollama", "serve"],
+                                 creationflags=subprocess.CREATE_NO_WINDOW,
+                                 stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+                print("  [UMBRA] Starting Ollama...")
+                import time as _t2; _t2.sleep(3)
+        except Exception:
+            pass
+
     def _si(mod_path, cls_name, *a, **kw):
         try:
             m = __import__(mod_path, fromlist=[cls_name])
@@ -2411,9 +2434,19 @@ def print_status(runtime):
         try:
             _umbra_print("  Provider : " + llm.get_provider() + (" (FREE)" if llm.is_free() else ""))
             _umbra_print("  Model    : " + llm.get_model())
-            _umbra_print("  Ready    : " + ("YES" if llm.is_configured() else "NO — check umbra_config.json"))
+            _umbra_print("  Ready    : " + ("YES" if llm.is_configured() else "NO"))
         except Exception:
-            _umbra_print("  LLM      : loaded (details unavailable)")
+            # Try reading directly from Ollama
+            try:
+                import urllib.request as _ur, json as _jj
+                with _ur.urlopen("http://localhost:11434/api/tags", timeout=3) as _r:
+                    _models = [m["name"] for m in _jj.loads(_r.read()).get("models",[])]
+                _model = _get_agent_model()
+                _umbra_print("  Provider : Ollama (local, FREE)")
+                _umbra_print("  Model    : " + _model)
+                _umbra_print("  Ready    : YES — " + str(len(_models)) + " model(s) available")
+            except Exception:
+                _umbra_print("  LLM      : loaded — Ollama offline (start Ollama first)")
     else:
         _umbra_print("  LLM      : NOT LOADED")
     mem = runtime.get("memory")
@@ -2563,8 +2596,8 @@ def _process_command(runtime, user_input):
         pass
 
     if cmd in ("exit", "quit", "q"):
-        _umbra_print("[UMBRA] Use the CLI to exit.")
-        return
+        _umbra_print("[UMBRA] Closing Umbra...")
+        import os as _osexit; _osexit._exit(0)
 
     # Self-repair
     if cmd in ("fix", "fix yourself", "fix all bugs", "fix all errors",
@@ -2634,7 +2667,7 @@ def _process_command(runtime, user_input):
         if cmd.startswith("play ") and len(cmd) > 5:
             project_name = cmd[5:].strip().lower().replace(" ", "_")
         game_path = None
-        last_mem = runtime["memory"].retrieve("last_game_file")
+        last_mem = _umbra_mem(runtime).retrieve("last_game_file")
         if last_mem and os.path.exists(str(last_mem.value)):
             game_path = str(last_mem.value)
         if project_name and pm:
@@ -2680,14 +2713,14 @@ def _process_command(runtime, user_input):
     # Memory
     if cmd.startswith("remember "):
         fact = user_input[9:].strip()
-        runtime["memory"].store("user_note:" + str(runtime["memory"].size()), fact, tags=["user_note"])
-        runtime["memory"].save()
+        runtime.get("memory") and _umbra_mem(runtime).store("user_note:" + str(_umbra_mem(runtime).size()), fact, tags=["user_note"])
+        _umbra_mem(runtime).save()
         _umbra_print("  Stored: " + fact[:60])
         return
 
     if cmd.startswith("recall "):
         query = user_input[7:].strip()
-        results = runtime["memory"].search(query, top_k=5)
+        results = _umbra_mem(runtime).search(query, top_k=5)
         if results:
             _umbra_print("[MEMORY: '" + query + "']")
             for r in results:
@@ -2719,7 +2752,7 @@ def _process_command(runtime, user_input):
 # ============================================================
 
 def _launch_gui(runtime):
-    """Launch the Umbra Control Center GUI in a daemon thread."""
+    """Launch the Umbra Control Center GUI - window runs on main thread via mainloop()."""
     global _gui_ref, _gui_mode
 
     # Try full 5-tab control center first
@@ -2730,10 +2763,10 @@ def _launch_gui(runtime):
             _gui = getattr(_mod, _fn)(runtime=runtime, process_fn=_process_command)
             if _gui is not None:
                 _gui_ref = _gui; _gui_mode = True
-                _umbra_print("[GUI] Control Center launched.")
+                _umbra_print("[GUI] Control Center ready.")
                 return
-        except Exception:
-            pass
+        except Exception as _lge:
+            _umbra_print("[GUI] Full CC failed: " + str(_lge) + " — trying fallback")
 
     # Fallback: runtime optional module
     gui = (runtime.get("full_gui_window") or
@@ -2875,9 +2908,8 @@ def _launch_gui(runtime):
     _gui_ref  = gui
     _gui_mode = True
 
-    t = threading.Thread(target=gui.run, args=("Umbra",), daemon=True)
-    t.start()
-    print("  [GUI] Window launched — chat here or in the window.")
+    print("  [GUI] Window launched — use the GUI window.")
+    # mainloop() is called by interactive_mode on main thread
 
 
 # ============================================================
@@ -2886,8 +2918,9 @@ def _launch_gui(runtime):
 
 def run_prompt(runtime, prompt, project_override=None):
     rm = runtime.get("resource_manager")
-    if rm:
-        rm.task_delay()
+    try:
+        if rm: rm.task_delay()
+    except Exception: pass
 
     # Self-repair intercepts
     intent, detail = _detect_self_intent(prompt)
@@ -2904,11 +2937,62 @@ def run_prompt(runtime, prompt, project_override=None):
     lower = prompt.lower().strip()
     conv = runtime.get("conversation")
     pm = runtime.get("project_manager")
-    active_project = project_override or (pm.get_active() if pm else None)
+    try:
+        active_project = project_override or (pm.get_active() if pm else None)
+    except Exception:
+        active_project = None
+
+    # ── Direct pattern matching (runs BEFORE conv.classify) ──────────────
+    lower_direct = prompt.lower().strip()
+    _game_words = ["make a game","build a game","create a game","generate a game",
+                   "make me a game","build me a game","make a full game","build a full game",
+                   "make an rpg","build an rpg","make a pygame","build a pygame"]
+    if any(kw in lower_direct for kw in _game_words):
+        _pn_m = re.search(r"(?:called|named)\s+([A-Za-z][A-Za-z0-9 ]+?)(?:[ ]|$|,|[.])", prompt, re.IGNORECASE)
+        _pname = _pn_m.group(1).strip() if _pn_m else "MyGame"
+        _umbra_print("[UMBRA] Building game: " + _pname + " — launching agents...")
+        _res = _run_deep_build(runtime, prompt, _pname)
+        if _res:
+            _fp2 = getattr(_res,"file_path",None)
+            if _fp2: _umbra_mem(runtime) and _umbra_mem(runtime).store("last_game_file",_fp2,tags=["game"])
+            _umbra_print("[UMBRA] Done! Type: play last")
+        return None
+
+    _gif_words = ["make a gif","create a gif","generate a gif","make gif","make an animated"]
+    if any(kw in lower_direct for kw in _gif_words):
+        gif_gen = runtime.get("animated_gif_generator")
+        if gif_gen and gif_gen.is_available():
+            _umbra_print("[UMBRA] Generating GIF...")
+            _gr = gif_gen.run(prompt)
+            _umbra_print("[GIF] " + str(_gr.get("path","") if isinstance(_gr,dict) else _gr))
+        else:
+            _umbra_print("[GIF] Not available. Run: install a gif generator into umbra")
+        return None
+
+    _img_words = ["make an image","make image","create an image","generate an image",
+                  "make a picture","draw an image","make 1 image","make 2 image",
+                  "make 3 image","make 4 image","make 5 image","make 6 image",
+                  "make 7 image","make 8 image","make 9 image","make 10 image"]
+    if any(kw in lower_direct for kw in _img_words) or re.search(r"make \d+ image", lower_direct):
+        img_gen = runtime.get("image_generator")
+        if img_gen:
+            _count_m = re.search(r"(\d+)\s+image", lower_direct)
+            _count = int(_count_m.group(1)) if _count_m else 1
+            _count = min(_count, 10)
+            _umbra_print("[UMBRA] Generating " + str(_count) + " image(s)...")
+            for _ci in range(_count):
+                _ir = img_gen.generate(prompt)
+                _umbra_print("[IMAGE " + str(_ci+1) + "] " + (str(_ir.file_path) if _ir.success else str(_ir.error)))
+        else:
+            _umbra_print("[IMAGE] image_generator not loaded.")
+        return None
 
     if conv:
         learned = _classify_with_user_model(runtime, prompt)
-        classification = conv.classify(prompt)
+        try:
+            classification = conv.classify(prompt)
+        except Exception:
+            return _run_real_pipeline(runtime, prompt, active_project, pm)
         if learned and learned not in ("question", "chat"):
             classification.intent = learned
 
@@ -2947,7 +3031,8 @@ def run_prompt(runtime, prompt, project_override=None):
                         _umbra_print("[GAME] " + str(result.lines) + " lines — type: play last")
                         if active_project and pm:
                             pm.add_file_to_project(active_project, result.file_path, "game")
-                        runtime["memory"].store("last_game_file", result.file_path, tags=["game"])
+                        _mem=runtime.get("memory")
+                        if _mem: _mem.store("last_game_file", result.file_path, tags=["game"])
                         handle_workspace_repair(runtime, target=result.file_path, auto=True)
                     else:
                         _umbra_print("[GAME] Failed: " + str(result.error))
@@ -3070,7 +3155,9 @@ def run_prompt(runtime, prompt, project_override=None):
                 _umbra_print("\n[UMBRA] Starting full deep build — this will take several minutes...")
                 result = _run_deep_build(runtime, enriched, project_name)
                 if result:
-                    _umbra_print("\n[UMBRA] Your game is ready. Type: play " + project_name)
+                    _fp = getattr(result,"file_path",None)
+                    if _fp: _umbra_mem(runtime) and _umbra_mem(runtime).store("last_game_file",_fp,tags=["game"])
+                    _umbra_print("\n[UMBRA] Game ready! Type: play last")
                 return None
 
             # Standard game build
@@ -3114,7 +3201,7 @@ def run_prompt(runtime, prompt, project_override=None):
                     _umbra_print("[GAME] Type: play last")
                     if active_project and pm:
                         pm.add_file_to_project(active_project, result.file_path, "game")
-                    runtime["memory"].store("last_game_file", result.file_path, tags=["game"])
+                        _umbra_mem(runtime) and _umbra_mem(runtime).store("last_game_file", result.file_path, tags=["game"])
                     handle_workspace_repair(runtime, target=result.file_path, auto=True)
                     _apply_common_improvements(runtime, result.file_path, "game")
                 else:
@@ -3122,7 +3209,13 @@ def run_prompt(runtime, prompt, project_override=None):
                     return _run_real_pipeline(runtime, raw, active_project, pm)
                 return None
 
-            return _run_real_pipeline(runtime, prompt, active_project, pm)
+            # direct_generator not available — use deep build with agents
+            _umbra_print("[UMBRA] direct_generator not loaded — using agent build...")
+            _pname = project_name or "MyGame"
+            _result = _run_deep_build(runtime, prompt, _pname)
+            if _result:
+                _umbra_print("[UMBRA] Done! Type: play " + _pname)
+            return None
 
         # Clarification for other tasks
         if classification.needs_clarification and classification.clarification_questions:
@@ -3201,7 +3294,7 @@ def _run_studio_project(runtime, prompt, project_name=None):
             _umbra_print("\n[STUDIO] Game: " + result.file_path + " (" + str(result.lines) + " lines)")
             _umbra_print("[STUDIO] Type: play " + project.name)
             pm.add_file_to_project(project, result.file_path, "game")
-            runtime["memory"].store("last_game_file", result.file_path, tags=["game"])
+            _umbra_mem(runtime) and _umbra_mem(runtime).store("last_game_file", result.file_path, tags=["game"])
             handle_workspace_repair(runtime, target=result.file_path, auto=True)
             _apply_common_improvements(runtime, result.file_path, "game")
         else:
@@ -3221,7 +3314,8 @@ def interactive_mode(runtime):
     print_banner()
     print_status(runtime)
 
-    if not runtime["llm"].is_configured():
+    _llm = runtime.get("llm")
+    if not _llm or not _llm.is_configured():
         _umbra_print("[WARNING] No LLM configured. Check umbra_config.json\n")
 
     # Launch GUI
@@ -3239,13 +3333,19 @@ def interactive_mode(runtime):
     _umbra_print("  'list files'  |  'clean up old files'")
     _umbra_print("  Type 'exit' to quit.\n")
 
-    # GUI mode: block here, let GUI handle all input
-    if _gui_mode:
+    # GUI mode: mainloop MUST run on main thread
+    if _gui_mode and _gui_ref is not None:
         _umbra_print('[UMBRA] GUI active — use the Control Center window.')
-        import time as _tm2
         try:
-            while True: _tm2.sleep(1)
-        except KeyboardInterrupt: pass
+            _gui_ref.mainloop()  # blocks until window closed
+        except KeyboardInterrupt:
+            pass
+        except Exception as _mle:
+            _umbra_print('[GUI] mainloop error: ' + str(_mle))
+            import time as _tm2
+            try:
+                while True: _tm2.sleep(1)
+            except KeyboardInterrupt: pass
         return
 
     while True:
@@ -3548,7 +3648,7 @@ def interactive_mode(runtime):
                 project_name = cmd[9:].strip().lower().replace(" ", "_")
 
             game_path = None
-            last_mem = runtime["memory"].retrieve("last_game_file")
+            last_mem = _umbra_mem(runtime).retrieve("last_game_file")
             if last_mem and os.path.exists(str(last_mem.value)):
                 game_path = str(last_mem.value)
 
@@ -3697,13 +3797,13 @@ def interactive_mode(runtime):
 
         elif cmd.startswith("remember "):
             fact = user_input[9:].strip()
-            runtime["memory"].store("user_note:" + str(runtime["memory"].size()), fact, tags=["user_note"])
-            runtime["memory"].save()
+            runtime.get("memory") and _umbra_mem(runtime).store("user_note:" + str(_umbra_mem(runtime).size()), fact, tags=["user_note"])
+            _umbra_mem(runtime).save()
             _umbra_print("  Stored: " + fact[:60] + "\n")
 
         elif cmd.startswith("recall "):
             query = user_input[7:].strip()
-            results = runtime["memory"].search(query, top_k=5)
+            results = _umbra_mem(runtime).search(query, top_k=5)
             if results:
                 _umbra_print("\n[MEMORY: '" + query + "']")
                 for r in results:
