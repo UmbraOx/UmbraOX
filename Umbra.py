@@ -2754,26 +2754,25 @@ def _process_command(runtime, user_input):
 def _launch_gui(runtime):
     """Launch the Umbra Control Center GUI - window runs on main thread via mainloop()."""
     global _gui_ref, _gui_mode
+    import importlib as _il
 
     # Try full 5-tab control center first
     for _mp, _fn in [("core.gui.control_center","launch_in_thread"),
                      ("core.ui.umbra_control_center","launch_in_thread")]:
         try:
-            _mod = importlib.import_module(_mp)
+            _mod = _il.import_module(_mp)
             _gui = getattr(_mod, _fn)(runtime=runtime, process_fn=_process_command)
-            if _gui is not None:
+            if _gui is not None and hasattr(_gui, "mainloop"):
                 _gui_ref = _gui; _gui_mode = True
                 _umbra_print("[GUI] Control Center ready.")
                 return
         except Exception as _lge:
-            _umbra_print("[GUI] Full CC failed: " + str(_lge) + " — trying fallback")
+            _umbra_print("[GUI] CC error: " + str(_lge))
 
     # Fallback: runtime optional module
-    gui = (runtime.get("full_gui_window") or
-           runtime.get("full_gui_chat_window") or
-           runtime.get("gui_window_launcher"))
-
-    if not gui or not gui.is_available():
+    # Skip optional runtime GUI modules - use only our control_center.py
+    gui = None
+    if not gui:
         # Build minimal inline tkinter
         try:
             import tkinter as tk
@@ -3337,14 +3336,23 @@ def interactive_mode(runtime):
     if _gui_mode and _gui_ref is not None:
         _umbra_print('[UMBRA] GUI active — use the Control Center window.')
         try:
-            _gui_ref.mainloop()  # blocks until window closed
+            if hasattr(_gui_ref, "mainloop"):
+                _gui_ref.mainloop()  # blocks until window closed
+            elif hasattr(_gui_ref, "root") and hasattr(_gui_ref.root, "mainloop"):
+                _gui_ref.root.mainloop()
+            else:
+                _umbra_print("[GUI] running — window should be visible")
+                import time as _tm2
+                try:
+                    while True: _tm2.sleep(1)
+                except KeyboardInterrupt: pass
         except KeyboardInterrupt:
             pass
         except Exception as _mle:
-            _umbra_print('[GUI] mainloop error: ' + str(_mle))
-            import time as _tm2
+            _umbra_print('[GUI] error: ' + str(_mle))
+            import time as _tm3
             try:
-                while True: _tm2.sleep(1)
+                while True: _tm3.sleep(1)
             except KeyboardInterrupt: pass
         return
 
