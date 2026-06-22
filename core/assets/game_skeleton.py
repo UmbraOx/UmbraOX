@@ -107,13 +107,21 @@ if 'Player' not in dir():
         def draw(self, surf, cam_x, cam_y):
             sx = int(self.x - cam_x)
             sy = int(self.y - cam_y)
-            # Body
-            pygame.draw.rect(surf, self.col, (sx, sy, self.w, self.h))
+            # Head (circle)
+            pygame.draw.circle(surf, self.col, (sx+14, sy+8), 9)
             # Eyes
-            pygame.draw.circle(surf, (255,255,255), (sx+8, sy+8), 5)
-            pygame.draw.circle(surf, (255,255,255), (sx+20, sy+8), 5)
-            pygame.draw.circle(surf, (0,0,0), (sx+8, sy+8), 2)
-            pygame.draw.circle(surf, (0,0,0), (sx+20, sy+8), 2)
+            pygame.draw.circle(surf, (255,255,255), (sx+10, sy+7), 3)
+            pygame.draw.circle(surf, (255,255,255), (sx+18, sy+7), 3)
+            pygame.draw.circle(surf, (30,30,30),   (sx+10, sy+7), 1)
+            pygame.draw.circle(surf, (30,30,30),   (sx+18, sy+7), 1)
+            # Body
+            pygame.draw.rect(surf, self.col, (sx+8, sy+17, 12, 13))
+            # Arms
+            pygame.draw.line(surf, self.col, (sx+8,  sy+19), (sx+2,  sy+28), 3)
+            pygame.draw.line(surf, self.col, (sx+20, sy+19), (sx+26, sy+28), 3)
+            # Legs
+            pygame.draw.line(surf, self.col, (sx+11, sy+30), (sx+8,  sy+42), 3)
+            pygame.draw.line(surf, self.col, (sx+17, sy+30), (sx+20, sy+42), 3)
 
     class Player(Entity):
         def __init__(self, cls="Warrior"):

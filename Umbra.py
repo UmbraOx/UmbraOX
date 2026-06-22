@@ -2652,6 +2652,22 @@ def _process_command(runtime, user_input):
     if intent == "integrate" and detail:
         handle_integrate(runtime, detail)
         return
+    _auto_triggers = [
+        ("image pipeline","a professional image generation pipeline using ComfyUI and PIL"),
+        ("music pipeline","a music generation pipeline using tone synthesis and file export"),
+        ("video pipeline","a video generation pipeline using ffmpeg frame assembly"),
+        ("blender pipeline","a 3D model generation pipeline using Blender via subprocess"),
+        ("tiktok","a TikTok script and video upload pipeline"),
+        ("website generator","a complete website generator producing HTML CSS JavaScript"),
+        ("ai companion","an AI companion system with memory personality and conversation"),
+        ("sprite generator","a pixel art sprite sheet generator using PIL"),
+        ("gif generator","an animated GIF generator using PIL particle effects"),
+        ("voice pipeline","a voice synthesis and speech recognition pipeline"),
+    ]
+    for _trigger, _desc in _auto_triggers:
+        if _trigger in cmd:
+            handle_self_install(runtime, _desc)
+            return
 
     # Status/info commands
     if cmd == "status":
@@ -2679,27 +2695,22 @@ def _process_command(runtime, user_input):
                         break
         if not game_path:
             ws_base = os.path.join(_UMBRA_ROOT, "workspaces")
-            newest, newest_path = 0, None
+            candidates = []
             for root, dirs, files in os.walk(ws_base):
+                dirs[:] = [d for d in dirs if d not in ("__pycache__",".git")]
                 for fname in files:
-                    if not fname.endswith(".py"):
-                        continue
+                    if not fname.endswith(".py"): continue
                     full = os.path.join(root, fname)
-                    if project_name and (project_name in full.lower() or project_name in root.lower()):
-                        mtime = os.path.getmtime(full)
-                        if mtime > newest:
-                            newest = mtime
-                            newest_path = full
-            if not newest_path:
-                for root, dirs, files in os.walk(ws_base):
-                    for fname in files:
-                        if fname.endswith(".py") and ("game" in fname.lower() or fname == "game.py"):
-                            full = os.path.join(root, fname)
-                            mtime = os.path.getmtime(full)
-                            if mtime > newest:
-                                newest = mtime
-                                newest_path = full
-            game_path = newest_path
+                    try: mtime = os.path.getmtime(full)
+                    except: continue
+                    score = mtime
+                    if any(g in fname.lower() for g in ["game","optiopia","demiworld","myworld","rpg"]): score += 1e12
+                    if project_name and project_name.lower() in full.lower(): score += 2e12
+                    if fname in ("main.py","__init__.py") and "game" not in fname.lower(): score -= 1e10
+                    candidates.append((score, full))
+            if candidates:
+                candidates.sort(reverse=True)
+                game_path = candidates[0][1]
         if game_path and os.path.exists(game_path):
             _umbra_print("[UMBRA] Launching: " + game_path)
             try:
@@ -2915,6 +2926,40 @@ def _launch_gui(runtime):
 #  RUN PROMPT  (main dispatch)
 # ============================================================
 
+
+def _direct_llm_answer(runtime, prompt, active_project=None, pm=None):
+    """Answer questions directly via LLM when conv engine is unavailable."""
+    lower = prompt.lower().strip()
+    # Is this a task or a question?
+    task_verbs = ["make","build","create","generate","install","fix","repair",
+                  "write","run","play","list","show","clean","upgrade","add"]
+    is_task = any(lower.startswith(v) for v in task_verbs)
+    if is_task:
+        return _run_real_pipeline(runtime, prompt, active_project, pm)
+    # It's a question - answer it directly
+    llm = runtime.get("llm")
+    if not llm or not llm.is_configured():
+        # Try Ollama directly
+        try:
+            answer = _ollama_stream(
+                "Answer this question concisely and helpfully: " + prompt,
+                timeout=60, num_predict=256)
+            if answer:
+                _umbra_print("\n[UMBRA] " + answer.strip() + "\n")
+                return None
+        except Exception:
+            pass
+        _umbra_print("[UMBRA] " + prompt.capitalize() + "\n  (LLM not available for questions)")
+        return None
+    try:
+        r = llm.complete("Answer this question concisely: " + prompt)
+        if r and r.content:
+            _umbra_print("\n[UMBRA] " + r.content.strip() + "\n")
+    except Exception as e:
+        _umbra_print("[UMBRA] Could not answer: " + str(e))
+    return None
+
+
 def run_prompt(runtime, prompt, project_override=None):
     rm = runtime.get("resource_manager")
     try:
@@ -2943,9 +2988,33 @@ def run_prompt(runtime, prompt, project_override=None):
 
     # ── Direct pattern matching (runs BEFORE conv.classify) ──────────────
     lower_direct = prompt.lower().strip()
+
+    # Question detection - answer directly without pipeline
+    _QUESTION_STARTERS = ("what","who","where","when","why","how","is ","are ","was ",
+                          "were ","will ","would ","could ","should ","can ","do ","does ",
+                          "did ","which ","whose ","whats ","whos ","hows ","wheres ")
+    _TASK_STARTERS = ("make","build","create","generate","install","fix","repair",
+                      "write","run","play","list","show","clean","upgrade","add",
+                      "delete","remove","update","open","close","start","stop")
+    _is_question = (lower_direct.endswith("?") or
+                   any(lower_direct.startswith(s) for s in _QUESTION_STARTERS))
+    _is_task = any(lower_direct.startswith(s) for s in _TASK_STARTERS)
+    if _is_question and not _is_task:
+        _umbra_print("[UMBRA] Answering...")
+        try:
+            _ans = _ollama_stream(
+                "Answer this question clearly and concisely in 1-3 sentences: " + prompt,
+                timeout=90, num_predict=300)
+            _umbra_print("\n[UMBRA] " + (_ans.strip() if _ans else "I could not find an answer.") + "\n")
+        except Exception as _qe:
+            _umbra_print("[UMBRA] " + str(_qe))
+        return None
     _game_words = ["make a game","build a game","create a game","generate a game",
                    "make me a game","build me a game","make a full game","build a full game",
-                   "make an rpg","build an rpg","make a pygame","build a pygame"]
+                   "make an rpg","build an rpg","make a pygame","build a pygame",
+                   "make a small","test version of","test game","make optiopia","build optiopia",
+                   "make demiworld","build demiworld","make a platformer","make a shooter",
+                   "make a dungeon","make a survival","make a version of my game"]
     if any(kw in lower_direct for kw in _game_words):
         _pn_m = re.search(r"(?:called|named)\s+([A-Za-z][A-Za-z0-9 ]+?)(?:[ ]|$|,|[.])", prompt, re.IGNORECASE)
         _pname = _pn_m.group(1).strip() if _pn_m else "MyGame"
@@ -2973,17 +3042,31 @@ def run_prompt(runtime, prompt, project_override=None):
                   "make 3 image","make 4 image","make 5 image","make 6 image",
                   "make 7 image","make 8 image","make 9 image","make 10 image"]
     if any(kw in lower_direct for kw in _img_words) or re.search(r"make \d+ image", lower_direct):
+        _count_m = re.search(r"(\d+)\s+image", lower_direct)
+        _count = int(_count_m.group(1)) if _count_m else 1
+        _count = min(_count, 10)
+        _umbra_print("[UMBRA] Generating " + str(_count) + " image(s)...")
+        # Try runtime image_generator first, fall back to our own
         img_gen = runtime.get("image_generator")
-        if img_gen:
-            _count_m = re.search(r"(\d+)\s+image", lower_direct)
-            _count = int(_count_m.group(1)) if _count_m else 1
-            _count = min(_count, 10)
-            _umbra_print("[UMBRA] Generating " + str(_count) + " image(s)...")
-            for _ci in range(_count):
-                _ir = img_gen.generate(prompt)
-                _umbra_print("[IMAGE " + str(_ci+1) + "] " + (str(_ir.file_path) if _ir.success else str(_ir.error)))
-        else:
-            _umbra_print("[IMAGE] image_generator not loaded.")
+        for _ci in range(_count):
+            if img_gen and hasattr(img_gen, "generate"):
+                try:
+                    _ir = img_gen.generate(prompt)
+                    _umbra_print("[IMAGE " + str(_ci+1) + "] " + (str(_ir.file_path) if _ir.success else str(getattr(_ir,"fallback_description","failed"))))
+                    continue
+                except Exception: pass
+            # Fallback: use RuntimeImageGenerator directly
+            try:
+                from core.runtime.runtime_image_generator import RuntimeImageGenerator as _RIG
+                import os as _os2
+                _idir = _os2.path.join(_UMBRA_ROOT, "workspaces", "images")
+                _os2.makedirs(_idir, exist_ok=True)
+                _rig = _RIG(output_dir=_idir)
+                _ir2 = _rig.generate(prompt)
+                _umbra_print("[IMAGE " + str(_ci+1) + "] Saved: " + str(_ir2.file_path))
+                _umbra_mem(runtime) and _umbra_mem(runtime).store("last_image", _ir2.file_path, tags=["image"])
+            except Exception as _ie:
+                _umbra_print("[IMAGE] Error: " + str(_ie))
         return None
 
     if conv:
@@ -2991,7 +3074,8 @@ def run_prompt(runtime, prompt, project_override=None):
         try:
             classification = conv.classify(prompt)
         except Exception:
-            return _run_real_pipeline(runtime, prompt, active_project, pm)
+            # conv failed - try direct LLM answer
+            return _direct_llm_answer(runtime, prompt, active_project, pm)
         if learned and learned not in ("question", "chat"):
             classification.intent = learned
 
@@ -3038,8 +3122,12 @@ def run_prompt(runtime, prompt, project_override=None):
                     return None
                 return _run_real_pipeline(runtime, enriched, active_project, pm)
 
-            answer = conv.answer_question(prompt)
-            _umbra_print("\n[UMBRA] " + answer + "\n")
+            try:
+                answer = conv.answer_question(prompt)
+            except Exception:
+                # Fall back to direct Ollama
+                answer = _ollama_stream("Answer concisely: " + prompt, timeout=60, num_predict=256) or "I don't know."
+            _umbra_print("\n[UMBRA] " + answer.strip() + "\n")
             conv.add_turn("umbra", answer, "answer")
             _maybe_tts(runtime, answer)
             if active_project and pm:
