@@ -2382,6 +2382,7 @@ def build_runtime():
         "runtime_project_export_tool",
         "runtime_character_dialogue_generator",
         "runtime_map_generator",
+        "runtime_music_pipeline",
     ]
     for mod_name in _known_optionals:
         mod_path = os.path.join(optional_runtime_dir, mod_name + ".py")
