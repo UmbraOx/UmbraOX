@@ -367,6 +367,17 @@ def _approval_prompt(description, preview, default_yes=False):
             _umbra_print("    ... (" + str(total - 20) + " more lines)")
     _umbra_print("-" * 60)
     hint = "[Y/n]" if default_yes else "[y/N]"
+    # GUI mode: show tkinter dialog instead of terminal input
+    if _gui_mode and _gui_ref is not None:
+        try:
+            import tkinter.messagebox as _tmb
+            msg = description + "\n\n" + "\n".join(str(preview or "").strip().split("\n")[:10])
+            result = _tmb.askyesno("Umbra — Approval Required", msg)
+            _umbra_print("  [GUI] " + ("Approved" if result else "Cancelled"))
+            return result
+        except Exception:
+            _umbra_print("  [GUI] Auto-approving (tkinter dialog failed)")
+            return True
     try:
         ans = _safe_input("  Approve? " + hint + ": ", "").strip().lower()
     except (EOFError, KeyboardInterrupt):
@@ -895,12 +906,31 @@ def _build_assembler_prompt(project_name, description, components):
 
 def _stitch_game(project_name, brief, components):
     def strip_imports(code):
-        keep=[]
+        keep=[]; skip_next=False
         skip={"import pygame","from pygame","import sys","import os",
               "import math","import random","import json","import time"}
-        for ln in (code or "").splitlines():
-            if ln.strip() not in skip and not ln.strip().startswith("from pygame"):
-                keep.append(ln)
+        lines = (code or "").splitlines()
+        i = 0
+        while i < len(lines):
+            ln = lines[i]
+            s  = ln.strip()
+            # Skip bare imports
+            if s in skip or s.startswith("from pygame"):
+                i += 1; continue
+            # Strip agent __main__ blocks (they conflict with skeleton's main)
+            if s.startswith("if __name__") and "__main__" in s:
+                i += 1; continue
+            # Strip agent def main() / def run_game() / def game_loop() 
+            # that would override the skeleton's main()
+            if s.startswith("def ") and any(s.startswith("def "+n+"()") for n in
+                                             ["main","run_game","game_loop","game_main","start_game","run"]):
+                # Skip entire function body
+                i += 1
+                while i < len(lines) and (lines[i].startswith("    ") or lines[i].strip() == ""):
+                    i += 1
+                continue
+            keep.append(ln)
+            i += 1
         return "\n".join(keep)
 
     world_code    = strip_imports(components.get("world",""))
@@ -1194,7 +1224,20 @@ def _test_game(game_path, game_code):
             code = code.replace("_safe_input(", "# _safe_input(", "")
             report["repairs"].append("stripped _safe_input() calls")
 
-        if "main_guard" in failed and "def main():" in code:
+        if "main_guard" in failed:
+            if "def main():" not in code:
+                # Find the game loop and rename it main()
+                import re as _re2
+                _fns = _re2.findall(r"^def (\w+)\(\):", code, _re2.MULTILINE)
+                for _fn in _fns:
+                    _idx = code.find("def " + _fn + "():")
+                    _body = code[_idx:_idx+3000]
+                    if any(k in _body for k in ["clock.tick","pygame.event.get","pygame.display.flip"]):
+                        code = code.replace("def " + _fn + "():", "def main():", 1)
+                        code = code.replace(_fn + "()", "main()")
+                        report["repairs"].append("renamed " + _fn + " to main()")
+                        _umbra_print("[REPAIR] Renamed game loop: " + _fn + "() -> main()")
+                        break
             if "if __name__" not in code:
                 code += "\n\nif __name__ == '__main__':\n    main()\n"
                 report["repairs"].append("added main guard")
@@ -1321,6 +1364,8 @@ def _run_deep_build(runtime, description, project_name, agents_to_run=None):
     mem = runtime.get("memory")
     if mem:
         mem.store("last_game_file", game_path, tags=["game"])
+        try: mem.save()
+        except Exception: pass
         mem.store("deep_build:" + proj_slug,
                   {"project":project_name,"path":game_path,
                    "agents":list(components.keys()),"lines":total_lines,
@@ -2683,9 +2728,22 @@ def _process_command(runtime, user_input):
         if cmd.startswith("play ") and len(cmd) > 5:
             project_name = cmd[5:].strip().lower().replace(" ", "_")
         game_path = None
-        last_mem = _umbra_mem(runtime).retrieve("last_game_file")
-        if last_mem and os.path.exists(str(last_mem.value)):
-            game_path = str(last_mem.value)
+        try:
+            last_mem = _umbra_mem(runtime).retrieve("last_game_file")
+            if last_mem and os.path.exists(str(last_mem.value)):
+                game_path = str(last_mem.value)
+        except Exception: pass
+        # Fallback: scan memory_store.json directly
+        if not game_path:
+            _ms = os.path.join(_UMBRA_ROOT,"sessions","memory_store.json")
+            if os.path.exists(_ms):
+                try:
+                    import json as _j2
+                    for _e in _j2.load(open(_ms,"r",encoding="utf-8")) if True else []:
+                        if isinstance(_e,dict) and _e.get("key")=="last_game_file":
+                            _gp=str(_e.get("value",""))
+                            if os.path.exists(_gp): game_path=_gp; break
+                except Exception: pass
         if project_name and pm:
             proj = pm.get_project(project_name)
             if proj:
@@ -3002,12 +3060,25 @@ def run_prompt(runtime, prompt, project_override=None):
     if _is_question and not _is_task:
         _umbra_print("[UMBRA] Answering...")
         try:
+            import urllib.request as _ur, json as _jj
+            # Use fast small model if available, else main model with short timeout
+            _qa_models = []
+            try:
+                with _ur.urlopen('http://localhost:11434/api/tags', timeout=2) as _r:
+                    _all = [m['name'] for m in _jj.loads(_r.read()).get('models',[])]
+                # Prefer fast models for Q&A
+                for _pref in ['llama3.2:3b','llama3.1:8b','qwen2.5:7b','mistral:7b',
+                              'phi3:mini','gemma2:2b']:
+                    if _pref in _all: _qa_models.append(_pref)
+                _qa_models += _all  # fallback to any available
+            except Exception: pass
+            _qa_model = _qa_models[0] if _qa_models else _get_agent_model()
             _ans = _ollama_stream(
-                "Answer this question clearly and concisely in 1-3 sentences: " + prompt,
-                timeout=90, num_predict=300)
+                "Answer in 1-2 sentences, no code, just plain text: " + prompt,
+                model=_qa_model, timeout=60, num_predict=150)
             _umbra_print("\n[UMBRA] " + (_ans.strip() if _ans else "I could not find an answer.") + "\n")
         except Exception as _qe:
-            _umbra_print("[UMBRA] " + str(_qe))
+            _umbra_print("[UMBRA] Could not answer: " + str(_qe))
         return None
     _game_words = ["make a game","build a game","create a game","generate a game",
                    "make me a game","build me a game","make a full game","build a full game",
@@ -3018,6 +3089,20 @@ def run_prompt(runtime, prompt, project_override=None):
     if any(kw in lower_direct for kw in _game_words):
         _pn_m = re.search(r"(?:called|named)\s+([A-Za-z][A-Za-z0-9 ]+?)(?:[ ]|$|,|[.])", prompt, re.IGNORECASE)
         _pname = _pn_m.group(1).strip() if _pn_m else "MyGame"
+        # Ask clarifying questions before building
+        _clarify_qs = [
+            "1. What genre/style? (RPG/platformer/shooter/puzzle/survival/strategy)",
+            "2. Setting? (fantasy/sci-fi/horror/modern/historical/post-apocalyptic)",
+            "3. How many enemy types? (1-10)",
+            "4. Key features? (crafting/magic/building/stealth/multiplayer/none)",
+            "5. Art style? (pixel art/top-down/side-scroll/isometric/graveyard-keeper-style)",
+        ]
+        _umbra_print("\n[UMBRA] Before I build, a few quick questions:")
+        for _q in _clarify_qs: _umbra_print("  " + _q)
+        _umbra_print("  (or type 'skip' to use defaults)")
+        _clarify_ans = _safe_input("your answers > ", "skip").strip()
+        if _clarify_ans and _clarify_ans.lower() != "skip":
+            prompt = prompt + ". Details: " + _clarify_ans
         _umbra_print("[UMBRA] Building game: " + _pname + " — launching agents...")
         _res = _run_deep_build(runtime, prompt, _pname)
         if _res:
@@ -3731,9 +3816,22 @@ def interactive_mode(runtime):
                 for fe in active.files:
                     exists = "OK" if os.path.exists(fe["path"]) else "MISSING"
                     _umbra_print("  [" + exists + "] " + fe["type"] + ": " + fe["path"])
-                _umbra_print("")
-            else:
-                _umbra_print("  No active project.\n")
+            try:
+                last_mem = _umbra_mem(runtime).retrieve("last_game_file")
+                if last_mem and os.path.exists(str(last_mem.value)):
+                    game_path = str(last_mem.value)
+            except Exception: pass
+            # Fallback: scan memory_store.json directly
+            if not game_path:
+                _ms = os.path.join(_UMBRA_ROOT,"sessions","memory_store.json")
+                if os.path.exists(_ms):
+                    try:
+                        import json as _j2
+                        for _e in _j2.load(open(_ms,"r",encoding="utf-8")) if True else []:
+                            if isinstance(_e,dict) and _e.get("key")=="last_game_file":
+                                _gp=str(_e.get("value",""))
+                                if os.path.exists(_gp): game_path=_gp; break
+                    except Exception: pass
 
         elif (cmd in ("run last", "play last", "test last")
               or cmd.startswith("play ") or cmd.startswith("run game ")):

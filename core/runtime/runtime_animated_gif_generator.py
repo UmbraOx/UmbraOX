@@ -1,167 +1,297 @@
-"""
-RuntimeAnimatedGifGenerator
-Generates animated GIFs using PIL by creating frames programmatically.
-No external image files needed. Uses only stdlib + Pillow.
-"""
-import os
-import shutil
-import tempfile
-import math
-
+# C:\Umbra\core\runtime\runtime_animated_gif_generator.py
+# Umbra Animated GIF Generator v2.0
+# Uses PIL to create themed animations based on prompt keywords
+import os, time, math, random, hashlib
+_ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 class RuntimeAnimatedGifGenerator:
     def __init__(self, output_dir=None, **kwargs):
-        self.ready = False
-        self.output_dir = output_dir or os.path.join(
-            os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))),
-            "workspaces", "videos"
-        )
+        self.output_dir = output_dir or os.path.join(_ROOT, "workspaces", "videos")
+        os.makedirs(self.output_dir, exist_ok=True)
+        self.ready = True
         try:
             from PIL import Image, ImageDraw
-            self._Image = Image
-            self._ImageDraw = ImageDraw
-            self.ready = True
+            self._pil = True
         except ImportError:
-            self.ready = False
+            self._pil = False; self.ready = False
 
-    def is_available(self):
-        return self.ready
-
-    def _parse_subject(self, prompt):
-        """Extract a simple subject description from the prompt."""
-        prompt_lower = prompt.lower()
-        if "bear" in prompt_lower:
-            return "bear", (139, 90, 43)
-        elif "cat" in prompt_lower:
-            return "cat", (200, 150, 100)
-        elif "dog" in prompt_lower:
-            return "dog", (160, 120, 80)
-        elif "robot" in prompt_lower:
-            return "robot", (150, 150, 170)
-        elif "dragon" in prompt_lower:
-            return "dragon", (50, 150, 50)
-        else:
-            return "character", (100, 100, 200)
-
-    def _draw_dancing_frame(self, draw, subject, color, frame_idx, total_frames, w, h):
-        """Draw a simple animated character doing a dance move."""
-        cx, cy = w // 2, h // 2
-        t = frame_idx / total_frames
-        angle = math.sin(t * 2 * math.pi)
-
-        # Body
-        body_x = cx + int(angle * 10)
-        body_y = cy + int(abs(angle) * 5)
-        draw.ellipse([body_x - 20, body_y - 30, body_x + 20, body_y + 30],
-                     fill=color, outline=(0, 0, 0), width=2)
-
-        # Head
-        head_x = body_x + int(angle * 5)
-        head_y = body_y - 50
-        draw.ellipse([head_x - 15, head_y - 15, head_x + 15, head_y + 15],
-                     fill=color, outline=(0, 0, 0), width=2)
-
-        # Eyes
-        eye_color = (255, 255, 255)
-        pupil_color = (0, 0, 0)
-        for ex_off in [-6, 6]:
-            draw.ellipse([head_x + ex_off - 4, head_y - 5,
-                          head_x + ex_off + 4, head_y + 3],
-                         fill=eye_color, outline=pupil_color)
-            draw.ellipse([head_x + ex_off - 2, head_y - 3,
-                          head_x + ex_off + 2, head_y + 1],
-                         fill=pupil_color)
-
-        # Smile
-        draw.arc([head_x - 8, head_y, head_x + 8, head_y + 10],
-                 start=0, end=180, fill=(0, 0, 0), width=2)
-
-        # Arms - waving
-        left_arm_end_x = body_x - 40 + int(angle * 20)
-        left_arm_end_y = body_y - 10 + int(angle * 15)
-        draw.line([body_x - 20, body_y - 10, left_arm_end_x, left_arm_end_y],
-                  fill=(0, 0, 0), width=3)
-
-        right_arm_end_x = body_x + 40 - int(angle * 20)
-        right_arm_end_y = body_y - 10 - int(angle * 15)
-        draw.line([body_x + 20, body_y - 10, right_arm_end_x, right_arm_end_y],
-                  fill=(0, 0, 0), width=3)
-
-        # Legs - stepping
-        left_leg_x = body_x - 10 + int(angle * 15)
-        left_leg_y = body_y + 50
-        draw.line([body_x - 10, body_y + 30, left_leg_x, left_leg_y],
-                  fill=(0, 0, 0), width=3)
-
-        right_leg_x = body_x + 10 - int(angle * 15)
-        right_leg_y = body_y + 50
-        draw.line([body_x + 10, body_y + 30, right_leg_x, right_leg_y],
-                  fill=(0, 0, 0), width=3)
-
-        # Draw armour if mentioned
-        # Helmet
-        draw.arc([head_x - 17, head_y - 20, head_x + 17, head_y + 5],
-                 start=180, end=360, fill=(180, 180, 200), width=3)
-
-        # Chest plate
-        draw.rectangle([body_x - 18, body_y - 25, body_x + 18, body_y + 5],
-                        outline=(180, 180, 200), width=2)
-
-        # Label
-        draw.text((5, 5), subject.upper(), fill=(50, 50, 50))
-
-    def generate_dancing_gif(self, subject, color, output_path, frames=16, size=(200, 200), duration=80):
-        """Generate an animated dancing GIF."""
-        Image = self._Image
-        ImageDraw = self._ImageDraw
-
-        gif_frames = []
-        w, h = size
-        bg_colors = [(230, 230, 255), (225, 235, 255), (220, 230, 255), (225, 235, 255)]
-
-        for i in range(frames):
-            bg = bg_colors[i % len(bg_colors)]
-            frame = Image.new("RGB", (w, h), bg)
-            draw = ImageDraw.Draw(frame)
-            # Ground
-            draw.line([(0, h - 20), (w, h - 20)], fill=(100, 80, 60), width=3)
-            # Music notes for fun
-            note_x = (i * 15) % (w + 20) - 10
-            draw.text((note_x, 10), "♪", fill=(200, 100, 200))
-            draw.text(((note_x + 40) % w, 15), "♫", fill=(100, 200, 100))
-            self._draw_dancing_frame(draw, subject, color, i, frames, w, h)
-            gif_frames.append(frame)
-
-        os.makedirs(os.path.dirname(output_path), exist_ok=True)
-        gif_frames[0].save(
-            output_path,
-            save_all=True,
-            append_images=gif_frames[1:],
-            duration=duration,
-            loop=0,
-            optimize=False,
-        )
+    def is_available(self): return self.ready
 
     def run(self, prompt: str) -> dict:
-        if not self.is_available():
-            return {"status": "error", "error": "Pillow not installed. Run: pip install Pillow"}
-
+        if not self.ready:
+            return {"path": None, "error": "PIL not installed. pip install Pillow"}
         try:
-            subject, color = self._parse_subject(prompt)
-            os.makedirs(self.output_dir, exist_ok=True)
-
-            import datetime
-            ts = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
-            fname = "gif_" + subject + "_" + ts + ".gif"
-            output_path = os.path.join(self.output_dir, fname)
-
-            self.generate_dancing_gif(subject, color, output_path, frames=20, size=(240, 240))
-
-            return {
-                "status": "ok",
-                "path": output_path,
-                "subject": subject,
-                "frames": 20,
-            }
+            path = self._generate(prompt)
+            return {"path": path, "error": None}
         except Exception as e:
-            return {"status": "error", "error": str(e)}
+            return {"path": None, "error": str(e)}
+
+    def _generate(self, prompt: str) -> str:
+        from PIL import Image, ImageDraw, ImageFilter
+        lower = prompt.lower()
+        seed  = int(hashlib.md5(prompt.encode()).hexdigest(), 16) % (2**31)
+        rng   = random.Random(seed)
+        W, H  = 320, 320
+        frames= []
+        n     = 16
+
+        # Detect animation type from prompt
+        if any(w in lower for w in ["fire","flame","burning","inferno"]):
+            frames = self._fire(rng, W, H, n)
+        elif any(w in lower for w in ["water","wave","ocean","rain","ripple"]):
+            frames = self._water(rng, W, H, n)
+        elif any(w in lower for w in ["lightning","thunder","electric","spark"]):
+            frames = self._lightning(rng, W, H, n)
+        elif any(w in lower for w in ["magic","spell","portal","vortex","swirl"]):
+            frames = self._magic(rng, W, H, n)
+        elif any(w in lower for w in ["explode","explosion","blast","boom"]):
+            frames = self._explosion(rng, W, H, n)
+        elif any(w in lower for w in ["star","space","galaxy","nebula","cosmos"]):
+            frames = self._stars(rng, W, H, n)
+        elif any(w in lower for w in ["smoke","fog","mist","cloud"]):
+            frames = self._smoke(rng, W, H, n)
+        elif any(w in lower for w in ["knight","warrior","fight","sword","battle"]):
+            frames = self._knight(rng, W, H, n)
+        elif any(w in lower for w in ["dance","dancing","spin","twirl"]):
+            frames = self._dancing(rng, W, H, n)
+        elif any(w in lower for w in ["dragon","fly","wing","soar"]):
+            frames = self._dragon(rng, W, H, n)
+        else:
+            frames = self._particles(rng, W, H, n, prompt)
+
+        slug = prompt[:20].replace(" ","_").replace("/","")
+        ts   = time.strftime("%Y%m%d_%H%M%S")
+        out  = os.path.join(self.output_dir, f"gif_{slug}_{ts}.gif")
+        frames[0].save(out, save_all=True, append_images=frames[1:],
+                       loop=0, duration=60, optimize=False)
+        return out
+
+    def _fire(self, rng, W, H, n):
+        from PIL import Image, ImageDraw, ImageFilter
+        frames = []
+        for i in range(n):
+            img  = Image.new("RGB",(W,H),(10,5,5))
+            draw = ImageDraw.Draw(img)
+            t    = i/n
+            for _ in range(60):
+                x  = W//2 + rng.randint(-60,60)
+                y  = H - rng.randint(10,int(H*0.8*(0.5+0.5*math.sin(t*math.pi*2+rng.random()*2))))
+                r  = rng.randint(4,20)
+                heat = rng.random()
+                col = (int(255*heat),int(120*heat*(1-t*0.3)),0)
+                draw.ellipse([x-r,y-r,x+r,y+r],fill=col)
+            img = img.filter(ImageFilter.GaussianBlur(1))
+            frames.append(img)
+        return frames
+
+    def _water(self, rng, W, H, n):
+        from PIL import Image, ImageDraw
+        frames = []
+        for i in range(n):
+            img  = Image.new("RGB",(W,H),(5,20,40))
+            draw = ImageDraw.Draw(img)
+            t    = i/n*2*math.pi
+            for y in range(0,H,4):
+                for x in range(0,W,2):
+                    wave = math.sin(x/30+t)*20 + math.sin(x/15+t*1.3)*10
+                    d    = abs(y-H//2-wave)/H
+                    b    = int(180*(1-d))
+                    draw.point((x,y),fill=(0,b//2,b))
+            frames.append(img)
+        return frames
+
+    def _lightning(self, rng, W, H, n):
+        from PIL import Image, ImageDraw
+        frames = []
+        for i in range(n):
+            img  = Image.new("RGB",(W,H),(5,5,15))
+            draw = ImageDraw.Draw(img)
+            if i % 4 < 2:
+                x,y = W//2,0
+                while y < H:
+                    nx = x+rng.randint(-30,30); ny = y+rng.randint(15,35)
+                    w  = rng.randint(1,3)
+                    draw.line([(x,y),(nx,ny)],fill=(220,220,255),width=w)
+                    draw.line([(x+1,y),(nx+1,ny)],fill=(100,100,200),width=1)
+                    x,y = nx,ny
+            frames.append(img)
+        return frames
+
+    def _magic(self, rng, W, H, n):
+        from PIL import Image, ImageDraw
+        frames = []
+        cols = [(180,60,255),(60,180,255),(255,60,180),(60,255,180)]
+        for i in range(n):
+            img  = Image.new("RGB",(W,H),(5,5,20))
+            draw = ImageDraw.Draw(img)
+            t    = i/n*2*math.pi
+            for ring in range(5):
+                r2 = 30+ring*20
+                for j in range(24):
+                    a  = t+j*math.pi/12+ring*0.5
+                    px = int(W//2+math.cos(a)*r2)
+                    py = int(H//2+math.sin(a)*r2)
+                    cr = rng.randint(3,8)
+                    draw.ellipse([px-cr,py-cr,px+cr,py+cr],fill=cols[ring%len(cols)])
+            frames.append(img)
+        return frames
+
+    def _explosion(self, rng, W, H, n):
+        from PIL import Image, ImageDraw
+        frames = []
+        for i in range(n):
+            img  = Image.new("RGB",(W,H),(10,5,5))
+            draw = ImageDraw.Draw(img)
+            prog = i/n
+            for _ in range(80):
+                a  = rng.uniform(0, 2*math.pi)
+                sp = rng.uniform(0.3,1.0)*prog*min(W,H)*0.6
+                px = int(W//2+math.cos(a)*sp)
+                py = int(H//2+math.sin(a)*sp)
+                r  = int(rng.randint(3,12)*(1-prog*0.7))
+                heat = 1-prog
+                col  = (int(255*heat),int(150*heat*(1-prog)),0)
+                draw.ellipse([px-r,py-r,px+r,py+r],fill=col)
+            frames.append(img)
+        return frames
+
+    def _stars(self, rng, W, H, n):
+        from PIL import Image, ImageDraw
+        frames = []
+        stars = [(rng.randint(0,W),rng.randint(0,H),rng.randint(1,3),rng.random()) for _ in range(120)]
+        for i in range(n):
+            img  = Image.new("RGB",(W,H),(3,3,15))
+            draw = ImageDraw.Draw(img)
+            t    = i/n
+            for sx,sy,sr,phase in stars:
+                bright = int(200+55*math.sin(t*2*math.pi+phase*6))
+                draw.ellipse([sx-sr,sy-sr,sx+sr,sy+sr],fill=(bright,bright,int(bright*0.8)))
+            frames.append(img)
+        return frames
+
+    def _smoke(self, rng, W, H, n):
+        from PIL import Image, ImageDraw, ImageFilter
+        frames = []
+        for i in range(n):
+            img  = Image.new("RGB",(W,H),(15,15,20))
+            draw = ImageDraw.Draw(img)
+            t    = i/n
+            for _ in range(30):
+                x  = W//2+rng.randint(-40,40)
+                y  = int(H*(0.8-t*0.5))+rng.randint(-20,20)
+                r  = int(20+rng.randint(0,30)+t*20)
+                v  = int(80+rng.randint(0,40))
+                draw.ellipse([x-r,y-r,x+r,y+r],fill=(v,v,v))
+            img = img.filter(ImageFilter.GaussianBlur(3))
+            frames.append(img)
+        return frames
+
+    def _knight(self, rng, W, H, n):
+        from PIL import Image, ImageDraw
+        frames = []
+        for i in range(n):
+            img  = Image.new("RGB",(W,H),(30,30,50))
+            draw = ImageDraw.Draw(img)
+            t    = i/n*2*math.pi
+            cx,cy= W//2, H//2+20
+            # Body bob
+            bob  = int(math.sin(t)*5)
+            # Helmet
+            draw.ellipse([cx-18,cy-60+bob,cx+18,cy-24+bob],fill=(150,150,170))
+            # Visor
+            draw.rectangle([cx-12,cy-50+bob,cx+12,cy-38+bob],fill=(50,50,80))
+            # Body
+            draw.rectangle([cx-20,cy-22+bob,cx+20,cy+20+bob],fill=(130,130,150))
+            # Shield
+            sx = int(math.cos(t)*8)+cx-30
+            draw.polygon([(sx,cy-20+bob),(sx-15,cy+bob),(sx,cy+20+bob)],fill=(100,80,40))
+            # Sword swing
+            sa = t*2
+            sx2= cx+int(math.cos(sa)*40)
+            sy2= cy+int(math.sin(sa)*30)
+            draw.line([(cx+15,cy-10+bob),(sx2,sy2)],fill=(200,200,220),width=3)
+            # Legs
+            la = int(math.sin(t)*15)
+            draw.rectangle([cx-16,cy+20+bob,cx-4,cy+50+la+bob],fill=(100,100,120))
+            draw.rectangle([cx+4,cy+20+bob,cx+16,cy+50-la+bob],fill=(100,100,120))
+            frames.append(img)
+        return frames
+
+    def _dancing(self, rng, W, H, n):
+        from PIL import Image, ImageDraw
+        frames = []
+        cols = [(255,100,150),(100,150,255),(150,255,100),(255,200,50)]
+        for i in range(n):
+            img  = Image.new("RGB",(W,H),(20,20,35))
+            draw = ImageDraw.Draw(img)
+            t    = i/n*2*math.pi
+            cx,cy= W//2,H//2
+            bob  = int(math.sin(t*2)*10)
+            col  = cols[i%len(cols)]
+            # Head
+            draw.ellipse([cx-20,cy-70+bob,cx+20,cy-30+bob],fill=col)
+            # Eyes
+            draw.ellipse([cx-10,cy-58+bob,cx-4,cy-52+bob],fill=(255,255,255))
+            draw.ellipse([cx+4,cy-58+bob,cx+10,cy-52+bob],fill=(255,255,255))
+            # Smile
+            draw.arc([cx-8,cy-50+bob,cx+8,cy-38+bob],0,180,fill=(50,50,50),width=2)
+            # Body
+            draw.rectangle([cx-18,cy-28+bob,cx+18,cy+20+bob],fill=col)
+            # Arms
+            la = int(math.cos(t)*30); ra = int(math.cos(t+math.pi)*30)
+            draw.line([(cx-18,cy-15+bob),(cx-40,cy-15+la+bob)],fill=col,width=4)
+            draw.line([(cx+18,cy-15+bob),(cx+40,cy-15+ra+bob)],fill=col,width=4)
+            # Legs
+            ll = int(math.sin(t)*20); rl = int(math.sin(t+math.pi)*20)
+            draw.line([(cx-10,cy+20+bob),(cx-15,cy+60+ll+bob)],fill=col,width=4)
+            draw.line([(cx+10,cy+20+bob),(cx+15,cy+60+rl+bob)],fill=col,width=4)
+            frames.append(img)
+        return frames
+
+    def _dragon(self, rng, W, H, n):
+        from PIL import Image, ImageDraw
+        frames = []
+        for i in range(n):
+            img  = Image.new("RGB",(W,H),(10,10,30))
+            draw = ImageDraw.Draw(img)
+            t    = i/n*2*math.pi
+            cx   = int(W//2+math.cos(t)*50)
+            cy   = int(H//2+math.sin(t*0.5)*30)
+            flap = int(math.sin(t*2)*25)
+            # Wings
+            draw.polygon([(cx-20,cy),(cx-80,cy-40+flap),(cx-60,cy+10)],fill=(80,20,20))
+            draw.polygon([(cx+20,cy),(cx+80,cy-40+flap),(cx+60,cy+10)],fill=(80,20,20))
+            # Body
+            draw.ellipse([cx-30,cy-20,cx+30,cy+20],fill=(120,30,30))
+            # Head
+            draw.ellipse([cx+20,cy-30,cx+55,cy],fill=(140,40,40))
+            # Eye
+            draw.ellipse([cx+42,cy-22,cx+50,cy-14],fill=(255,200,0))
+            # Fire breath
+            for _ in range(8):
+                fx=cx+55+rng.randint(0,40); fy=cy-15+rng.randint(-10,10)
+                draw.ellipse([fx-4,fy-4,fx+4,fy+4],fill=(255,rng.randint(50,150),0))
+            # Tail
+            tx = cx-30+int(math.sin(t+1)*20)
+            draw.line([(cx-30,cy),(cx-60,cy+10),(tx,cy+30)],fill=(100,25,25),width=6)
+            frames.append(img)
+        return frames
+
+    def _particles(self, rng, W, H, n, prompt):
+        from PIL import Image, ImageDraw
+        # Colour from prompt hash
+        seed = int(hashlib.md5(prompt.encode()).hexdigest(),16)%(2**31)
+        r2   = (seed>>16)&255; g2=(seed>>8)&255; b2=seed&255
+        r2   = max(80,r2); g2=max(80,g2); b2=max(80,b2)
+        frames=[]
+        for i in range(n):
+            img  = Image.new("RGB",(W,H),(10,10,20))
+            draw = ImageDraw.Draw(img)
+            t    = i/n*2*math.pi
+            for _ in range(50):
+                px=int(W//2+math.cos(t+rng.random()*6)*rng.randint(10,120))
+                py=int(H//2+math.sin(t+rng.random()*6)*rng.randint(10,120))
+                pr=rng.randint(3,12)
+                draw.ellipse([px-pr,py-pr,px+pr,py+pr],fill=(r2,g2,b2))
+            frames.append(img)
+        return frames
