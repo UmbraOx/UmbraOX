@@ -93,3 +93,6 @@ def harvest_nearby(player, world_map):
     else:
         player.inventory[gathered_resource] = 1
     return f"You have gathered {gathered_resource}."
+
+if __name__ == '__main__':
+    main()

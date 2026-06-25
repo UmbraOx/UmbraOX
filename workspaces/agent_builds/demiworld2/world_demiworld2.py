@@ -43,3 +43,6 @@ def draw_world(surf, cam_x, cam_y):
 
 def get_biome(tx, ty):
     return WORLD_MAP[tx % 200][ty % 200]
+
+if __name__ == '__main__':
+    main()

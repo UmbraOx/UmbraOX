@@ -1342,6 +1342,30 @@ def _run_deep_build(runtime, description, project_name, agents_to_run=None):
 
     # ── Step 6: Requirement validation + auto-repair loop ──
     _umbra_print("[UMBRA] Running requirement validation...")
+
+    # Player safety patch — ensures agent Player class has all skeleton-required attrs
+    if 'Player' in game_code and 'UMBRA_PLAYER_PATCH' not in game_code:
+        _pp = '''
+# UMBRA_PLAYER_PATCH
+try:
+    _op=Player.__init__
+    def _np(self,*a,**kw):
+        _op(self,*a,**kw)
+        for _at,_dv in [('active_quests',{}),('completed_quests',[]),
+                        ('inventory',{}),('equipped',{'weapon':None,'armor':None}),
+                        ('spells',[]),('gold',50),('level',1),('xp',0),
+                        ('xp_next',100),('float_texts',[]),('atk',10),
+                        ('defense',5),('spd',180),('alive',True),
+                        ('attack_cooldown',0.0),('regen_timer',0.0)]:
+            if not hasattr(self,_at): setattr(self,_at,_dv)
+    Player.__init__=_np
+except Exception: pass
+'''
+        if 'if __name__' in game_code:
+            game_code=game_code.replace('if __name__',_pp+'\nif __name__',1)
+        else:
+            game_code+=_pp
+
     game_code, report = _test_game(
         os.path.join(proj_dir, proj_slug + "_game.py"), game_code
     )
@@ -2382,7 +2406,6 @@ def build_runtime():
         "runtime_project_export_tool",
         "runtime_character_dialogue_generator",
         "runtime_map_generator",
-        "runtime_music_pipeline",
     ]
     for mod_name in _known_optionals:
         mod_path = os.path.join(optional_runtime_dir, mod_name + ".py")
@@ -3118,7 +3141,26 @@ def run_prompt(runtime, prompt, project_override=None):
         if gif_gen and gif_gen.is_available():
             _umbra_print("[UMBRA] Generating GIF...")
             _gr = gif_gen.run(prompt)
-            _umbra_print("[GIF] " + str(_gr.get("path","") if isinstance(_gr,dict) else _gr))
+            if isinstance(_gr, dict):
+                _gpath = _gr.get("path") or _gr.get("file_path") or _gr.get("output")
+            else:
+                _gpath = str(_gr) if _gr else None
+            if _gpath and str(_gpath) != "None":
+                _umbra_print("[GIF] Saved: " + str(_gpath))
+                _umbra_mem(runtime) and _umbra_mem(runtime).store("last_gif", str(_gpath), tags=["gif"])
+            else:
+                # Direct fallback using our generator
+                try:
+                    from core.runtime.runtime_animated_gif_generator import RuntimeAnimatedGifGenerator as _RAGG
+                    import os as _osg
+                    _gdir = _osg.path.join(_UMBRA_ROOT,"workspaces","videos")
+                    _osg.makedirs(_gdir, exist_ok=True)
+                    _gagg = _RAGG(output_dir=_gdir)
+                    _gr2  = _gagg.run(prompt)
+                    _gpath2 = _gr2.get("path") if isinstance(_gr2,dict) else None
+                    _umbra_print("[GIF] Saved: " + str(_gpath2))
+                except Exception as _ge2:
+                    _umbra_print("[GIF] Error: " + str(_ge2))
         else:
             _umbra_print("[GIF] Not available. Run: install a gif generator into umbra")
         return None

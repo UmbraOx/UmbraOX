@@ -1,0 +1,24 @@
+{
+  "name": "TestRPG",
+  "slug": "testrpg",
+  "project_type": "general",
+  "description": "make a game called TestRPG",
+  "created_at": "2026-06-22T20:52:56.291993",
+  "updated_at": "2026-06-23T07:18:00.858316",
+  "status": "active",
+  "files": [
+    {
+      "path": "C:\\Umbra\\workspaces\\agent_builds\\testrpg\\testrpg_game.py",
+      "type": "game",
+      "added_at": "2026-06-22T20:52:56.293993"
+    },
+    {
+      "path": "C:\\Umbra\\workspaces\\agent_builds\\testrpg\\testrpg_game.py",
+      "type": "game",
+      "added_at": "2026-06-23T07:18:00.858316"
+    }
+  ],
+  "conversation": [],
+  "metadata": {},
+  "tags": []
+}

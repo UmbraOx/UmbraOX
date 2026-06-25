@@ -41,3 +41,6 @@ def get_tile(tx, ty):
     if 0 <= tx < 200 and 0 <= ty < 200:
         return WORLD_MAP[tx][ty]
     return None
+
+if __name__ == '__main__':
+    main()

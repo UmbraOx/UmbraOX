@@ -374,6 +374,7 @@ class UmbraControlCenter:
         ttype=("game" if any(w in text.lower() for w in ["game","rpg"])
                else "image" if "image" in text.lower()
                else "gif" if "gif" in text.lower() else "general")
+        self._last_was_image = ("image" in text.lower() or "gif" in text.lower())
         self.add_job(text,ttype,"running")
         self._task_start=time.time()
         self._prog.pack(fill=tk.X);self._prog.start(10)
@@ -403,7 +404,10 @@ class UmbraControlCenter:
         elapsed=time.time()-self._task_start
         self._status_lbl.configure(text=f"● READY  (last task: {elapsed:.0f}s)",fg=GREEN)
         self._refresh_files()
-        self.root.after(500,self._load_latest)
+        # Only auto-preview if image was just generated
+        if hasattr(self,"_last_was_image") and self._last_was_image:
+            self.root.after(500,self._load_latest)
+            self._last_was_image=False
 
     def _quick(self,cmd):
         self._entry.delete(0,tk.END);self._entry.insert(0,cmd);self._on_enter()

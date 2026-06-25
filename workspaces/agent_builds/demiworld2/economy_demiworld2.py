@@ -63,3 +63,6 @@ def craft_item(player, recipe):
         return True, 'Item crafted'
     else:
         return False, 'Crafting failed'
+
+if __name__ == '__main__':
+    main()

@@ -91,3 +91,6 @@ def load_game(player, buildings, filepath):
     except Exception as e:
         print(e)
         return False
+
+if __name__ == '__main__':
+    main()

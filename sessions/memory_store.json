@@ -1,0 +1,65 @@
+{
+  "last_game_file": {
+    "key": "last_game_file",
+    "value": "C:\\Umbra\\workspaces\\agent_builds\\testrpg\\testrpg_game.py",
+    "tags": [
+      "game"
+    ],
+    "source": "runtime",
+    "created_at": "2026-06-23T07:18:00.860315",
+    "access_count": 3
+  },
+  "deep_build:testrpg": {
+    "key": "deep_build:testrpg",
+    "value": {
+      "project": "TestRPG",
+      "path": "C:\\Umbra\\workspaces\\agent_builds\\testrpg\\testrpg_game.py",
+      "agents": [
+        "world",
+        "character",
+        "item",
+        "mechanic",
+        "ui",
+        "quest",
+        "economy"
+      ],
+      "lines": 2013,
+      "requirements_passed": [
+        "window_opens",
+        "game_loop",
+        "wasd_movement",
+        "esc_pause",
+        "inventory_key",
+        "quest_key",
+        "x_close_buttons",
+        "hud_bars",
+        "minimap",
+        "enemies_present",
+        "combat",
+        "weapons_data",
+        "spells_data",
+        "save_load",
+        "no_input_calls",
+        "main_guard"
+      ],
+      "requirements_failed": []
+    },
+    "tags": [
+      "game",
+      "deep_build"
+    ],
+    "source": "runtime",
+    "created_at": "2026-06-23T07:18:00.878314",
+    "access_count": 0
+  },
+  "user_note:2": {
+    "key": "user_note:2",
+    "value": "my favorite games are Fable, Skyrim, and the graveyard keeper.",
+    "tags": [
+      "user_note"
+    ],
+    "source": "runtime",
+    "created_at": "2026-06-23T08:56:19.938532",
+    "access_count": 0
+  }
+}

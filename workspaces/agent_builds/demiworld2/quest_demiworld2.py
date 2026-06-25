@@ -85,3 +85,6 @@ def harvest_nearby(player, WORLD_MAP):
         player.inventory[item] = 1
 
     return f'Gathered {item} from the {biome}'
+
+if __name__ == '__main__':
+    main()

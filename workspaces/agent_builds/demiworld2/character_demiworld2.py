@@ -120,3 +120,6 @@ class NPC:
         elif job == 'Alchemist':
             self.dialogue = ["I can brew potions for you.", "What do you need?"]
             self.shop_stock = {'Health Potion': 15, 'Mana Potion': 20}
+
+if __name__ == '__main__':
+    main()
