@@ -45,6 +45,11 @@ _comfyui_proc = None
 _gui_response_queue = _queue.Queue()
 _gui_input_queue = _queue.Queue()
 
+# Dev assistant (local Claude-like chat, file read/edit)
+try:
+    import umbra_dev_assistant as _dev_asst
+except Exception as _dae:
+    _dev_asst = None
 
 # ============================================================
 #  PORT / PROCESS CLEANUP
@@ -2656,8 +2661,15 @@ def _handle_project_switch(runtime, user_input):
 
 def _process_command(runtime, user_input):
     """Process a single command — same logic as interactive_mode loop body."""
+    # ── Dev assistant: file read/edit/chat (runs first) ──
+    if _dev_asst is not None:
+        if _dev_asst.process(
+            user_input,
+            print_fn=_umbra_print,
+            approval_fn=lambda desc, preview=None: _request_approval(desc, preview)
+        ):
+            return
     cmd = user_input.lower().strip()
-    pm = runtime.get("project_manager")
     active = None
     try:
         active = pm.get_active() if pm else None
