@@ -70,21 +70,51 @@ ENEMY_DEFS = [
 ]
 
 class Player:
-    def __init__(self, cls):
+    def __init__(self, cls="Warrior"):
         self.cls = cls
-        self.x, self.y = 0, 0
+        self.name = "Hero"
+        self.x, self.y = 512.0, 512.0
+        self.w = self.h = 28
+        self.col = (100, 160, 240)
         self.max_hp, self.hp = 100, 100
         self.max_mp, self.mp = 50, 50
         self.max_sta, self.sta = 100, 100
         self.str_, self.dex, self.int_, self.luck = 10, 10, 10, 10
+        self.atk = 10
+        self.defense = 5
+        self.spd = 180
         self.level, self.xp, self.xp_next = 1, 0, 100
-        self.gold = 0
+        self.gold = 50
         self.speed = 5
+        self.vx = self.vy = 0.0
         self.inventory = {}
-        self.equipped = {}
+        self.equipped = {"weapon": None, "armor": None}
         self.spells = []
+        self.current_spell = 0
+        self.active_quests = {}
+        self.completed_quests = []
+        self.kills = {}
         self.quests = []
         self.crouching = False
+        self.sprint = False
+        self.alive = True
+        self.regen_timer = 0.0
+        self.attack_cooldown = 0.0
+        self.float_texts = []
+        # Apply class bonuses
+        bases = {
+            "Warrior":  dict(max_hp=130, max_mp=30,  max_sta=100, atk=14, defense=8,  col=(200, 80, 80)),
+            "Mage":     dict(max_hp=70,  max_mp=120, max_sta=60,  atk=8,  defense=3,  col=(80,  80, 200)),
+            "Rogue":    dict(max_hp=90,  max_mp=50,  max_sta=90,  atk=12, defense=5,  col=(80,  180, 80)),
+            "Ranger":   dict(max_hp=100, max_mp=60,  max_sta=80,  atk=11, defense=6,  col=(160, 120, 40)),
+            "Paladin":  dict(max_hp=120, max_mp=70,  max_sta=90,  atk=13, defense=10, col=(230, 200, 60)),
+        }
+        b = bases.get(cls, bases["Warrior"])
+        for k, v in b.items():
+            setattr(self, k, v)
+            base = k.replace("max_", "")
+            if base in ("hp", "mp", "sta"):
+                setattr(self, base, v)
 
     def atk_power(self):
         return self.str_ + (self.dex // 2)

@@ -51,6 +51,7 @@ try:
 except Exception as _dae:
     _dev_asst = None
 
+
 # ============================================================
 #  PORT / PROCESS CLEANUP
 # ============================================================
@@ -967,6 +968,38 @@ def _stitch_game(project_name, brief, components):
     code = code.replace("__UI_CODE__",      ui_code       or "# ui agent: no output")
     code = code.replace("__QUEST_CODE__",   quest_code    or "# quest agent: no output")
     code = code.replace("__ECON_CODE__",    economy_code  or "# economy agent: no output")
+
+    # Safety: ensure any top-level Player class has active_quests and required attrs
+    # This patches games where agents write a minimal Player missing these fields
+    _PLAYER_SAFETY = (
+        "\n# [UMBRA SAFETY PATCH] Ensure Player has all required attributes\n"
+        "_orig_player_cls = Player\n"
+        "class Player(_orig_player_cls):\n"
+        "    def __init__(self, *a, **kw):\n"
+        "        super().__init__(*a, **kw)\n"
+        "        if not hasattr(self, \'active_quests\'):    self.active_quests = {}\n"
+        "        if not hasattr(self, \'completed_quests\'): self.completed_quests = []\n"
+        "        if not hasattr(self, \'kills\'):            self.kills = {}\n"
+        "        if not hasattr(self, \'float_texts\'):      self.float_texts = []\n"
+        "        if not hasattr(self, \'atk\'):              self.atk = 10\n"
+        "        if not hasattr(self, \'defense\'):          self.defense = 5\n"
+        "        if not hasattr(self, \'spd\'):              self.spd = 180\n"
+        "        if not hasattr(self, \'col\'):              self.col = (100, 160, 240)\n"
+        "        if not hasattr(self, \'name\'):             self.name = \'Hero\'\n"
+        "        if not hasattr(self, \'alive\'):            self.alive = True\n"
+        "        if not hasattr(self, \'sprint\'):           self.sprint = False\n"
+        "        if not hasattr(self, \'vx\'):               self.vx = 0.0\n"
+        "        if not hasattr(self, \'vy\'):               self.vy = 0.0\n"
+        "        if not hasattr(self, \'regen_timer\'):      self.regen_timer = 0.0\n"
+        "        if not hasattr(self, \'attack_cooldown\'): self.attack_cooldown = 0.0\n"
+        "        if not hasattr(self, \'current_spell\'):   self.current_spell = 0\n"
+    )
+    if "class Player" in code and "_UMBRA SAFETY PATCH" not in code:
+        insert_after = "import pygame\n"
+        if insert_after in code:
+            idx = code.index(insert_after) + len(insert_after)
+            code = code[:idx] + _PLAYER_SAFETY + code[idx:]
+
     return code
 
 
@@ -2661,15 +2694,16 @@ def _handle_project_switch(runtime, user_input):
 
 def _process_command(runtime, user_input):
     """Process a single command — same logic as interactive_mode loop body."""
-    # ── Dev assistant: file read/edit/chat (runs first) ──
+    # Dev assistant: file read/edit/chat — intercepts before all other handlers
     if _dev_asst is not None:
         if _dev_asst.process(
             user_input,
             print_fn=_umbra_print,
-            approval_fn=lambda desc, preview=None: _request_approval(desc, preview)
+            approval_fn=lambda desc, preview=None: _approval_prompt(desc, preview)
         ):
             return
     cmd = user_input.lower().strip()
+    pm = runtime.get("project_manager")
     active = None
     try:
         active = pm.get_active() if pm else None
@@ -3136,7 +3170,19 @@ def run_prompt(runtime, prompt, project_override=None):
         _umbra_print("\n[UMBRA] Before I build, a few quick questions:")
         for _q in _clarify_qs: _umbra_print("  " + _q)
         _umbra_print("  (or type 'skip' to use defaults)")
-        _clarify_ans = _safe_input("your answers > ", "skip").strip()
+        # GUI mode: open a real input dialog instead of auto-skipping
+        if _gui_mode and _gui_ref is not None:
+            try:
+                import tkinter.simpledialog as _tsd
+                _clarify_ans = _tsd.askstring(
+                    "Umbra — Build Questions",
+                    "\n".join(_clarify_qs) + "\n\n(or leave blank to use defaults)",
+                    parent=None
+                ) or "skip"
+            except Exception:
+                _clarify_ans = "skip"
+        else:
+            _clarify_ans = _safe_input("your answers > ", "skip").strip()
         if _clarify_ans and _clarify_ans.lower() != "skip":
             prompt = prompt + ". Details: " + _clarify_ans
         _umbra_print("[UMBRA] Building game: " + _pname + " — launching agents...")
