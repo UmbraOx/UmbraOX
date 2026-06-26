@@ -1,76 +1,75 @@
-# Game Data Constants for Optiopia
+# Game Data Constants
 
 WEAPONS = [
-    {'name': 'Sword', 'atk': 10, 'type': 'melee', 'val': 50, 'col': (255, 69, 0)},
-    {'name': 'Bow', 'atk': 8, 'type': 'ranged', 'val': 40, 'col': (139, 69, 19)},
-    {'name': 'Staff', 'atk': 7, 'type': 'magic', 'val': 35, 'col': (255, 215, 0)},
-    {'name': 'Axe', 'atk': 12, 'type': 'melee', 'val': 60, 'col': (165, 42, 42)},
-    {'name': 'Dagger', 'atk': 5, 'type': 'melee', 'val': 20, 'col': (139, 0, 0)},
-    {'name': 'Crossbow', 'atk': 9, 'type': 'ranged', 'val': 45, 'col': (165, 42, 42)},
-    {'name': 'Wand', 'atk': 6, 'type': 'magic', 'val': 30, 'col': (75, 0, 130)},
-    {'name': 'Mace', 'atk': 11, 'type': 'melee', 'val': 55, 'col': (220, 20, 60)},
-    {'name': 'Spear', 'atk': 9, 'type': 'melee', 'val': 45, 'col': (139, 69, 19)},
-    {'name': 'Magic Staff', 'atk': 8, 'type': 'magic', 'val': 40, 'col': (255, 215, 0)}
+    {'name': 'Iron Sword', 'atk': 10, 'type': 'melee', 'val': 50, 'col': (200, 190, 140)},
+    {'name': 'Longbow', 'atk': 8, 'type': 'ranged', 'val': 75, 'col': (139, 69, 19)},
+    {'name': 'Fire Staff', 'atk': 12, 'type': 'magic', 'val': 100, 'col': (255, 69, 0)},
+    {'name': 'Steel Dagger', 'atk': 7, 'type': 'melee', 'val': 30, 'col': (220, 220, 220)},
+    {'name': 'Crossbow', 'atk': 10, 'type': 'ranged', 'val': 90, 'col': (85, 65, 130)},
+    {'name': 'Ice Wand', 'atk': 9, 'type': 'magic', 'val': 85, 'col': (0, 255, 255)},
+    {'name': 'Battle Axe', 'atk': 14, 'type': 'melee', 'val': 60, 'col': (139, 0, 0)},
+    {'name': 'Shortbow', 'atk': 6, 'type': 'ranged', 'val': 55, 'col': (218, 165, 32)},
+    {'name': 'Lightning Rod', 'atk': 11, 'type': 'magic', 'val': 95, 'col': (255, 255, 0)},
+    {'name': 'Mystic Blade', 'atk': 15, 'type': 'melee', 'val': 70, 'col': (148, 0, 211)}
 ]
 
 ARMOR_SETS = [
-    {'name': 'Leather Armor', 'parts': ['Leather Helm', 'Leather Chestplate', 'Leather Greaves'], 'def': 3, 'val': 40},
-    {'name': 'Chainmail', 'parts': ['Chain Helm', 'Chain Chestplate', 'Chain Greaves'], 'def': 5, 'val': 60},
-    {'name': 'Plate Mail', 'parts': ['Plate Helm', 'Plate Chestplate', 'Plate Greaves'], 'def': 7, 'val': 80},
-    {'name': 'Mage Robes', 'parts': ['Robe Hood', 'Robe Top', 'Robe Bottoms'], 'def': 2, 'val': 35}
+    {'name': 'Leather Armor', 'parts': ['Leather Helmet', 'Leather Chestplate', 'Leather Leggings'], 'def': 5, 'val': 30},
+    {'name': 'Chainmail Armor', 'parts': ['Chainmail Helm', 'Chainmail Mail', 'Chainmail Greaves'], 'def': 10, 'val': 60},
+    {'name': 'Plate Armor', 'parts': ['Steel Helmet', 'Steel Chestplate', 'Steel Leggings'], 'def': 15, 'val': 90}
 ]
 
 SPELLS = [
-    {'name': 'Fireball', 'mp': 15, 'dmg': 10, 'col': (255, 69, 0), 'desc': 'A fiery orb that explodes on impact.'},
-    {'name': 'Heal', 'mp': 10, 'dmg': -8, 'col': (34, 139, 34), 'desc': 'Restores health to the target.'},
-    {'name': 'Lightning Bolt', 'mp': 20, 'dmg': 15, 'col': (75, 0, 130), 'desc': 'A bolt of lightning strikes an enemy.'},
-    {'name': 'Shield', 'mp': 8, 'dmg': 0, 'col': (64, 224, 208), 'desc': 'Creates a shield to block damage.'},
-    {'name': 'Ice Shard', 'mp': 12, 'dmg': 9, 'col': (0, 255, 255), 'desc': 'Launches an icy shard at the enemy.'},
-    {'name': 'Thunderclap', 'mp': 18, 'dmg': 13, 'col': (255, 69, 0), 'desc': 'A powerful clap that stuns enemies.'},
-    {'name': 'Poison Arrow', 'mp': 14, 'dmg': 7, 'col': (0, 128, 0), 'desc': 'Fires an arrow coated in poison.'},
-    {'name': 'Earthquake', 'mp': 25, 'dmg': 20, 'col': (139, 69, 19), 'desc': 'Causes the ground to shake and damage enemies.'},
-    {'name': 'Mana Shield', 'mp': 10, 'dmg': 0, 'col': (75, 0, 130), 'desc': 'Creates a shield that absorbs magic damage.'},
-    {'name': 'Blizzard', 'mp': 22, 'dmg': 14, 'col': (0, 255, 255), 'desc': 'Summons a blizzard to freeze and damage enemies.'}
+    {'name': 'Fireball', 'mp': 20, 'dmg': 15, 'col': (255, 69, 0), 'desc': 'A basic fire spell that burns enemies.'},
+    {'name': 'Heal', 'mp': 30, 'dmg': -10, 'col': (0, 255, 0), 'desc': 'Restores health to the target.'},
+    {'name': 'Lightning Bolt', 'mp': 25, 'dmg': 20, 'col': (255, 255, 0), 'desc': 'A powerful electric shock that stuns enemies.'},
+    {'name': 'Ice Shard', 'mp': 18, 'dmg': 12, 'col': (0, 255, 255), 'desc': 'Throws a shard of ice at the enemy.'},
+    {'name': 'Shield', 'mp': 22, 'dmg': -5, 'col': (220, 220, 220), 'desc': 'Creates a shield to absorb damage.'},
+    {'name': 'Fire Shield', 'mp': 35, 'dmg': -15, 'col': (255, 69, 0), 'desc': 'A fiery shield that burns attackers.'},
+    {'name': 'Thunderclap', 'mp': 40, 'dmg': 25, 'col': (255, 255, 0), 'desc': 'A thunderous clap that damages all enemies in range.'},
+    {'name': 'Frost Nova', 'mp': 30, 'dmg': 18, 'col': (0, 255, 255), 'desc': 'Freezes nearby enemies, dealing damage over time.'},
+    {'name': 'Magnetize', 'mp': 27, 'dmg': -10, 'col': (139, 69, 19), 'desc': 'Pulls in nearby items and enemies.'},
+    {'name': 'Meteor Shower', 'mp': 50, 'dmg': 40, 'col': (255, 69, 0), 'desc': 'Summons meteors to rain down on enemies.'}
 ]
 
 MATERIALS = [
     'Iron Ore',
-    'Gold Ore',
-    'Silver Ore',
-    'Wood Logs',
+    'Steel Ingot',
     'Leather Hide',
     'Magic Crystal',
-    'Steel Ingot',
-    'Mana Stone',
+    'Wood Plank',
+    'Coal',
+    'Silk Cloth',
     'Dragon Scale',
+    'Goblin Horn',
     'Phoenix Feather'
 ]
 
 QUESTS = [
-    {'id': 1, 'name': 'Goblin Hunt', 'desc': 'Eliminate 5 goblins in the forest.', 'target': 'goblin', 'need': 5, 'prog': 0, 'done': False, 'reward_gold': 50, 'reward_xp': 20},
-    {'id': 2, 'name': 'Collect Iron Ore', 'desc': 'Gather 10 iron ore from the mines.', 'target': 'mat:Iron Ore', 'need': 10, 'prog': 0, 'done': False, 'reward_gold': 30, 'reward_xp': 15},
-    {'id': 3, 'name': 'Defend Village', 'desc': 'Protect the village from bandit attacks.', 'target': 'bandit', 'need': 3, 'prog': 0, 'done': False, 'reward_gold': 70, 'reward_xp': 25},
-    {'id': 4, 'name': 'Mage Assistance', 'desc': 'Deliver a message to the Mage Tower.', 'target': 'mage', 'need': 1, 'prog': 0, 'done': False, 'reward_gold': 60, 'reward_xp': 20},
-    {'id': 5, 'name': 'Dragon Scale', 'desc': 'Retrieve a dragon scale from the cave.', 'target': 'mat:Dragon Scale', 'need': 1, 'prog': 0, 'done': False, 'reward_gold': 100, 'reward_xp': 30}
+    {'id': 1, 'name': 'Goblin Hunt', 'desc': 'Eliminate 10 goblins in the forest.', 'target': 'goblin', 'need': 10, 'prog': 0, 'done': False, 'reward_gold': 50, 'reward_xp': 20},
+    {'id': 2, 'name': 'Bandit Raid', 'desc': 'Defeat the bandits at the village entrance.', 'target': 'bandit', 'need': 5, 'prog': 0, 'done': False, 'reward_gold': 75, 'reward_xp': 30},
+    {'id': 3, 'name': 'Collect Iron Ore', 'desc': 'Gather 15 iron ore from the mines.', 'target': 'mat:Iron Ore', 'need': 15, 'prog': 0, 'done': False, 'reward_gold': 40, 'reward_xp': 15},
+    {'id': 4, 'name': 'Silk Harvest', 'desc': 'Collect 20 silk cloth from the spider caves.', 'target': 'mat:Silk Cloth', 'need': 20, 'prog': 0, 'done': False, 'reward_gold': 60, 'reward_xp': 25},
+    {'id': 5, 'name': 'Dragon Scale Quest', 'desc': 'Retrieve a dragon scale from the ancient ruins.', 'target': 'mat:Dragon Scale', 'need': 1, 'prog': 0, 'done': False, 'reward_gold': 100, 'reward_xp': 40}
 ]
 
 FACTIONS = {
     'kingdom': {'rep': 0, 'name': 'Kingdom of Eldoria'},
     'bandit': {'rep': 0, 'name': 'Bandit Gang'},
-    'goblin': {'rep': 0, 'name': 'Goblin Clan'}
+    'goblin': {'rep': 0, 'name': 'Goblin Tribe'}
 }
 
 DIALOGUE_TREES = {
-    'Merchant': [{'text': 'Welcome to my shop!', 'opts': ['Buy', 'Sell', 'Leave']}],
-    'Guard': [{'text': 'Greetings! How can I assist you?', 'opts': ['Report Bandit Activity', 'Inquire About Quests', 'Leave']}],
-    'Blacksmith': [{'text': 'Need weapons or armor? Come in!', 'opts': ['Forge Weapon', 'Craft Armor', 'Leave']}],
-    'Farmer': [{'text': 'Hello! How can I help you?', 'opts': ['Buy Produce', 'Sell Crops', 'Leave']}],
-    'default': [{'text': 'Hello there.', 'opts': ['Talk', 'Leave']}]
+    'Merchant': [{'text': 'Welcome to my shop! What can I get you?', 'opts': ['Buy', 'Sell', 'Leave']}],
+    'Guard': [{'text': 'Greetings traveler. Are you here for trouble?', 'opts': ['Yes', 'No', 'Leave']}],
+    'Blacksmith': [{'text': 'Need a weapon or armor? Come take a look.', 'opts': ['Forge Weapon', 'Craft Armor', 'Leave']}],
+    'Farmer': [{'text': 'Hello! How can I help you today?', 'opts': ['Buy Produce', 'Chat', 'Leave']}],
+    'default': [{'text': 'Hi there. Not much to do here.', 'opts': ['Leave']}]
 }
 
 NPC_NAMES = [
     'Aldric',
-    'Brynne',
+    'Brynn',
     'Caelum',
     'Daria',
     'Eldrin',
@@ -78,11 +77,11 @@ NPC_NAMES = [
     'Galen',
     'Hannah',
     'Igor',
-    'Jasmine',
+    'Jenna',
     'Kael',
     'Lila',
     'Morgan',
-    'Natalia',
+    'Nora',
     'Oscar',
     'Piper'
 ]

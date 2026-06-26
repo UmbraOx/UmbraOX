@@ -1,6 +1,5 @@
 import json
 import math
-import pygame
 
 class Camera:
     def __init__(self, x=0, y=0):
@@ -46,21 +45,18 @@ class Projectile:
     def update(self):
         self.x += self.vx
         self.y += self.vy
-        if abs(self.x - self.tx) < 1 and abs(self.y - self.ty) < 1:
-            return True
-        return False
 
     def draw(self, surf, cx, cy):
         pygame.draw.circle(surf, self.col, (int(self.x - cx), int(self.y - cy)), 3)
 
 class Building:
     TYPES = {
-        'House': {'col': (255, 165, 0), 'w': 2, 'h': 2, 'cost': {'wood': 4}},
-        'Shop': {'col': (128, 128, 128), 'w': 3, 'h': 2, 'cost': {'stone': 5}},
-        'Barracks': {'col': (192, 64, 0), 'w': 4, 'h': 3, 'cost': {'iron': 7}},
-        'Farm': {'col': (34, 139, 34), 'w': 3, 'h': 2, 'cost': {'wood': 6}},
-        'Tower': {'col': (0, 0, 255), 'w': 3, 'h': 3, 'cost': {'stone': 10}},
-        'Warehouse': {'col': (255, 255, 0), 'w': 4, 'h': 3, 'cost': {'wood': 8}}
+        'House': {'col': (128, 64, 0), 'w': 2, 'h': 2, 'cost': {'wood': 5, 'stone': 3}},
+        'Shop': {'col': (255, 165, 0), 'w': 3, 'h': 2, 'cost': {'wood': 8, 'stone': 4}},
+        'Barracks': {'col': (192, 192, 192), 'w': 4, 'h': 3, 'cost': {'wood': 10, 'stone': 5}},
+        'Farm': {'col': (0, 128, 0), 'w': 3, 'h': 2, 'cost': {'wood': 6, 'stone': 2}},
+        'Tower': {'col': (128, 128, 128), 'w': 4, 'h': 4, 'cost': {'wood': 15, 'stone': 7}},
+        'Warehouse': {'col': (64, 32, 0), 'w': 3, 'h': 3, 'cost': {'wood': 9, 'stone': 4}}
     }
 
     def __init__(self, btype, tx, ty):
@@ -72,14 +68,13 @@ class Building:
         self.h = Building.TYPES[btype]['h']
 
     def draw(self, surf, cx, cy):
-        rect = pygame.Rect((self.tx - cx) * 32, (self.ty - cy) * 32, self.w * 32, self.h * 32)
-        pygame.draw.rect(surf, self.col, rect)
-        roof_points = [(rect.x + rect.width / 2, rect.y), (rect.x, rect.y + 10), (rect.x + rect.width, rect.y + 10)]
-        pygame.draw.polygon(surf, (165, 42, 42), roof_points)
-        door_rect = pygame.Rect(rect.x + rect.width / 2 - 8, rect.y + rect.height - 32, 16, 32)
-        pygame.draw.rect(surf, (0, 0, 0), door_rect)
-        window_rect = pygame.Rect(rect.x + 16, rect.y + 16, 16, 16)
-        pygame.draw.rect(surf, (255, 255, 255), window_rect)
+        x = (self.tx * 32) - cx
+        y = (self.ty * 32) - cy
+        pygame.draw.rect(surf, self.col, (x, y, self.w * 32, self.h * 32))
+        pygame.draw.polygon(surf, (192, 192, 192), [(x + self.w * 16, y - 16), (x, y), (x + self.w * 32, y)])
+        pygame.draw.rect(surf, (0, 0, 0), (x + 8, y + self.h * 32 - 8, 16, 8))
+        if self.btype == 'House':
+            pygame.draw.rect(surf, (255, 255, 255), (x + 16, y + 8, 8, 8))
 
 def save_game(player, buildings, filepath):
     try:
@@ -90,8 +85,7 @@ def save_game(player, buildings, filepath):
         with open(filepath, 'w') as f:
             json.dump(data, f)
         return True
-    except Exception as e:
-        print(e)
+    except Exception:
         return False
 
 def load_game(player, buildings, filepath):
@@ -103,6 +97,5 @@ def load_game(player, buildings, filepath):
         for b in data['buildings']:
             buildings.append(Building(b['btype'], b['tx'], b['ty']))
         return True
-    except Exception as e:
-        print(e)
+    except Exception:
         return False
