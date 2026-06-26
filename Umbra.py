@@ -157,6 +157,21 @@ def _find_broken_modules():
 
 _gui_ref = None  # Set after GUI launches
 
+# System context injected into every chat prompt so the LLM knows it IS Umbra
+_UMBRA_SYSTEM = (
+    "You are Umbra, a local autonomous AI assistant running on the user's Windows PC. "
+    "You were built by the user using Python and Ollama. You have no internet access. "
+    "You can build games, write code, answer questions, read/edit files, run tests, "
+    "generate images and GIFs, and help the user finish building you. "
+    "Available Ollama models are on this machine. "
+    "Be concise, helpful, and direct. Never mention Anthropic, OpenAI, or other AI companies. "
+    "You ARE Umbra — respond as Umbra.\n\n"
+)
+
+def _umbra_chat_prompt(user_text):
+    """Wrap user text with Umbra system context."""
+    return _UMBRA_SYSTEM + "User: " + user_text + "\nUmbra:"
+
 
 def _umbra_mem(rt):
     """Safe memory accessor."""
@@ -179,10 +194,18 @@ def _umbra_print(text):
 # ============================================================
 
 def _safe_input(prompt_text, default=""):
-    """input() that returns default when inside GUI mode (no terminal)."""
+    """input() that shows a tkinter dialog in GUI mode, falls back to terminal."""
     if _gui_mode:
-        _umbra_print(prompt_text + " [auto: " + str(default) + "]")
-        return default
+        try:
+            import tkinter as _tk
+            from tkinter import simpledialog as _sd
+            _root = _tk.Tk(); _root.withdraw(); _root.attributes("-topmost", True)
+            _ans = _sd.askstring("Umbra", prompt_text, parent=_root)
+            _root.destroy()
+            return (_ans or "").strip() if _ans is not None else default
+        except Exception:
+            _umbra_print(prompt_text + " [auto: " + str(default) + "]")
+            return default
     try:
         return input(prompt_text).strip()
     except (EOFError, KeyboardInterrupt):
@@ -1375,11 +1398,40 @@ try:
             if not hasattr(self,_at): setattr(self,_at,_dv)
     Player.__init__=_np
 except Exception: pass
+# UMBRA_ENEMY_PATCH
+try:
+    _oe=Enemy.__init__
+    def _ne(self,edef,tx,ty,*a,**kw):
+        if isinstance(edef,str):
+            _n=edef
+            edef=next((d for d in ENEMY_DEFS if isinstance(d,dict) and d.get('name')==_n),
+                      {'name':_n,'hp':40,'atk':8,'defense':3,'xp_val':15,'spd':90,'aggro':200})
+        _oe(self,edef,tx,ty,*a,**kw)
+        for _at,_dv in [('name',edef.get('name','Enemy') if isinstance(edef,dict) else str(edef)),
+                        ('hp',edef.get('hp',40) if isinstance(edef,dict) else 40),
+                        ('max_hp',edef.get('hp',40) if isinstance(edef,dict) else 40),
+                        ('atk',edef.get('atk',8) if isinstance(edef,dict) else 8),
+                        ('defense',edef.get('defense',3) if isinstance(edef,dict) else 3),
+                        ('xp_val',edef.get('xp_val',15) if isinstance(edef,dict) else 15),
+                        ('spd',edef.get('spd',90) if isinstance(edef,dict) else 90),
+                        ('alive',True),('tx',tx),('ty',ty)]:
+            if not hasattr(self,_at): setattr(self,_at,_dv)
+    Enemy.__init__=_ne
+except Exception: pass
 '''
         if 'if __name__' in game_code:
             game_code=game_code.replace('if __name__',_pp+'\nif __name__',1)
         else:
             game_code+=_pp
+
+        # Fix draw_main_menu call — agents define it with project_name arg but main() calls it without
+        import re as _re2
+        game_code = _re2.sub(
+            r'\bdraw_main_menu\s*\(\s*(\w+)\s*\)',
+            lambda m: 'draw_main_menu(' + m.group(1) + ', "' + project_name + '")'
+            if 'project_name' not in m.group(0) else m.group(0),
+            game_code
+        )
 
     game_code, report = _test_game(
         os.path.join(proj_dir, proj_slug + "_game.py"), game_code
@@ -2281,21 +2333,22 @@ def build_runtime():
     global _pipeline_monitor, _scheduler, _comfyui_proc
     _init_resource_manager()
 
-    # Auto-install Pillow if missing (needed for GIF + image preview)
-    try:
-        import PIL  # noqa
-    except ImportError:
+    # Auto-install required packages if missing
+    for _pkg_import, _pkg_name in [("PIL", "Pillow"), ("pygame", "pygame")]:
         try:
-            print("  [UMBRA] Pillow not found — installing automatically...")
-            import subprocess as _sp2
-            _r = _sp2.run([sys.executable, "-m", "pip", "install", "Pillow", "--quiet"],
-                          capture_output=True, text=True)
-            if _r.returncode == 0:
-                print("  [UMBRA] Pillow installed OK — GIF and image preview now available.")
-            else:
-                print("  [UMBRA] Pillow install failed: " + _r.stderr[:120])
-        except Exception as _pe:
-            print("  [UMBRA] Could not auto-install Pillow: " + str(_pe))
+            __import__(_pkg_import)
+        except ImportError:
+            try:
+                print("  [UMBRA] " + _pkg_name + " not found — installing automatically...")
+                import subprocess as _sp2
+                _r = _sp2.run([sys.executable, "-m", "pip", "install", _pkg_name, "--quiet"],
+                              capture_output=True, text=True)
+                if _r.returncode == 0:
+                    print("  [UMBRA] " + _pkg_name + " installed OK.")
+                else:
+                    print("  [UMBRA] " + _pkg_name + " install failed: " + _r.stderr[:120])
+            except Exception as _pe:
+                print("  [UMBRA] Could not auto-install " + _pkg_name + ": " + str(_pe))
 
     try:
         from core.runtime.runtime_launcher import RuntimeLauncher
@@ -2745,6 +2798,36 @@ def _process_command(runtime, user_input):
         handle_integrate(runtime, module)
         return
 
+    # ── HIGH-PRIORITY SHORTCUTS (before pipeline fallthrough) ──
+    if cmd in ("test", "run tests", "tests", "run test"):
+        import subprocess as _sp3
+        _umbra_print("[TEST] Running test_umbra_full.py ...")
+        _tr = _sp3.run([sys.executable, "test_umbra_full.py"],
+                       capture_output=True, text=True, cwd=_UMBRA_ROOT)
+        _out = (_tr.stdout or "") + (_tr.stderr or "")
+        _lines = _out.strip().splitlines()
+        if len(_lines) > 60:
+            _umbra_print("  ... (showing last 60 of " + str(len(_lines)) + " lines)")
+            _lines = _lines[-60:]
+        for _l in _lines: _umbra_print(_l)
+        _p = sum(1 for l in _out.splitlines() if "[PASS]" in l)
+        _f = sum(1 for l in _out.splitlines() if "[FAIL]" in l)
+        _umbra_print("\n[TEST] " + str(_p) + " passed, " + str(_f) + " failed  (exit code " + str(_tr.returncode) + ")")
+        return
+
+    if cmd in ("which model", "what model", "model", "which model?", "current model"):
+        try:
+            import urllib.request as _ur2, json as _jj2
+            with _ur2.urlopen("http://localhost:11434/api/tags", timeout=3) as _r2:
+                _all2 = [m["name"] for m in _jj2.loads(_r2.read()).get("models", [])]
+        except Exception: _all2 = []
+        _chat_m = runtime.get("chat_model") or _get_chat_model()
+        _agent_m = _get_agent_model()
+        _umbra_print("[DEV] Chat model: " + str(_chat_m))
+        _umbra_print("[DEV] Build model: " + str(_agent_m))
+        if _all2: _umbra_print("[DEV] Available: " + ", ".join(_all2))
+        return
+
     intent, detail = _detect_self_intent(user_input)
     if intent == "install" and detail:
         handle_self_install(runtime, detail)
@@ -3060,7 +3143,7 @@ def _direct_llm_answer(runtime, prompt, active_project=None, pm=None):
             except Exception: pass
     try:
         answer = _ollama_stream(
-            "[UMBRA] " + prompt,
+            _umbra_chat_prompt(prompt),
             timeout=120, num_predict=512, token_cb=_gui_cb)
         if _gui_mode and _gui_ref is not None and hasattr(_gui_ref, "stream_end"):
             try: _gui_ref.stream_end()
@@ -3139,7 +3222,7 @@ def run_prompt(runtime, prompt, project_override=None):
                     try: _gui_ref.stream_token(tok)
                     except Exception: pass
             _ans = _ollama_stream(
-                "[UMBRA] " + prompt,
+                _umbra_chat_prompt(prompt),
                 model=_qa_model, timeout=120, num_predict=512,
                 token_cb=_gui_stream_cb)
             if _gui_mode and _gui_ref is not None and hasattr(_gui_ref, "stream_end"):
@@ -3308,7 +3391,7 @@ def run_prompt(runtime, prompt, project_override=None):
                         print(tok, end="", flush=True)
                         try: _gui_ref.stream_token(tok)
                         except Exception: pass
-                answer = _ollama_stream("[UMBRA] " + prompt, timeout=120, num_predict=512, token_cb=_gui_cb2) or "I don't know."
+                answer = _ollama_stream(_umbra_chat_prompt(prompt), timeout=120, num_predict=512, token_cb=_gui_cb2) or "I don't know."
                 if _gui_mode and _gui_ref is not None and hasattr(_gui_ref, "stream_end"):
                     try: _gui_ref.stream_end()
                     except Exception: pass
@@ -4071,10 +4154,21 @@ def interactive_mode(runtime):
                     if run:
                         _umbra_print("  Status: " + run.status + "\n")
 
-        elif cmd in ("test", "run tests"):
-            _umbra_print("[UMBRA] Running test suite...")
-            result = runtime["executor"].execute_pytest("core/tests")
-            _umbra_print(result.stdout[-2000:] if result.stdout else result.stderr[-500:])
+        elif cmd in ("test", "run tests", "tests"):
+            import subprocess as _sp3
+            _umbra_print("[TEST] Running test_umbra_full.py ...")
+            _tr = _sp3.run([sys.executable, "test_umbra_full.py"],
+                           capture_output=True, text=True, cwd=_UMBRA_ROOT)
+            _out = (_tr.stdout or "") + (_tr.stderr or "")
+            _lines = _out.strip().splitlines()
+            if len(_lines) > 60:
+                _umbra_print("  ... (showing last 60 of " + str(len(_lines)) + " lines)")
+                _lines = _lines[-60:]
+            for _l in _lines: _umbra_print(_l)
+            _passed = sum(1 for l in _out.splitlines() if "[PASS]" in l)
+            _failed = sum(1 for l in _out.splitlines() if "[FAIL]" in l)
+            _umbra_print("\n[TEST] " + str(_passed) + " passed, " + str(_failed) + " failed" +
+                         "  (exit code " + str(_tr.returncode) + ")")
 
         elif cmd == "handoff":
             try:
