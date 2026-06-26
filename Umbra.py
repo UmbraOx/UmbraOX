@@ -1424,14 +1424,26 @@ except Exception: pass
         else:
             game_code+=_pp
 
-        # Fix draw_main_menu call — agents define it with project_name arg but main() calls it without
+        # Fix draw_main_menu — normalize def signature + fix call sites
         import re as _re2
+        # Normalize any def variant to the correct signature
         game_code = _re2.sub(
-            r'\bdraw_main_menu\s*\(\s*(\w+)\s*\)',
-            lambda m: 'draw_main_menu(' + m.group(1) + ', "' + project_name + '")'
-            if 'project_name' not in m.group(0) else m.group(0),
+            r'def draw_main_menu\s*\([^)]*\)\s*:',
+            'def draw_main_menu(surf, project_name):',
             game_code
         )
+        # Fix call sites missing project_name (exclude def lines)
+        game_code = _re2.sub(
+            r'(?<!def )draw_main_menu\(\s*(\w+)\s*\)',
+            r'draw_main_menu(\1, project_name)',
+            game_code
+        )
+        # Ensure project_name variable exists in game scope
+        if 'project_name = ' not in game_code and 'project_name=' not in game_code:
+            game_code = game_code.replace(
+                'def main():',
+                'project_name = ' + repr(project_name) + '\n\ndef main():'
+            )
 
     game_code, report = _test_game(
         os.path.join(proj_dir, proj_slug + "_game.py"), game_code
@@ -2801,18 +2813,23 @@ def _process_command(runtime, user_input):
     # ── HIGH-PRIORITY SHORTCUTS (before pipeline fallthrough) ──
     if cmd in ("test", "run tests", "tests", "run test"):
         import subprocess as _sp3
-        _umbra_print("[TEST] Running test_umbra_full.py ...")
-        _tr = _sp3.run([sys.executable, "test_umbra_full.py"],
-                       capture_output=True, text=True, cwd=_UMBRA_ROOT)
-        _out = (_tr.stdout or "") + (_tr.stderr or "")
-        _lines = _out.strip().splitlines()
-        if len(_lines) > 60:
-            _umbra_print("  ... (showing last 60 of " + str(len(_lines)) + " lines)")
-            _lines = _lines[-60:]
-        for _l in _lines: _umbra_print(_l)
-        _p = sum(1 for l in _out.splitlines() if "[PASS]" in l)
-        _f = sum(1 for l in _out.splitlines() if "[FAIL]" in l)
-        _umbra_print("\n[TEST] " + str(_p) + " passed, " + str(_f) + " failed  (exit code " + str(_tr.returncode) + ")")
+        _total_p, _total_f = 0, 0
+        for _tf in ["test_umbra_full.py", "test_dev_assistant.py"]:
+            if not os.path.exists(os.path.join(_UMBRA_ROOT, _tf)):
+                _umbra_print("[TEST] SKIP " + _tf + " (not found)"); continue
+            _umbra_print("[TEST] Running " + _tf + " ...")
+            _tr = _sp3.run([sys.executable, _tf], capture_output=True, text=True, cwd=_UMBRA_ROOT)
+            _out = (_tr.stdout or "") + (_tr.stderr or "")
+            _lines = _out.strip().splitlines()
+            if len(_lines) > 40:
+                _umbra_print("  ... (last 40 of " + str(len(_lines)) + ")")
+                _lines = _lines[-40:]
+            for _l in _lines: _umbra_print(_l)
+            _p = sum(1 for l in _out.splitlines() if "[PASS]" in l)
+            _f = sum(1 for l in _out.splitlines() if "[FAIL]" in l)
+            _total_p += _p; _total_f += _f
+            _umbra_print("[TEST] " + _tf + ": " + str(_p) + " passed, " + str(_f) + " failed")
+        _umbra_print("\n[TEST] TOTAL: " + str(_total_p) + " passed, " + str(_total_f) + " failed\n")
         return
 
     if cmd in ("which model", "what model", "model", "which model?", "current model"):
