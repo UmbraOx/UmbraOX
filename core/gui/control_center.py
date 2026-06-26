@@ -33,6 +33,18 @@ class UmbraControlCenter:
     def log(self,msg,colour=None): self._q.put((str(msg),colour))
     def is_available(self): return True
 
+    # ── Live streaming support ──────────────────────────────
+    _stream_buf = ""
+    _streaming  = False
+
+    def stream_token(self, token):
+        """Called per-token during streaming. Thread-safe."""
+        self._q.put(("__TOKEN__" + token, None))
+
+    def stream_end(self):
+        """Called when streaming is finished."""
+        self._q.put(("__STREAM_END__", None))
+
     def _build_ui(self):
         r=self.root
         tb=tk.Frame(r,bg=PANEL,height=50);tb.pack(fill=tk.X);tb.pack_propagate(False)
@@ -90,6 +102,7 @@ class UmbraControlCenter:
         for tag,col in [("green",GREEN),("red",RED),("yellow",YELLOW),
                         ("accent",ACCENT),("dim",DIM),("white",TEXT)]:
             self._out.tag_config(tag,foreground=col)
+        self._out.tag_config("code",foreground="#88ddff",font=("Consolas",10))
         inp=tk.Frame(p,bg=PANEL,pady=6);inp.pack(fill=tk.X,padx=6,pady=(0,6))
         tk.Label(inp,text="umbra >",font=FM,fg=ACCENT,bg=PANEL).pack(side=tk.LEFT,padx=(8,4))
         self._entry=tk.Entry(inp,bg=INP,fg=TEXT,font=FM,relief=tk.FLAT,insertbackground=TEXT,
@@ -343,9 +356,33 @@ class UmbraControlCenter:
         try:
             count=0
             while count<50:
-                msg,col=self._q.get_nowait();self._write(msg,col);count+=1
+                msg,col=self._q.get_nowait()
+                if msg.startswith("__TOKEN__"):
+                    self._stream_append(msg[9:])
+                elif msg == "__STREAM_END__":
+                    self._stream_flush()
+                else:
+                    self._write(msg,col)
+                count+=1
         except queue.Empty: pass
         self.root.after(50,self._drain)
+
+    def _stream_append(self, token):
+        """Append a streaming token directly to the output widget."""
+        UmbraControlCenter._stream_buf += token
+        self._out.configure(state=tk.NORMAL)
+        self._out.insert(tk.END, token, "white")
+        self._out.see(tk.END)
+        self._out.configure(state=tk.DISABLED)
+
+    def _stream_flush(self):
+        """Finalize the streaming block with a newline."""
+        UmbraControlCenter._stream_buf = ""
+        UmbraControlCenter._streaming = False
+        self._out.configure(state=tk.NORMAL)
+        self._out.insert(tk.END, "\n", "white")
+        self._out.see(tk.END)
+        self._out.configure(state=tk.DISABLED)
 
     def _write(self,msg,col=None):
         self._out.configure(state=tk.NORMAL)
@@ -359,7 +396,18 @@ class UmbraControlCenter:
         elif any(x in low for x in ["[umbra]","[agent","[plan]","[build]","[stitch]","[you]","[syntax]","[test]"]):tag="accent"
         elif msg.startswith("  ") or msg.startswith("[") or msg.startswith("╔") or msg.startswith("╚"):tag="dim"
         else:tag="white"
-        self._out.insert(tk.END,f"[{ts}] {msg}\n",tag)
+        # Render with code-block awareness (``` fences get code tag)
+        if "```" in msg:
+            parts = msg.split("```")
+            self._out.insert(tk.END,f"[{ts}] ","dim")
+            for idx,part in enumerate(parts):
+                if idx % 2 == 0:
+                    if part: self._out.insert(tk.END,part,tag)
+                else:
+                    if part: self._out.insert(tk.END,part,"code")
+            self._out.insert(tk.END,"\n",tag)
+        else:
+            self._out.insert(tk.END,f"[{ts}] {msg}\n",tag)
         self._out.see(tk.END);self._out.configure(state=tk.DISABLED)
 
     def _on_enter(self,event=None):

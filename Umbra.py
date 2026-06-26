@@ -45,12 +45,6 @@ _comfyui_proc = None
 _gui_response_queue = _queue.Queue()
 _gui_input_queue = _queue.Queue()
 
-# Dev assistant (local Claude-like chat, file read/edit)
-try:
-    import umbra_dev_assistant as _dev_asst
-except Exception as _dae:
-    _dev_asst = None
-
 
 # ============================================================
 #  PORT / PROCESS CLEANUP
@@ -660,10 +654,11 @@ def _get_agent_model():
     return "qwen2.5-coder:32b"
 
 
-def _ollama_stream(prompt, model=None, timeout=1800, num_predict=-1):
+def _ollama_stream(prompt, model=None, timeout=1800, num_predict=-1, token_cb=None):
     """
     Stream tokens directly from Ollama HTTP API.
     num_predict=-1 means unlimited (model stops when it finishes).
+    token_cb: optional callable(token_str) called for each streamed token (for GUI live output).
     Returns full response string, or "" on failure.
     """
     import urllib.request as _ur
@@ -700,7 +695,14 @@ def _ollama_stream(prompt, model=None, timeout=1800, num_predict=-1):
                     break
                 try:
                     chunk = _j.loads(line.decode("utf-8", errors="replace"))
-                    parts.append(chunk.get("response", ""))
+                    tok = chunk.get("response", "")
+                    if tok:
+                        parts.append(tok)
+                        if token_cb:
+                            try:
+                                token_cb(tok)
+                            except Exception:
+                                pass
                     if chunk.get("done", False):
                         break
                 except Exception:
@@ -924,7 +926,14 @@ def _stitch_game(project_name, brief, components):
             if s in skip or s.startswith("from pygame"):
                 i += 1; continue
             # Strip agent __main__ blocks (they conflict with skeleton's main)
+            # Also skip the indented body that follows
             if s.startswith("if __name__") and "__main__" in s:
+                i += 1
+                while i < len(lines) and (lines[i].startswith("    ") or lines[i].strip() == ""):
+                    i += 1
+                continue
+            # Strip orphaned indented main() / run_game() calls at top level of agent output
+            if ln.startswith("    ") and s in ("main()", "run_game()", "game_loop()", "start_game()"):
                 i += 1; continue
             # Strip agent def main() / def run_game() / def game_loop() 
             # that would override the skeleton's main()
@@ -968,38 +977,6 @@ def _stitch_game(project_name, brief, components):
     code = code.replace("__UI_CODE__",      ui_code       or "# ui agent: no output")
     code = code.replace("__QUEST_CODE__",   quest_code    or "# quest agent: no output")
     code = code.replace("__ECON_CODE__",    economy_code  or "# economy agent: no output")
-
-    # Safety: ensure any top-level Player class has active_quests and required attrs
-    # This patches games where agents write a minimal Player missing these fields
-    _PLAYER_SAFETY = (
-        "\n# [UMBRA SAFETY PATCH] Ensure Player has all required attributes\n"
-        "_orig_player_cls = Player\n"
-        "class Player(_orig_player_cls):\n"
-        "    def __init__(self, *a, **kw):\n"
-        "        super().__init__(*a, **kw)\n"
-        "        if not hasattr(self, \'active_quests\'):    self.active_quests = {}\n"
-        "        if not hasattr(self, \'completed_quests\'): self.completed_quests = []\n"
-        "        if not hasattr(self, \'kills\'):            self.kills = {}\n"
-        "        if not hasattr(self, \'float_texts\'):      self.float_texts = []\n"
-        "        if not hasattr(self, \'atk\'):              self.atk = 10\n"
-        "        if not hasattr(self, \'defense\'):          self.defense = 5\n"
-        "        if not hasattr(self, \'spd\'):              self.spd = 180\n"
-        "        if not hasattr(self, \'col\'):              self.col = (100, 160, 240)\n"
-        "        if not hasattr(self, \'name\'):             self.name = \'Hero\'\n"
-        "        if not hasattr(self, \'alive\'):            self.alive = True\n"
-        "        if not hasattr(self, \'sprint\'):           self.sprint = False\n"
-        "        if not hasattr(self, \'vx\'):               self.vx = 0.0\n"
-        "        if not hasattr(self, \'vy\'):               self.vy = 0.0\n"
-        "        if not hasattr(self, \'regen_timer\'):      self.regen_timer = 0.0\n"
-        "        if not hasattr(self, \'attack_cooldown\'): self.attack_cooldown = 0.0\n"
-        "        if not hasattr(self, \'current_spell\'):   self.current_spell = 0\n"
-    )
-    if "class Player" in code and "_UMBRA SAFETY PATCH" not in code:
-        insert_after = "import pygame\n"
-        if insert_after in code:
-            idx = code.index(insert_after) + len(insert_after)
-            code = code[:idx] + _PLAYER_SAFETY + code[idx:]
-
     return code
 
 
@@ -2304,6 +2281,22 @@ def build_runtime():
     global _pipeline_monitor, _scheduler, _comfyui_proc
     _init_resource_manager()
 
+    # Auto-install Pillow if missing (needed for GIF + image preview)
+    try:
+        import PIL  # noqa
+    except ImportError:
+        try:
+            print("  [UMBRA] Pillow not found — installing automatically...")
+            import subprocess as _sp2
+            _r = _sp2.run([sys.executable, "-m", "pip", "install", "Pillow", "--quiet"],
+                          capture_output=True, text=True)
+            if _r.returncode == 0:
+                print("  [UMBRA] Pillow installed OK — GIF and image preview now available.")
+            else:
+                print("  [UMBRA] Pillow install failed: " + _r.stderr[:120])
+        except Exception as _pe:
+            print("  [UMBRA] Could not auto-install Pillow: " + str(_pe))
+
     try:
         from core.runtime.runtime_launcher import RuntimeLauncher
         launcher = RuntimeLauncher(auto_launch_comfyui=True)
@@ -2694,14 +2687,6 @@ def _handle_project_switch(runtime, user_input):
 
 def _process_command(runtime, user_input):
     """Process a single command — same logic as interactive_mode loop body."""
-    # Dev assistant: file read/edit/chat — intercepts before all other handlers
-    if _dev_asst is not None:
-        if _dev_asst.process(
-            user_input,
-            print_fn=_umbra_print,
-            approval_fn=lambda desc, preview=None: _approval_prompt(desc, preview)
-        ):
-            return
     cmd = user_input.lower().strip()
     pm = runtime.get("project_manager")
     active = None
@@ -3064,25 +3049,27 @@ def _direct_llm_answer(runtime, prompt, active_project=None, pm=None):
     is_task = any(lower.startswith(v) for v in task_verbs)
     if is_task:
         return _run_real_pipeline(runtime, prompt, active_project, pm)
-    # It's a question - answer it directly
-    llm = runtime.get("llm")
-    if not llm or not llm.is_configured():
-        # Try Ollama directly
-        try:
-            answer = _ollama_stream(
-                "Answer this question concisely and helpfully: " + prompt,
-                timeout=60, num_predict=256)
+    # It's a question - answer it directly with streaming
+    _umbra_print("[UMBRA] Thinking...")
+    _gui_cb = None
+    if _gui_mode and _gui_ref is not None and hasattr(_gui_ref, "stream_token"):
+        print("", flush=True)
+        def _gui_cb(tok):
+            print(tok, end="", flush=True)
+            try: _gui_ref.stream_token(tok)
+            except Exception: pass
+    try:
+        answer = _ollama_stream(
+            "[UMBRA] " + prompt,
+            timeout=120, num_predict=512, token_cb=_gui_cb)
+        if _gui_mode and _gui_ref is not None and hasattr(_gui_ref, "stream_end"):
+            try: _gui_ref.stream_end()
+            except Exception: pass
+            print("")
+        else:
             if answer:
                 _umbra_print("\n[UMBRA] " + answer.strip() + "\n")
-                return None
-        except Exception:
-            pass
-        _umbra_print("[UMBRA] " + prompt.capitalize() + "\n  (LLM not available for questions)")
         return None
-    try:
-        r = llm.complete("Answer this question concisely: " + prompt)
-        if r and r.content:
-            _umbra_print("\n[UMBRA] " + r.content.strip() + "\n")
     except Exception as e:
         _umbra_print("[UMBRA] Could not answer: " + str(e))
     return None
@@ -3143,10 +3130,24 @@ def run_prompt(runtime, prompt, project_override=None):
                 _qa_models += _all  # fallback to any available
             except Exception: pass
             _qa_model = _qa_models[0] if _qa_models else _get_agent_model()
+            # Stream tokens live to GUI if running
+            _gui_stream_cb = None
+            if _gui_mode and _gui_ref is not None and hasattr(_gui_ref, "stream_token"):
+                print("")  # newline on CLI
+                def _gui_stream_cb(tok):
+                    print(tok, end="", flush=True)
+                    try: _gui_ref.stream_token(tok)
+                    except Exception: pass
             _ans = _ollama_stream(
-                "Answer in 1-2 sentences, no code, just plain text: " + prompt,
-                model=_qa_model, timeout=60, num_predict=150)
-            _umbra_print("\n[UMBRA] " + (_ans.strip() if _ans else "I could not find an answer.") + "\n")
+                "[UMBRA] " + prompt,
+                model=_qa_model, timeout=120, num_predict=512,
+                token_cb=_gui_stream_cb)
+            if _gui_mode and _gui_ref is not None and hasattr(_gui_ref, "stream_end"):
+                try: _gui_ref.stream_end()
+                except Exception: pass
+                print("")
+            else:
+                _umbra_print("\n[UMBRA] " + (_ans.strip() if _ans else "I could not find an answer.") + "\n")
         except Exception as _qe:
             _umbra_print("[UMBRA] Could not answer: " + str(_qe))
         return None
@@ -3170,19 +3171,7 @@ def run_prompt(runtime, prompt, project_override=None):
         _umbra_print("\n[UMBRA] Before I build, a few quick questions:")
         for _q in _clarify_qs: _umbra_print("  " + _q)
         _umbra_print("  (or type 'skip' to use defaults)")
-        # GUI mode: open a real input dialog instead of auto-skipping
-        if _gui_mode and _gui_ref is not None:
-            try:
-                import tkinter.simpledialog as _tsd
-                _clarify_ans = _tsd.askstring(
-                    "Umbra — Build Questions",
-                    "\n".join(_clarify_qs) + "\n\n(or leave blank to use defaults)",
-                    parent=None
-                ) or "skip"
-            except Exception:
-                _clarify_ans = "skip"
-        else:
-            _clarify_ans = _safe_input("your answers > ", "skip").strip()
+        _clarify_ans = _safe_input("your answers > ", "skip").strip()
         if _clarify_ans and _clarify_ans.lower() != "skip":
             prompt = prompt + ". Details: " + _clarify_ans
         _umbra_print("[UMBRA] Building game: " + _pname + " — launching agents...")
@@ -3311,8 +3300,22 @@ def run_prompt(runtime, prompt, project_override=None):
             try:
                 answer = conv.answer_question(prompt)
             except Exception:
-                # Fall back to direct Ollama
-                answer = _ollama_stream("Answer concisely: " + prompt, timeout=60, num_predict=256) or "I don't know."
+                # Fall back to direct Ollama with streaming
+                _gui_cb2 = None
+                if _gui_mode and _gui_ref is not None and hasattr(_gui_ref, "stream_token"):
+                    print("", flush=True)
+                    def _gui_cb2(tok):
+                        print(tok, end="", flush=True)
+                        try: _gui_ref.stream_token(tok)
+                        except Exception: pass
+                answer = _ollama_stream("[UMBRA] " + prompt, timeout=120, num_predict=512, token_cb=_gui_cb2) or "I don't know."
+                if _gui_mode and _gui_ref is not None and hasattr(_gui_ref, "stream_end"):
+                    try: _gui_ref.stream_end()
+                    except Exception: pass
+                    print("")
+                conv.add_turn("umbra", answer, "answer")
+                _maybe_tts(runtime, answer)
+                return None
             _umbra_print("\n[UMBRA] " + answer.strip() + "\n")
             conv.add_turn("umbra", answer, "answer")
             _maybe_tts(runtime, answer)
