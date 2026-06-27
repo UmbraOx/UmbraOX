@@ -24,13 +24,20 @@ import subprocess
 import shutil
 import json
 import re
+import queue as _queue
 import ast
 import time
 import datetime
 import signal
 import socket
 import threading
-import queue as _queue
+
+try:
+    import umbra_dev_assistant as _dev_asst
+    _DEV_ASST_LOADED = True
+except ImportError:
+    _dev_asst = None
+    _DEV_ASST_LOADED = False
 
 _UMBRA_ROOT = os.path.dirname(os.path.abspath(__file__))
 if _UMBRA_ROOT not in sys.path:
@@ -2760,6 +2767,14 @@ def _process_command(runtime, user_input):
     except Exception:
         pass
 
+    if _DEV_ASST_LOADED and _dev_asst is not None:
+        try:
+            handled = _dev_asst.process(user_input, print_fn=_umbra_print)
+            if handled:
+                return
+        except Exception as _dae:
+            _umbra_print("[DEV] assistant error: " + str(_dae))
+
     if cmd in ("exit", "quit", "q"):
         _umbra_print("[UMBRA] Closing Umbra...")
         import os as _osexit; _osexit._exit(0)
@@ -2825,8 +2840,8 @@ def _process_command(runtime, user_input):
                 _umbra_print("  ... (last 40 of " + str(len(_lines)) + ")")
                 _lines = _lines[-40:]
             for _l in _lines: _umbra_print(_l)
-            _p = sum(1 for l in _out.splitlines() if "[PASS]" in l)
-            _f = sum(1 for l in _out.splitlines() if "[FAIL]" in l)
+            _p = sum(1 for l in _out.splitlines() if "[PASS]" in l or ("  PASS  " in l and "FAIL" not in l))
+            _f = sum(1 for l in _out.splitlines() if "[FAIL]" in l or "  FAIL  " in l)
             _total_p += _p; _total_f += _f
             _umbra_print("[TEST] " + _tf + ": " + str(_p) + " passed, " + str(_f) + " failed")
         _umbra_print("\n[TEST] TOTAL: " + str(_total_p) + " passed, " + str(_total_f) + " failed\n")

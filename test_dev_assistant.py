@@ -157,7 +157,7 @@ def test_stitch_safety_patch():
     umbra_path = os.path.join(os.path.dirname(__file__), "Umbra.py")
     with open(umbra_path, "r", encoding="utf-8") as f:
         src = f.read()
-    return "UMBRA SAFETY PATCH" in src
+    return "UMBRA_PLAYER_PATCH" in src
 test("Umbra.py has Player safety patch in _stitch_game", test_stitch_safety_patch)
 
 # ── Umbra.py has dev_asst import ─────────────────────────────────────────────
