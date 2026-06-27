@@ -1,46 +1,45 @@
+# World System Module for MyGame
+
 import random
 
 WORLD_MAP = [['plains' for _ in range(200)] for _ in range(200)]
 BIOME_COL = {
-    'plains': (153, 217, 102),
+    'plains': (153, 217, 234),
     'forest': (34, 139, 34),
     'mountain': (165, 42, 42),
-    'desert': (248, 162, 70),
+    'desert': (240, 230, 140),
     'water': (0, 191, 255),
     'snow': (255, 250, 250),
-    'swamp': (32, 178, 170),
+    'swamp': (85, 107, 47),
     'town': (255, 165, 0),
-    'camp': (194, 178, 128),
+    'camp': (139, 69, 19),
     'mine': (128, 128, 128),
     'wood_area': (34, 139, 34),
-    'road': (160, 82, 45)
+    'road': (150, 75, 0)
 }
-TOWNS = [(50, 50, 'Village of Harmony'), (100, 100, 'City of Light'), (150, 150, 'Fortress of Strength')]
-CITIES = [(30, 30, 'Capital City'), (170, 170, 'Metropolis')]
-BANDIT_CAMPS = [(20, 20), (80, 80), (140, 140)]
-GOBLIN_CAMPS = [(60, 60), (120, 120), (180, 180)]
-MINES = [(40, 40), (100, 40), (160, 40)]
-WOODCUTS = [(35, 35), (95, 95), (155, 155)]
+TOWNS = [(50, 50, 'Village of Hope'), (100, 100, 'City of Light'), (150, 150, 'Fortress of Shadows')]
+CITIES = [(25, 25, 'Capital City'), (175, 175, 'Metropolis')]
+BANDIT_CAMPS = [(30, 30), (60, 60), (90, 90)]
+GOBLIN_CAMPS = [(40, 40), (70, 70), (100, 100)]
+MINES = [(5, 5), (25, 25), (45, 45)]
+WOODCUTS = [(15, 15), (35, 35), (55, 55)]
 
 def gen_world():
     random.seed(42)
     for x in range(200):
         for y in range(200):
-            biome_choice = random.choices(
-                ['plains', 'forest', 'mountain', 'desert', 'water', 'snow', 'swamp'],
-                weights=[15, 20, 10, 10, 5, 5, 5], k=1
-            )[0]
+            biome_choice = random.choice(list(BIOME_COL.keys()))
             WORLD_MAP[x][y] = biome_choice
 
 def draw_world(surf, cam_x, cam_y):
-    for x in range(40, 60):  # Assuming a viewport of 20x20 tiles centered on (cam_x, cam_y)
-        for y in range(40, 60):
-            tile_x = cam_x + x - 50
-            tile_y = cam_y + y - 50
-            if 0 <= tile_x < 200 and 0 <= tile_y < 200:
-                biome = WORLD_MAP[tile_x][tile_y]
-                color = BIOME_COL[biome]
-                surf.fill(color, (x * 16, y * 16, 16, 16))
+    tile_size = 10
+    for dx in range(-cam_x // tile_size, (surf.get_width() + cam_x) // tile_size + 1):
+        for dy in range(-cam_y // tile_size, (surf.get_height() + cam_y) // tile_size + 1):
+            x = dx * tile_size - cam_x % tile_size
+            y = dy * tile_size - cam_y % tile_size
+            biome = WORLD_MAP[dx][dy]
+            color = BIOME_COL.get(biome, (0, 0, 0))
+            pygame.draw.rect(surf, color, (x, y, tile_size, tile_size))
 
 def get_biome(tx, ty) -> str:
     if 0 <= tx < 200 and 0 <= ty < 200:

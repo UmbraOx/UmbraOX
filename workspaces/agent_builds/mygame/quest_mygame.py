@@ -1,39 +1,39 @@
-import random
+# Quest and Spawn Systems for MyGame
 
-WORLD_BIOMES = ['Forest', 'Mountain', 'Desert', 'Plains']
-ENEMY_TYPES = ['Bandit', 'Goblin', 'Orc', 'Wolf', 'Bear']
+import random
 
 def spawn_entities(WORLD_MAP, TOWNS, CITIES, BANDIT_CAMPS, GOBLIN_CAMPS, ENEMY_DEFS, NPC_NAMES, NPC_JOBS):
     enemies = []
     npcs = []
     buildings = []
 
+    # Spawn bandits
     for camp in BANDIT_CAMPS:
         for _ in range(4):
-            enemies.append({'name': 'Bandit', 'location': camp})
+            enemy_type = random.choice([e for e in ENEMY_DEFS if e['type'] == 'bandit'])
+            enemies.append({'name': f"Bandit_{random.randint(1, 100)}", 'type': enemy_type['type'], 'position': camp})
 
+    # Spawn goblins and orcs
     for camp in GOBLIN_CAMPS:
         for _ in range(4):
-            enemies.append({'name': 'Goblin', 'location': camp})
-        enemies.append({'name': 'Orc', 'location': camp})
+            enemy_type = random.choice([e for e in ENEMY_DEFS if e['type'] == 'goblin'])
+            enemies.append({'name': f"Goblin_{random.randint(1, 100)}", 'type': enemy_type['type'], 'position': camp})
+        orc_type = random.choice([e for e in ENEMY_DEFS if e['type'] == 'orc'])
+        enemies.append({'name': f"Orc_{random.randint(1, 100)}", 'type': orc_type['type'], 'position': camp})
 
-    wild_enemy_locations = [loc for loc, biome in WORLD_MAP.items() if loc not in TOWNS and loc not in CITIES and biome != 'Water']
+    # Spawn wild enemies
+    wild_positions = [pos for pos in WORLD_MAP if pos not in TOWNS and pos not in CITIES]
     for _ in range(30):
-        location = random.choice(wild_enemy_locations)
-        enemy_type = random.choice(ENEMY_TYPES)
-        enemies.append({'name': enemy_type, 'location': location})
+        enemy_type = random.choice([e for e in ENEMY_DEFS if e['type'] in ['wolf', 'bear', 'skeleton']])
+        enemies.append({'name': f"Wild_{random.randint(1, 100)}", 'type': enemy_type['type'], 'position': random.choice(wild_positions)})
 
+    # Spawn NPCs
     for town in TOWNS:
-        npc_list = [
-            {'name': NPC_NAMES.pop(), 'job': 'Merchant', 'location': town},
-            {'name': NPC_NAMES.pop(), 'job': 'Guard', 'location': town},
-            {'name': NPC_NAMES.pop(), 'job': 'Guard', 'location': town},
-            {'name': NPC_NAMES.pop(), 'job': 'Farmer', 'location': town},
-            {'name': NPC_NAMES.pop(), 'job': 'Farmer', 'location': town},
-            {'name': NPC_NAMES.pop(), 'job': 'Miner', 'location': town},
-            {'name': NPC_NAMES.pop(), 'job': 'Blacksmith', 'location': town}
-        ]
-        npcs.extend(npc_list)
+        npc_roles = ['Merchant', 'Guard', 'Guard', 'Farmer', 'Farmer', 'Miner', 'Blacksmith']
+        for role in npc_roles:
+            name = random.choice(NPC_NAMES)
+            job = NPC_JOBS[role]
+            npcs.append({'name': name, 'job': role, 'position': town})
 
     return enemies, npcs, buildings
 
@@ -55,17 +55,18 @@ def complete_ready_quests(player):
     completed_quests = []
     for quest in player['quests']:
         if quest['completed']:
-            player['rewards'].extend(quest['rewards'])
+            player['rewards'].append(quest['reward'])
             completed_quests.append(quest['name'])
-    player['quests'] = [quest for quest in player['quests'] if not quest['completed']]
+            player['quests'].remove(quest)
     return completed_quests
 
 def harvest_nearby(player, WORLD_MAP):
-    location = player['location']
-    biome = WORLD_MAP.get(location)
-    if biome == 'Forest':
+    biome = WORLD_MAP[player['position']]['biome']
+    if biome == 'forest':
         return 'chop'
-    elif biome == 'Mountain':
+    elif biome == 'mountain':
         return 'mine'
-    else:
+    elif biome == 'plain':
         return 'gather'
+    else:
+        return ''

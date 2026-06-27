@@ -1425,17 +1425,22 @@ try:
     def _ne(self,edef,tx,ty,*a,**kw):
         if isinstance(edef,str):
             _n=edef
-            edef=next((d for d in ENEMY_DEFS if isinstance(d,dict) and d.get('name')==_n),
-                      {'name':_n,'hp':40,'atk':8,'defense':3,'xp_val':15,'spd':90,'aggro':200})
-        _oe(self,edef,tx,ty,*a,**kw)
-        for _at,_dv in [('name',edef.get('name','Enemy') if isinstance(edef,dict) else str(edef)),
-                        ('hp',edef.get('hp',40) if isinstance(edef,dict) else 40),
-                        ('max_hp',edef.get('hp',40) if isinstance(edef,dict) else 40),
-                        ('atk',edef.get('atk',8) if isinstance(edef,dict) else 8),
-                        ('defense',edef.get('defense',3) if isinstance(edef,dict) else 3),
-                        ('xp_val',edef.get('xp_val',15) if isinstance(edef,dict) else 15),
-                        ('spd',edef.get('spd',90) if isinstance(edef,dict) else 90),
-                        ('alive',True),('tx',tx),('ty',ty)]:
+            edef={'name':_n,'hp':40,'atk':8,'def':3,'defense':3,'xp_val':15,'spd':90,'aggro':200}
+        try:
+            _oe(self,edef,tx,ty,*a,**kw)
+        except (KeyError,TypeError,AttributeError):
+            pass
+        for _at,_dv in [('name',edef.get('name','Enemy')),
+                        ('hp',edef.get('hp',40)),
+                        ('max_hp',edef.get('hp',40)),
+                        ('atk',edef.get('atk',8)),
+                        ('defense',edef.get('defense',edef.get('def',3))),
+                        ('def_',edef.get('def',edef.get('defense',3))),
+                        ('xp_val',edef.get('xp_val',15)),
+                        ('spd',edef.get('spd',90)),
+                        ('aggro',edef.get('aggro',200)),
+                        ('alive',True),('tx',tx),('ty',ty),
+                        ('x',tx),('y',ty)]:
             if not hasattr(self,_at): setattr(self,_at,_dv)
     Enemy.__init__=_ne
 except Exception: pass

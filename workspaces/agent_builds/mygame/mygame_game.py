@@ -17,48 +17,47 @@ import time
 # If an agent returned nothing, the fallback code below keeps the game runnable.
 
 # ── WORLD MODULE ─────────────────────────────────────────────────────────────
+# World System Module for MyGame
+
 
 WORLD_MAP = [['plains' for _ in range(200)] for _ in range(200)]
 BIOME_COL = {
-    'plains': (153, 217, 102),
+    'plains': (153, 217, 234),
     'forest': (34, 139, 34),
     'mountain': (165, 42, 42),
-    'desert': (248, 162, 70),
+    'desert': (240, 230, 140),
     'water': (0, 191, 255),
     'snow': (255, 250, 250),
-    'swamp': (32, 178, 170),
+    'swamp': (85, 107, 47),
     'town': (255, 165, 0),
-    'camp': (194, 178, 128),
+    'camp': (139, 69, 19),
     'mine': (128, 128, 128),
     'wood_area': (34, 139, 34),
-    'road': (160, 82, 45)
+    'road': (150, 75, 0)
 }
-TOWNS = [(50, 50, 'Village of Harmony'), (100, 100, 'City of Light'), (150, 150, 'Fortress of Strength')]
-CITIES = [(30, 30, 'Capital City'), (170, 170, 'Metropolis')]
-BANDIT_CAMPS = [(20, 20), (80, 80), (140, 140)]
-GOBLIN_CAMPS = [(60, 60), (120, 120), (180, 180)]
-MINES = [(40, 40), (100, 40), (160, 40)]
-WOODCUTS = [(35, 35), (95, 95), (155, 155)]
+TOWNS = [(50, 50, 'Village of Hope'), (100, 100, 'City of Light'), (150, 150, 'Fortress of Shadows')]
+CITIES = [(25, 25, 'Capital City'), (175, 175, 'Metropolis')]
+BANDIT_CAMPS = [(30, 30), (60, 60), (90, 90)]
+GOBLIN_CAMPS = [(40, 40), (70, 70), (100, 100)]
+MINES = [(5, 5), (25, 25), (45, 45)]
+WOODCUTS = [(15, 15), (35, 35), (55, 55)]
 
 def gen_world():
     random.seed(42)
     for x in range(200):
         for y in range(200):
-            biome_choice = random.choices(
-                ['plains', 'forest', 'mountain', 'desert', 'water', 'snow', 'swamp'],
-                weights=[15, 20, 10, 10, 5, 5, 5], k=1
-            )[0]
+            biome_choice = random.choice(list(BIOME_COL.keys()))
             WORLD_MAP[x][y] = biome_choice
 
 def draw_world(surf, cam_x, cam_y):
-    for x in range(40, 60):  # Assuming a viewport of 20x20 tiles centered on (cam_x, cam_y)
-        for y in range(40, 60):
-            tile_x = cam_x + x - 50
-            tile_y = cam_y + y - 50
-            if 0 <= tile_x < 200 and 0 <= tile_y < 200:
-                biome = WORLD_MAP[tile_x][tile_y]
-                color = BIOME_COL[biome]
-                surf.fill(color, (x * 16, y * 16, 16, 16))
+    tile_size = 10
+    for dx in range(-cam_x // tile_size, (surf.get_width() + cam_x) // tile_size + 1):
+        for dy in range(-cam_y // tile_size, (surf.get_height() + cam_y) // tile_size + 1):
+            x = dx * tile_size - cam_x % tile_size
+            y = dy * tile_size - cam_y % tile_size
+            biome = WORLD_MAP[dx][dy]
+            color = BIOME_COL.get(biome, (0, 0, 0))
+            pygame.draw.rect(surf, color, (x, y, tile_size, tile_size))
 
 def get_biome(tx, ty) -> str:
     if 0 <= tx < 200 and 0 <= ty < 200:
@@ -68,9 +67,9 @@ def get_biome(tx, ty) -> str:
 # ── CHARACTER MODULE ─────────────────────────────────────────────────────────
 
 ENEMY_DEFS = [
-    {'name': 'Goblins', 'hp': 20, 'atk': 5, 'def': 3, 'xp': 10, 'col': (0, 255, 0), 'spd': 1.5, 'faction': 'Enemy'},
-    {'name': 'Orcs', 'hp': 40, 'atk': 8, 'def': 6, 'xp': 20, 'col': (255, 0, 0), 'spd': 1.0, 'faction': 'Enemy'},
-    {'name': 'Trolls', 'hp': 60, 'atk': 10, 'def': 8, 'xp': 30, 'col': (0, 255, 255), 'spd': 0.75, 'faction': 'Enemy'}
+    {'name': 'Goblin', 'hp': 20, 'atk': 5, 'def': 3, 'xp': 10, 'col': (64, 64, 64), 'spd': 1.5, 'faction': 'Enemy'},
+    {'name': 'Orc', 'hp': 30, 'atk': 7, 'def': 5, 'xp': 20, 'col': (128, 0, 0), 'spd': 1.0, 'faction': 'Enemy'},
+    {'name': 'Troll', 'hp': 40, 'atk': 9, 'def': 7, 'xp': 30, 'col': (0, 128, 0), 'spd': 0.5, 'faction': 'Enemy'}
 ]
 
 class Player:
@@ -78,32 +77,32 @@ class Player:
         self.x = 0
         self.y = 0
         self.cls = cls
-        self.max_hp = 100 if cls == 'Warrior' else (80 if cls == 'Mage' else 90)
+        self.max_hp = 100 if cls == 'Warrior' else 80 if cls == 'Mage' else 90
         self.hp = self.max_hp
-        self.max_mp = 50 if cls == 'Mage' else (30 if cls == 'Rogue' else 40)
+        self.max_mp = 120 if cls == 'Mage' else 60 if cls == 'Warrior' else 70
         self.mp = self.max_mp
         self.max_sta = 100
         self.sta = self.max_sta
-        self.str_ = random.randint(8, 12) if cls == 'Warrior' else random.randint(5, 9)
-        self.dex = random.randint(8, 12) if cls == 'Rogue' else random.randint(5, 9)
-        self.int_ = random.randint(8, 12) if cls == 'Mage' else random.randint(5, 9)
-        self.luck = random.randint(3, 7)
+        self.str_ = 10 if cls == 'Warrior' else 5 if cls == 'Mage' else 8
+        self.dex = 8 if cls == 'Rogue' else 6 if cls == 'Warrior' else 7
+        self.int_ = 12 if cls == 'Mage' else 4 if cls == 'Warrior' else 6
+        self.luck = random.randint(5, 10)
         self.level = 1
         self.xp = 0
         self.xp_next = 100
-        self.gold = 100
-        self.speed = 2.0 if cls == 'Rogue' else (1.5 if cls == 'Mage' else 1.0)
+        self.gold = 50
+        self.speed = 2.0 if cls == 'Rogue' else 1.5 if cls == 'Mage' else 1.0
         self.inventory = {}
         self.equipped = {'weapon': None, 'armor': None}
-        self.spells = ['Fireball'] if cls == 'Mage' else []
+        self.spells = [] if cls != 'Mage' else ['Fireball', 'Lightning']
         self.quests = []
         self.crouching = False
 
     def atk_power(self):
-        return (self.str_ + self.dex) / 2 * (1 + len(self.equipped['weapon']) / 10 if self.equipped['weapon'] else 1)
+        return (self.str_ + self.dex) / 2 * (1 + self.luck / 100)
 
     def def_power(self):
-        return self.dex * (1 + len(self.equipped['armor']) / 10 if self.equipped['armor'] else 1)
+        return self.dex * (1 + self.luck / 100)
 
     def add_item(self, name, qty):
         if name in self.inventory:
@@ -117,21 +116,20 @@ class Player:
             self.level_up()
 
     def level_up(self):
-        self.xp -= self.xp_next
-        self.max_hp += 10
+        self.level += 1
+        self.max_hp += random.randint(5, 10)
         self.hp = self.max_hp
-        self.max_mp += 5 if self.cls == 'Mage' else 3
+        self.max_mp += random.randint(5, 10) if self.cls == 'Mage' else random.randint(2, 5)
         self.mp = self.max_mp
-        self.str_ += random.randint(1, 2)
-        self.dex += random.randint(1, 2)
-        self.int_ += random.randint(1, 2) if self.cls == 'Mage' else 0
-        self.luck += random.randint(0, 1)
-        self.xp_next = int(self.xp_next * 1.5)
+        self.str_ += random.randint(1, 3)
+        self.dex += random.randint(1, 3)
+        self.int_ += random.randint(1, 3) if self.cls == 'Mage' else random.randint(0, 2)
+        self.xp_next *= 1.5
 
     def regen(self, dt):
-        self.hp = min(self.max_hp, self.hp + (self.str_ / 2) * dt)
+        self.hp = min(self.max_hp, self.hp + (self.str_ / 4) * dt)
         self.mp = min(self.max_mp, self.mp + (self.int_ / 4) * dt if self.cls == 'Mage' else self.mp)
-        self.sta = min(self.max_sta, self.sta + self.dex * dt)
+        self.sta = min(self.max_sta, self.sta + (self.dex / 4) * dt)
 
 class Enemy:
     def __init__(self, edef, tx, ty):
@@ -155,7 +153,8 @@ class Enemy:
             self.y += (dy / dist) * self.spd * dt
 
     def draw(self, surf, cx, cy):
-        pass  # Placeholder for drawing logic
+        import pygame.draw
+        pygame.draw.circle(surf, self.col, (int(cx + self.x), int(cy + self.y)), 10)
 
 class NPC:
     def __init__(self, name, job, tx, ty):
@@ -165,11 +164,15 @@ class NPC:
         self.y = ty
         self.dialogue = []
         self.shop_stock = {}
-
-# Example initialization of classes (not part of the module)
-# player = Player('Warrior')
-# enemy = Enemy(ENEMY_DEFS[0], 10, 10)
-# npc = NPC('Bob', 'Blacksmith', 5, 5)
+        if job == 'Blacksmith':
+            self.dialogue.append("Welcome to my forge!")
+            self.shop_stock = {'Sword': 100, 'Shield': 150}
+        elif job == 'Alchemist':
+            self.dialogue.append("Greetings, traveler!")
+            self.shop_stock = {'Potion': 30, 'Elixir': 60}
+        elif job == 'Merchant':
+            self.dialogue.append("Hello! Browse my wares.")
+            self.shop_stock = {'Food': 10, 'Cloth': 20}
 
 # ── ITEM / DATA MODULE ───────────────────────────────────────────────────────
 # Game Data Constants
@@ -177,33 +180,33 @@ class NPC:
 WEAPONS = [
     {'name': 'Sword', 'atk': 10, 'type': 'melee', 'val': 50, 'col': (255, 69, 0)},
     {'name': 'Bow', 'atk': 8, 'type': 'ranged', 'val': 40, 'col': (139, 69, 19)},
-    {'name': 'Staff', 'atk': 6, 'type': 'magic', 'val': 30, 'col': (255, 215, 0)},
-    {'name': 'Axe', 'atk': 12, 'type': 'melee', 'val': 70, 'col': (165, 42, 42)},
-    {'name': 'Crossbow', 'atk': 9, 'type': 'ranged', 'val': 50, 'col': (139, 0, 0)},
-    {'name': 'Wand', 'atk': 7, 'type': 'magic', 'val': 40, 'col': (255, 69, 0)},
-    {'name': 'Dagger', 'atk': 5, 'type': 'melee', 'val': 30, 'col': (128, 0, 0)},
-    {'name': 'Spear', 'atk': 7, 'type': 'ranged', 'val': 40, 'col': (165, 42, 42)},
-    {'name': 'Tome', 'atk': 9, 'type': 'magic', 'val': 50, 'col': (255, 215, 0)},
-    {'name': 'Hammer', 'atk': 11, 'type': 'melee', 'val': 60, 'col': (139, 0, 0)}
+    {'name': 'Staff', 'atk': 6, 'type': 'magic', 'val': 30, 'col': (255, 218, 185)},
+    {'name': 'Dagger', 'atk': 4, 'type': 'melee', 'val': 20, 'col': (169, 169, 169)},
+    {'name': 'Crossbow', 'atk': 7, 'type': 'ranged', 'val': 35, 'col': (148, 0, 211)},
+    {'name': 'Wand', 'atk': 5, 'type': 'magic', 'val': 25, 'col': (65, 105, 225)},
+    {'name': 'Mace', 'atk': 9, 'type': 'melee', 'val': 45, 'col': (255, 140, 0)},
+    {'name': 'Spear', 'atk': 7, 'type': 'ranged', 'val': 30, 'col': (85, 107, 47)},
+    {'name': 'Tome', 'atk': 6, 'type': 'magic', 'val': 28, 'col': (255, 255, 0)},
+    {'name': 'Halberd', 'atk': 12, 'type': 'melee', 'val': 60, 'col': (139, 0, 0)}
 ]
 
 ARMOR_SETS = [
     {'name': 'Leather Armor', 'parts': ['Helmet', 'Chestplate', 'Greaves'], 'def': 5, 'val': 20},
     {'name': 'Chainmail', 'parts': ['Helmet', 'Chestplate', 'Greaves'], 'def': 10, 'val': 40},
-    {'name': 'Plate Armor', 'parts': ['Helmet', 'Chestplate', 'Greaves'], 'def': 15, 'val': 60}
+    {'name': 'Plate Mail', 'parts': ['Helmet', 'Chestplate', 'Greaves'], 'def': 15, 'val': 60}
 ]
 
 SPELLS = [
-    {'name': 'Fireball', 'mp': 20, 'dmg': 15, 'col': (255, 69, 0), 'desc': 'A fiery projectile that burns enemies.'},
-    {'name': 'Heal', 'mp': 30, 'dmg': -10, 'col': (0, 255, 0), 'desc': 'Restores health to an ally.'},
-    {'name': 'Shield', 'mp': 25, 'dmg': 0, 'col': (173, 216, 230), 'desc': 'Creates a protective barrier around the caster.'},
-    {'name': 'Lightning Bolt', 'mp': 25, 'dmg': 20, 'col': (255, 255, 0), 'desc': 'Unleashes a bolt of lightning on an enemy.'},
-    {'name': 'Ice Shard', 'mp': 15, 'dmg': 10, 'col': (173, 216, 230), 'desc': 'Hurls a shard of ice at the target.'},
-    {'name': 'Thunderclap', 'mp': 30, 'dmg': 25, 'col': (255, 255, 0), 'desc': 'Stuns and damages enemies in an area.'},
-    {'name': 'Regenerate', 'mp': 40, 'dmg': -15, 'col': (0, 255, 0), 'desc': 'Gradually restores health to the caster over time.'},
-    {'name': 'Frost Nova', 'mp': 35, 'dmg': 15, 'col': (173, 216, 230), 'desc': 'Freezes enemies in an area, dealing damage and slowing them down.'},
-    {'name': 'Arcane Shield', 'mp': 40, 'dmg': 0, 'col': (255, 255, 0), 'desc': 'Creates a powerful magical barrier around the caster.'},
-    {'name': 'Earthquake', 'mp': 30, 'dmg': 20, 'col': (139, 69, 19), 'desc': 'Causes the ground to shake, damaging all enemies in range.'}
+    {'name': 'Fireball', 'mp': 20, 'dmg': 15, 'col': (255, 69, 0), 'desc': 'A fiery orb that explodes on impact.'},
+    {'name': 'Heal', 'mp': 15, 'dmg': -10, 'col': (34, 139, 34), 'desc': 'Restores health to the target.'},
+    {'name': 'Lightning Bolt', 'mp': 25, 'dmg': 20, 'col': (72, 61, 139), 'desc': 'A bolt of lightning strikes the enemy.'},
+    {'name': 'Shield', 'mp': 10, 'dmg': 0, 'col': (148, 0, 211), 'desc': 'Increases defense for a short time.'},
+    {'name': 'Invisibility', 'mp': 30, 'dmg': 0, 'col': (65, 105, 225), 'desc': 'Makes the caster invisible for a short time.'},
+    {'name': 'Fire Shield', 'mp': 20, 'dmg': 5, 'col': (255, 140, 0), 'desc': 'A shield that deals fire damage to attackers.'},
+    {'name': 'Thunderclap', 'mp': 35, 'dmg': 25, 'col': (85, 107, 47), 'desc': 'Stuns the enemy with a loud clap of thunder.'},
+    {'name': 'Ice Shard', 'mp': 15, 'dmg': 10, 'col': (255, 255, 0), 'desc': 'Launches an icy shard at the enemy.'},
+    {'name': 'Lightning Surge', 'mp': 40, 'dmg': 30, 'col': (139, 0, 0), 'desc': 'A powerful surge of lightning that deals massive damage.'},
+    {'name': 'Earthquake', 'mp': 50, 'dmg': 20, 'col': (165, 42, 42), 'desc': 'Causes the ground to shake, damaging all enemies in range.'}
 ]
 
 MATERIALS = [
@@ -212,19 +215,19 @@ MATERIALS = [
     'Wood',
     'Leather',
     'Cloth',
-    'Magic Crystal',
-    'Mana Stone',
+    'Crystal',
     'Obsidian',
-    'Adamantite',
-    'Ethereal Dust'
+    'Gold',
+    'Silver',
+    'Bronze'
 ]
 
 QUESTS = [
-    {'id': 1, 'name': 'Goblin Hunt', 'desc': 'Eliminate 5 goblins in the forest.', 'target': 'goblin', 'need': 5, 'prog': 0, 'done': False, 'reward_gold': 50, 'reward_xp': 20},
-    {'id': 2, 'name': 'Collect Iron Ore', 'desc': 'Gather 10 pieces of iron ore from the mines.', 'target': 'mat:Iron', 'need': 10, 'prog': 0, 'done': False, 'reward_gold': 30, 'reward_xp': 15},
-    {'id': 3, 'name': 'Defend Village', 'desc': 'Protect the village from bandit attacks.', 'target': 'bandit', 'need': 3, 'prog': 0, 'done': False, 'reward_gold': 70, 'reward_xp': 25},
-    {'id': 4, 'name': 'Craft Armor', 'desc': 'Create a set of leather armor.', 'target': 'mat:Leather', 'need': 15, 'prog': 0, 'done': False, 'reward_gold': 60, 'reward_xp': 20},
-    {'id': 5, 'name': 'Rescue Merchant', 'desc': 'Escort the merchant safely to the market.', 'target': 'merchant', 'need': 1, 'prog': 0, 'done': False, 'reward_gold': 80, 'reward_xp': 30}
+    {'id': 1, 'name': 'Goblin Hunt', 'desc': 'Eliminate 5 goblins in the forest.', 'target': 'goblin', 'need': 5, 'prog': 0, 'done': False, 'reward_gold': 100, 'reward_xp': 20},
+    {'id': 2, 'name': 'Collect Iron', 'desc': 'Gather 10 pieces of iron from the mines.', 'target': 'mat:Iron', 'need': 10, 'prog': 0, 'done': False, 'reward_gold': 50, 'reward_xp': 10},
+    {'id': 3, 'name': 'Defend Village', 'desc': 'Protect the village from bandit attacks.', 'target': 'bandit', 'need': 3, 'prog': 0, 'done': False, 'reward_gold': 150, 'reward_xp': 30},
+    {'id': 4, 'name': 'Craft Sword', 'desc': 'Create a sword using the blacksmith.', 'target': 'craft:Sword', 'need': 1, 'prog': 0, 'done': False, 'reward_gold': 75, 'reward_xp': 15},
+    {'id': 5, 'name': 'Heal Farmer', 'desc': 'Use a heal spell to restore the farmer\'s health.', 'target': 'spell:Heal', 'need': 1, 'prog': 0, 'done': False, 'reward_gold': 25, 'reward_xp': 5}
 ]
 
 FACTIONS = {
@@ -234,33 +237,35 @@ FACTIONS = {
 }
 
 DIALOGUE_TREES = {
-    'Merchant': [{'text': 'Hello! What can I offer you today?', 'opts': ['Buy', 'Sell', 'Leave']}],
-    'Guard': [{'text': 'Greetings traveler. Are you here to report something?', 'opts': ['Report', 'Talk', 'Leave']}],
-    'Blacksmith': [{'text': 'Welcome, brave warrior! Need a new weapon or armor?', 'opts': ['Forge Weapon', 'Craft Armor', 'Leave']}],
-    'Farmer': [{'text': 'Good day! How can I assist you with your journey?', 'opts': ['Buy Food', 'Talk', 'Leave']}],
-    'default': [{'text': 'Hello there. Not much to say.', 'opts': ['Leave']}]
+    'Merchant': [{'text': 'Welcome to my shop!', 'opts': ['Buy', 'Sell', 'Leave']}],
+    'Guard': [{'text': 'Greetings! How can I assist you?', 'opts': ['Report Bandit Activity', 'Inquire About Quests', 'Leave']}],
+    'Blacksmith': [{'text': 'Need something forged?', 'opts': ['Order Weapon', 'Order Armor', 'Leave']}],
+    'Farmer': [{'text': 'Hello, traveler! How can I help you today?', 'opts': ['Buy Produce', 'Talk About Weather', 'Leave']}],
+    'default': [{'text': 'Hello!', 'opts': ['Greet', 'Ask About Quests', 'Leave']}]
 }
 
 NPC_NAMES = [
     'Aldric',
     'Brynn',
-    'Caelum',
+    'Caelan',
     'Daria',
     'Eldrin',
     'Fiona',
-    'Galen',
+    'Garren',
     'Hannah',
     'Igor',
     'Jenna',
     'Kael',
     'Lila',
-    'Marius',
+    'Morgan',
     'Nora',
     'Oscar',
     'Piper'
 ]
 
 # ── MECHANIC MODULE ──────────────────────────────────────────────────────────
+# Game Mechanic Helpers Module
+
 
 class Camera:
     def __init__(self, x=0, y=0):
@@ -278,19 +283,17 @@ class FloatText:
         self.y = y
         self.col = col
         self.alpha = 255
-        self.fade_rate = 3
-        self.rise_speed = 0.5
+        self.font = pygame.font.Font(None, 36)
 
     def update(self):
-        self.y -= self.rise_speed
-        self.alpha -= self.fade_rate
+        self.y -= 1
+        self.alpha -= 4
         if self.alpha < 0:
             self.alpha = 0
 
     def draw(self, surf, cx, cy):
-        font = pygame.font.Font(None, 36)
-        txt_surf = font.render(self.text, True, (self.col[0], self.col[1], self.col[2], self.alpha))
-        surf.blit(txt_surf, (int(self.x - cx), int(self.y - cy)))
+        text_surface = self.font.render(self.text, True, (self.col[0], self.col[1], self.col[2], self.alpha))
+        surf.blit(text_surface, (int(self.x - cx), int(self.y - cy)))
 
 class Projectile:
     def __init__(self, x, y, tx, ty, dmg, col, spd=9):
@@ -310,16 +313,16 @@ class Projectile:
         self.y += self.vy
 
     def draw(self, surf, cx, cy):
-        pygame.draw.circle(surf, self.col, (int(self.x - cx), int(self.y - cy)), 5)
+        pygame.draw.circle(surf, self.col, (int(self.x - cx), int(self.y - cy)), 3)
 
 class Building:
     TYPES = {
-        'House': {'col': (200, 160, 120), 'w': 3, 'h': 3, 'cost': {'wood': 10, 'stone': 5}},
-        'Shop': {'col': (255, 215, 0), 'w': 4, 'h': 4, 'cost': {'wood': 15, 'stone': 7}},
-        'Barracks': {'col': (139, 69, 19), 'w': 5, 'h': 5, 'cost': {'wood': 20, 'stone': 10}},
-        'Farm': {'col': (34, 139, 34), 'w': 4, 'h': 4, 'cost': {'wood': 8, 'stone': 3}},
-        'Tower': {'col': (255, 69, 0), 'w': 6, 'h': 6, 'cost': {'wood': 25, 'stone': 15}},
-        'Warehouse': {'col': (220, 220, 220), 'w': 4, 'h': 3, 'cost': {'wood': 12, 'stone': 6}}
+        'House': {'col': (255, 160, 122), 'w': 2, 'h': 2, 'cost': {'wood': 4, 'stone': 2}},
+        'Shop': {'col': (255, 218, 185), 'w': 3, 'h': 2, 'cost': {'wood': 6, 'stone': 3}},
+        'Barracks': {'col': (190, 190, 190), 'w': 4, 'h': 3, 'cost': {'wood': 8, 'stone': 5}},
+        'Farm': {'col': (34, 139, 34), 'w': 2, 'h': 2, 'cost': {'wood': 3, 'stone': 1}},
+        'Tower': {'col': (160, 82, 45), 'w': 3, 'h': 3, 'cost': {'wood': 7, 'stone': 6}},
+        'Warehouse': {'col': (255, 228, 196), 'w': 3, 'h': 3, 'cost': {'wood': 5, 'stone': 4}}
     }
 
     def __init__(self, btype, tx, ty):
@@ -331,42 +334,35 @@ class Building:
         self.h = Building.TYPES[btype]['h']
 
     def draw(self, surf, cx, cy):
-        rect = pygame.Rect((self.tx - cx) * 32, (self.ty - cy) * 32, self.w * 32, self.h * 32)
-        pygame.draw.rect(surf, self.col, rect)
-        # Roof triangle
-        roof_points = [(rect.x + rect.width / 2, rect.y), (rect.x, rect.y + 10), (rect.x + rect.width, rect.y + 10)]
-        pygame.draw.polygon(surf, (self.col[0] - 50, self.col[1] - 50, self.col[2] - 50), roof_points)
-        # Door
-        door_rect = pygame.Rect(rect.x + rect.width / 2 - 4, rect.y + rect.height - 32, 8, 32)
-        pygame.draw.rect(surf, (165, 42, 42), door_rect)
-        # Window
-        window_rect = pygame.Rect(rect.x + 10, rect.y + 10, 12, 12)
-        pygame.draw.rect(surf, (255, 255, 255), window_rect)
+        x = (self.tx * 32) - cx
+        y = (self.ty * 32) - cy
+        pygame.draw.rect(surf, self.col, (x, y, self.w * 32, self.h * 32))
+        pygame.draw.polygon(surf, (160, 82, 45), [(x + 16, y), (x, y - 16), (x + self.w * 32, y - 16)])
+        pygame.draw.rect(surf, (0, 0, 0), (x + 10, y + self.h * 32 - 10, 8, 10))
+        pygame.draw.rect(surf, (255, 255, 255), (x + 14, y + self.h * 32 - 6, 4, 6))
 
 def save_game(player, buildings, filepath):
     try:
-        data = {'player': player.__dict__, 'buildings': [b.__dict__ for b in buildings]}
+        data = {
+            'player': player.__dict__,
+            'buildings': [{'btype': b.btype, 'tx': b.tx, 'ty': b.ty} for b in buildings]
+        }
         with open(filepath, 'w') as f:
             json.dump(data, f)
         return True
-    except Exception as e:
-        print(e)
+    except Exception:
         return False
 
 def load_game(player, buildings, filepath):
     try:
-        if not os.path.exists(filepath):
-            return False
         with open(filepath, 'r') as f:
             data = json.load(f)
         player.__dict__.update(data['player'])
         buildings.clear()
-        for b_data in data['buildings']:
-            building = Building(b_data['btype'], b_data['tx'], b_data['ty'])
-            buildings.append(building)
+        for b in data['buildings']:
+            buildings.append(Building(b['btype'], b['tx'], b['ty']))
         return True
-    except Exception as e:
-        print(e)
+    except Exception:
         return False
 
 # ── UI MODULE ────────────────────────────────────────────────────────────────
@@ -380,207 +376,208 @@ def font_cache(sz):
 
 def bar(surf, x, y, w, h, val, mx, col, bg):
     pygame.draw.rect(surf, bg, (x, y, w, h), 0)
-    inner_w = int(w * val / mx)
-    pygame.draw.rect(surf, col, (x, y, inner_w, h), 0)
+    fill_w = int(w * val / mx)
+    if fill_w > 0:
+        pygame.draw.rect(surf, col, (x, y, fill_w, h), 0)
 
 def panel(surf, rx, ry, rw, rh, title):
     pygame.draw.rect(surf, (50, 50, 50), (rx, ry, rw, rh), 0)
+    pygame.draw.rect(surf, (100, 100, 100), (rx, ry, rw, rh), 2)
     txt(surf, title, rx + 10, ry + 5, 24, (255, 255, 255))
     xbtn_rect = pygame.Rect(rx + rw - 30, ry + 5, 20, 20)
-    txt(surf, 'X', rx + rw - 25, ry + 10, 24, (255, 0, 0))
+    txt(surf, 'X', rx + rw - 27, ry + 8, 16, (255, 0, 0), True)
     return xbtn_rect
 
 def btn(surf, x, y, w, h, label, col, tcol, sz):
     pygame.draw.rect(surf, col, (x, y, w, h), 0)
+    pygame.draw.rect(surf, (255, 255, 255), (x, y, w, h), 2)
     txt(surf, label, x + w // 2, y + h // 2, sz, tcol, True)
     return pygame.Rect(x, y, w, h)
 
 def draw_hud(surf, player):
-    bar(surf, 10, 10, 200, 20, player.hp, player.max_hp, (255, 0, 0), (100, 0, 0))
-    bar(surf, 10, 40, 200, 20, player.mp, player.max_mp, (0, 0, 255), (0, 0, 100))
-    bar(surf, 10, 70, 200, 20, player.sta, player.max_sta, (0, 255, 0), (0, 100, 0))
-    txt(surf, f"Gold: {player.gold}", 10, 100, 24, (255, 255, 255))
-    txt(surf, f"LvL: {player.level} XP: {player.xp}/{player.next_level_xp}", 10, 130, 24, (255, 255, 255))
-    txt(surf, f"Equipped: {player.equipped}", 10, 160, 24, (255, 255, 255))
-    txt(surf, f"Biome: {player.biome}", 10, 190, 24, (255, 255, 255))
+    bar(surf, 10, 10, 200, 20, player.hp, player.max_hp, (255, 0, 0), (50, 50, 50))
+    bar(surf, 10, 40, 200, 20, player.mp, player.max_mp, (0, 0, 255), (50, 50, 50))
+    bar(surf, 10, 70, 200, 20, player.sta, player.max_sta, (0, 255, 0), (50, 50, 50))
+    txt(surf, f'Gold: {player.gold}', 10, 100, 24, (255, 255, 0))
+    txt(surf, f'Lvl: {player.level} XP: {player.xp}/{player.next_level_xp}', 10, 130, 24, (255, 255, 255))
+    txt(surf, f'Equipped: {player.equipped}', 10, 160, 24, (255, 255, 255))
+    txt(surf, f'Biome: {player.biome}', 10, 190, 24, (255, 255, 255))
 
 def draw_minimap(surf, player, enemies, WORLD_MAP, BIOME_COL):
-    min_x = max(0, player.x - 63)
-    min_y = max(0, player.y - 63)
-    sub_map = WORLD_MAP[min_y:min_y+126, min_x:min_x+126]
-    for y in range(sub_map.shape[0]):
-        for x in range(sub_map.shape[1]):
-            pygame.draw.rect(surf, BIOME_COL[sub_map[y, x]], (x + surf.get_width() - 126, y, 1, 1))
-    pygame.draw.circle(surf, (255, 0, 0), (surf.get_width() - 63 + player.x % 126, 63 + player.y % 126), 3)
+    mini_surf = pygame.Surface((126, 126))
+    for x in range(WORLD_MAP.width):
+        for y in range(WORLD_MAP.height):
+            biome = WORLD_MAP.get_biome(x, y)
+            color = BIOME_COL[biome]
+            pygame.draw.rect(mini_surf, color, (x * 4, y * 4, 4, 4), 0)
     for enemy in enemies:
-        ex = surf.get_width() - 63 + (enemy.x - min_x) % 126
-        ey = 63 + (enemy.y - min_y) % 126
-        pygame.draw.circle(surf, (0, 255, 0), (ex, ey), 2)
+        ex, ey = int(enemy.x / WORLD_MAP.width * 126), int(enemy.y / WORLD_MAP.height * 126)
+        pygame.draw.circle(mini_surf, (255, 0, 0), (ex, ey), 2)
+    px, py = int(player.x / WORLD_MAP.width * 126), int(player.y / WORLD_MAP.height * 126)
+    pygame.draw.circle(mini_surf, (0, 255, 0), (px, py), 3)
+    surf.blit(mini_surf, (surf.get_width() - 136, 10))
 
 def draw_main_menu(surf, project_name):
     surf.fill((0, 0, 0))
+    starfield = [pygame.Rect(x, y, 2, 2) for x in range(0, surf.get_width(), 15) for y in range(0, surf.get_height(), 15)]
+    for star in starfield:
+        pygame.draw.rect(surf, (255, 255, 255), star)
+    moon = pygame.Surface((64, 64))
+    pygame.draw.circle(moon, (255, 255, 255), (32, 32), 30)
+    surf.blit(moon, (surf.get_width() - 84, 10))
     txt(surf, project_name, surf.get_width() // 2, surf.get_height() // 4, 64, (255, 255, 255), True)
-    pygame.draw.circle(surf, (193, 217, 230), (surf.get_width() // 2, surf.get_height() // 2 - 100), 50)
-    btns = []
-    y_offset = surf.get_height() // 2 + 50
-    for label in ['Start', 'Load Game', 'Exit']:
-        b = btn(surf, surf.get_width() // 2 - 100, y_offset, 200, 40, label, (50, 50, 50), (255, 255, 255), 32)
-        btns.append(b)
-        y_offset += 60
-    return btns
+    play_btn = btn(surf, surf.get_width() // 2 - 100, surf.get_height() // 2, 200, 50, 'Play', (0, 128, 0), (255, 255, 255), 36)
+    load_btn = btn(surf, surf.get_width() // 2 - 100, surf.get_height() // 2 + 70, 200, 50, 'Load', (0, 128, 0), (255, 255, 255), 36)
+    quit_btn = btn(surf, surf.get_width() // 2 - 100, surf.get_height() // 2 + 140, 200, 50, 'Quit', (255, 0, 0), (255, 255, 255), 36)
+    return [play_btn, load_btn, quit_btn]
 
 def draw_class_select(surf):
-    surf.fill((0, 0, 0))
-    class_cards = [(100, 100, 200, 200), (400, 100, 200, 200), (700, 100, 200, 200)]
+    class_cards = [
+        {'name': 'Warrior', 'portrait': pygame.Surface((100, 100)), 'x': 100, 'y': 150},
+        {'name': 'Mage', 'portrait': pygame.Surface((100, 100)), 'x': 300, 'y': 150},
+        {'name': 'Rogue', 'portrait': pygame.Surface((100, 100)), 'x': 500, 'y': 150}
+    ]
     for card in class_cards:
-        pygame.draw.rect(surf, (50, 50, 50), card, 0)
-    return [pygame.Rect(card) for card in class_cards]
+        pygame.draw.rect(surf, (50, 50, 50), (card['x'], card['y'], 200, 300), 0)
+        pygame.draw.rect(surf, (100, 100, 100), (card['x'], card['y'], 200, 300), 2)
+        surf.blit(card['portrait'], (card['x'] + 50, card['y'] + 20))
+        txt(surf, card['name'], card['x'] + 100, card['y'] + 140, 36, (255, 255, 255), True)
+    return [pygame.Rect(card['x'], card['y'], 200, 300) for card in class_cards]
 
 def draw_inventory(surf, player, selected):
-    surf.fill((0, 0, 0))
-    xbtn = panel(surf, 10, 10, 300, 580, 'Inventory')
-    slots = []
-    eq_btn = btn(surf, 10, 600, 140, 40, 'Equip', (50, 50, 50), (255, 255, 255), 32)
-    drop_btn = btn(surf, 160, 600, 140, 40, 'Drop', (50, 50, 50), (255, 255, 255), 32)
-    for i in range(10):
-        slots.append(pygame.Rect(20 + (i % 5) * 60, 40 + (i // 5) * 60, 50, 50))
-        pygame.draw.rect(surf, (70, 70, 70), slots[-1], 0)
-    if selected is not None:
-        pygame.draw.rect(surf, (255, 255, 0), slots[selected], 3)
-    return xbtn, slots, eq_btn, drop_btn
+    xbtn_rect = panel(surf, 10, 10, 400, 580, 'Inventory')
+    slots = [pygame.Rect(20 + (i % 10) * 36, 40 + (i // 10) * 36, 32, 32) for i in range(player.inventory_size)]
+    eq_btn = btn(surf, 10, 550, 190, 30, 'Equip', (0, 128, 0), (255, 255, 255), 24)
+    drop_btn = btn(surf, 210, 550, 190, 30, 'Drop', (255, 0, 0), (255, 255, 255), 24)
+    for i, slot in enumerate(slots):
+        if selected == i:
+            pygame.draw.rect(surf, (255, 255, 0), slot, 3)
+    return xbtn_rect, slots, eq_btn, drop_btn
 
 def draw_quest_log(surf, player):
-    surf.fill((0, 0, 0))
-    xbtn = panel(surf, 10, 10, 300, 580, 'Quest Log')
+    xbtn_rect = panel(surf, 10, 10, 400, 580, 'Quest Log')
     for i, quest in enumerate(player.quests):
-        txt(surf, f"{quest.name}: {quest.description}", 20, 40 + i * 30, 24, (255, 255, 255))
-    return xbtn
+        txt(surf, f'{quest.name}: {quest.description}', 20, 40 + i * 30, 24, (255, 255, 255))
+    return xbtn_rect
 
 def draw_shop(surf, npc, player, selected):
-    surf.fill((0, 0, 0))
-    xbtn = panel(surf, 10, 10, 300, 580, 'Shop')
+    xbtn_rect = panel(surf, 10, 10, 600, 580, 'Shop')
+    items = [pygame.Rect(20 + (i % 3) * 190, 40 + (i // 3) * 70, 180, 60) for i in range(len(npc.inventory))]
     buy_btns = []
-    items = []
-    for i, item in enumerate(npc.items):
-        txt(surf, f"{item.name}: {item.price} Gold", 20, 40 + i * 30, 24, (255, 255, 255))
-        b = btn(surf, 180, 40 + i * 30, 100, 24, 'Buy', (50, 50, 50), (255, 255, 255), 24)
-        buy_btns.append(b)
-        items.append(item)
-    if selected is not None:
-        pygame.draw.rect(surf, (255, 255, 0), buy_btns[selected], 3)
-    return xbtn, buy_btns, items
+    for i, item in enumerate(items):
+        txt(surf, npc.inventory[i].name, item.x + 5, item.y + 5, 24, (255, 255, 255))
+        txt(surf, f'Price: {npc.inventory[i].price}', item.x + 5, item.y + 30, 18, (255, 255, 255))
+        buy_btn = btn(surf, item.right + 10, item.y + 10, 60, 40, 'Buy', (0, 128, 0), (255, 255, 255), 20)
+        buy_btns.append(buy_btn)
+    return xbtn_rect, buy_btns, items
 
 def draw_crafting(surf, player, tab, selected, recipes):
-    surf.fill((0, 0, 0))
-    xbtn = panel(surf, 10, 10, 300, 580, 'Crafting')
-    tab_btns = []
+    xbtn_rect = panel(surf, 10, 10, 600, 580, 'Crafting')
+    tab_btns = [btn(surf, 20 + i * 100, 40, 90, 30, t, (0, 128, 0), (255, 255, 255), 20) for i, t in enumerate(['Weapons', 'Armor', 'Potions'])]
     craft_btns = []
-    for i, t in enumerate(['Weapons', 'Armor', 'Potions']):
-        b = btn(surf, 20 + i * 90, 40, 80, 30, t, (50, 50, 50), (255, 255, 255), 24)
-        tab_btns.append(b)
-    for i, recipe in enumerate(recipes[tab]):
-        txt(surf, f"{recipe.name}", 20, 80 + i * 30, 24, (255, 255, 255))
-        b = btn(surf, 180, 80 + i * 30, 100, 24, 'Craft', (50, 50, 50), (255, 255, 255), 24)
-        craft_btns.append(b)
-    if selected is not None:
-        pygame.draw.rect(surf, (255, 255, 0), craft_btns[selected], 3)
-    return xbtn, tab_btns, craft_btns
+    recipes_displayed = [r for r in recipes if r.category == tab]
+    for i, recipe in enumerate(recipes_displayed):
+        txt(surf, recipe.name, 20, 80 + i * 60, 24, (255, 255, 255))
+        craft_btn = btn(surf, 300, 80 + i * 60, 100, 40, 'Craft', (0, 128, 0), (255, 255, 255), 20)
+        craft_btns.append(craft_btn)
+    return xbtn_rect, tab_btns, craft_btns
 
 def draw_dialogue(surf, npc, dial_idx):
-    surf.fill((0, 0, 0))
-    xbtn = panel(surf, 10, 10, 300, 580, 'Dialogue')
-    txt(surf, f"{npc.name}: {npc.dialogues[dial_idx]}", 20, 40, 24, (255, 255, 255))
-    opt_btns = []
-    for i, option in enumerate(npc.options):
-        b = btn(surf, 20, 80 + i * 30, 260, 24, option.text, (50, 50, 50), (255, 255, 255), 24)
-        opt_btns.append(b)
-    return xbtn, opt_btns
+    xbtn_rect = panel(surf, 10, 10, 600, 300, 'Dialogue')
+    txt(surf, f'{npc.name}: {npc.dialogues[dial_idx]}', 20, 40, 24, (255, 255, 255))
+    opt_btns = [btn(surf, 20 + i * 150, 230, 140, 40, opt, (0, 128, 0), (255, 255, 255), 20) for i, opt in enumerate(npc.options[dial_idx])]
+    return xbtn_rect, opt_btns
 
 def draw_pause(surf):
-    surf.fill((0, 0, 0))
-    xbtn = panel(surf, 10, 10, 300, 580, 'Paused')
-    pause_btns = []
-    for i, label in enumerate(['Resume', 'Save Game', 'Exit']):
-        b = btn(surf, 20, 40 + i * 60, 260, 50, label, (50, 50, 50), (255, 255, 255), 32)
-        pause_btns.append(b)
-    return xbtn, pause_btns
+    surf.fill((0, 0, 0, 128), special_flags=pygame.BLEND_RGBA_MULT)
+    panel_rect = pygame.Rect(surf.get_width() // 4, surf.get_height() // 3, surf.get_width() // 2, surf.get_height() // 3)
+    pygame.draw.rect(surf, (50, 50, 50), panel_rect, 0)
+    pygame.draw.rect(surf, (100, 100, 100), panel_rect, 2)
+    txt(surf, 'Paused', surf.get_width() // 2, surf.get_height() // 3 + 20, 48, (255, 255, 255), True)
+    resume_btn = btn(surf, surf.get_width() // 2 - 100, surf.get_height() // 3 + 90, 200, 50, 'Resume', (0, 128, 0), (255, 255, 255), 36)
+    quit_btn = btn(surf, surf.get_width() // 2 - 100, surf.get_height() // 3 + 160, 200, 50, 'Quit', (255, 0, 0), (255, 255, 255), 36)
+    return panel_rect, [resume_btn, quit_btn]
 
 def draw_city_panel(surf, place_type, BUILDING_TYPES):
-    surf.fill((0, 0, 0))
-    xbtn = panel(surf, 10, 10, 300, 580, f'{place_type} Panel')
+    xbtn_rect = panel(surf, 10, 10, 400, 580, f'Build {place_type}')
     type_btns = []
     for i, building in enumerate(BUILDING_TYPES):
-        b = btn(surf, 20, 40 + i * 60, 260, 50, building.name, (50, 50, 50), (255, 255, 255), 32)
-        type_btns.append(b)
-    return xbtn, type_btns
+        btn_rect = pygame.Rect(20 + (i % 3) * 120, 40 + (i // 3) * 70, 110, 60)
+        txt(surf, building.name, btn_rect.x + 5, btn_rect.y + 5, 24, (255, 255, 255))
+        type_btns.append(btn_rect)
+    return xbtn_rect, type_btns
 
-def draw_world_map(surf, player, TOWNS, CITIES, WORLD_MAP, BIOME_COL):
+def draw_world_map(surf):
+    # Placeholder for world map drawing logic
+    pass
+
+def draw_game_over(surf):
     surf.fill((0, 0, 0))
-    xbtn = panel(surf, 10, 10, 800, 600, 'World Map')
-    for y in range(WORLD_MAP.shape[0]):
-        for x in range(WORLD_MAP.shape[1]):
-            pygame.draw.rect(surf, BIOME_COL[WORLD_MAP[y, x]], (x * 2, y * 2, 2, 2))
-    for town in TOWNS:
-        pygame.draw.circle(surf, (255, 0, 0), (town.x * 2, town.y * 2), 3)
-    for city in CITIES:
-        pygame.draw.circle(surf, (0, 0, 255), (city.x * 2, city.y * 2), 4)
-    return xbtn
+    txt(surf, 'Game Over', surf.get_width() // 2, surf.get_height() // 2 - 50, 72, (255, 0, 0), True)
+    restart_btn = btn(surf, surf.get_width() // 2 - 100, surf.get_height() // 2 + 30, 200, 50, 'Restart', (0, 128, 0), (255, 255, 255), 36)
+    quit_btn = btn(surf, surf.get_width() // 2 - 100, surf.get_height() // 2 + 100, 200, 50, 'Quit', (255, 0, 0), (255, 255, 255), 36)
+    return [restart_btn, quit_btn]
 
-def draw_gameover(surf):
+def draw_victory(surf):
     surf.fill((0, 0, 0))
-    txt(surf, 'Game Over', surf.get_width() // 2, surf.get_height() // 2 - 50, 64, (255, 0, 0), True)
-    btn(surf, surf.get_width() // 2 - 100, surf.get_height() // 2 + 50, 200, 40, 'Restart', (50, 50, 50), (255, 255, 255), 32)
+    txt(surf, 'Victory!', surf.get_width() // 2, surf.get_height() // 2 - 50, 72, (0, 128, 0), True)
+    quit_btn = btn(surf, surf.get_width() // 2 - 100, surf.get_height() // 2 + 30, 200, 50, 'Quit', (255, 0, 0), (255, 255, 255), 36)
+    return [quit_btn]
 
-def draw_player_sprite(surf, sx, sy, cls, crouching):
-    if crouching:
-        sprite = pygame.image.load(f'sprites/{cls}_crouch.png')
-    else:
-        sprite = pygame.image.load(f'sprites/{cls}.png')
-    surf.blit(sprite, (sx - sprite.get_width() // 2, sy - sprite.get_height()))
+def draw_player_stats(surf, player):
+    panel_rect = pygame.Rect(10, 10, 200, 180)
+    pygame.draw.rect(surf, (50, 50, 50), panel_rect, 0)
+    pygame.draw.rect(surf, (100, 100, 100), panel_rect, 2)
+    txt(surf, f'HP: {player.hp}/{player.max_hp}', 20, 30, 24, (255, 255, 255))
+    txt(surf, f'MP: {player.mp}/{player.max_mp}', 20, 60, 24, (255, 255, 255))
+    txt(surf, f'XP: {player.xp}/{player.next_level_xp}', 20, 90, 24, (255, 255, 255))
+    txt(surf, f'Lvl: {player.level}', 20, 120, 24, (255, 255, 255))
 
-def draw_enemy_sprite(surf, sx, sy, edef):
-    sprite = pygame.image.load(f'enemies/{edef.name}.png')
-    surf.blit(sprite, (sx - sprite.get_width() // 2, sy - sprite.get_height()))
+def draw_minimap(surf, player, world_map):
+    # Placeholder for minimap drawing logic
+    pass
 
-def draw_npc_sprite(surf, sx, sy, job):
-    sprite = pygame.image.load(f'npcs/{job}.png')
+def draw_hud(surf, player, world_map):
+    draw_player_stats(surf, player)
+    draw_minimap(surf, player, world_map)
+
 
 # ── QUEST MODULE ─────────────────────────────────────────────────────────────
+# Quest and Spawn Systems for MyGame
 
-WORLD_BIOMES = ['Forest', 'Mountain', 'Desert', 'Plains']
-ENEMY_TYPES = ['Bandit', 'Goblin', 'Orc', 'Wolf', 'Bear']
 
 def spawn_entities(WORLD_MAP, TOWNS, CITIES, BANDIT_CAMPS, GOBLIN_CAMPS, ENEMY_DEFS, NPC_NAMES, NPC_JOBS):
     enemies = []
     npcs = []
     buildings = []
 
+    # Spawn bandits
     for camp in BANDIT_CAMPS:
         for _ in range(4):
-            enemies.append({'name': 'Bandit', 'location': camp})
+            enemy_type = random.choice([e for e in ENEMY_DEFS if e['type'] == 'bandit'])
+            enemies.append({'name': f"Bandit_{random.randint(1, 100)}", 'type': enemy_type['type'], 'position': camp})
 
+    # Spawn goblins and orcs
     for camp in GOBLIN_CAMPS:
         for _ in range(4):
-            enemies.append({'name': 'Goblin', 'location': camp})
-        enemies.append({'name': 'Orc', 'location': camp})
+            enemy_type = random.choice([e for e in ENEMY_DEFS if e['type'] == 'goblin'])
+            enemies.append({'name': f"Goblin_{random.randint(1, 100)}", 'type': enemy_type['type'], 'position': camp})
+        orc_type = random.choice([e for e in ENEMY_DEFS if e['type'] == 'orc'])
+        enemies.append({'name': f"Orc_{random.randint(1, 100)}", 'type': orc_type['type'], 'position': camp})
 
-    wild_enemy_locations = [loc for loc, biome in WORLD_MAP.items() if loc not in TOWNS and loc not in CITIES and biome != 'Water']
+    # Spawn wild enemies
+    wild_positions = [pos for pos in WORLD_MAP if pos not in TOWNS and pos not in CITIES]
     for _ in range(30):
-        location = random.choice(wild_enemy_locations)
-        enemy_type = random.choice(ENEMY_TYPES)
-        enemies.append({'name': enemy_type, 'location': location})
+        enemy_type = random.choice([e for e in ENEMY_DEFS if e['type'] in ['wolf', 'bear', 'skeleton']])
+        enemies.append({'name': f"Wild_{random.randint(1, 100)}", 'type': enemy_type['type'], 'position': random.choice(wild_positions)})
 
+    # Spawn NPCs
     for town in TOWNS:
-        npc_list = [
-            {'name': NPC_NAMES.pop(), 'job': 'Merchant', 'location': town},
-            {'name': NPC_NAMES.pop(), 'job': 'Guard', 'location': town},
-            {'name': NPC_NAMES.pop(), 'job': 'Guard', 'location': town},
-            {'name': NPC_NAMES.pop(), 'job': 'Farmer', 'location': town},
-            {'name': NPC_NAMES.pop(), 'job': 'Farmer', 'location': town},
-            {'name': NPC_NAMES.pop(), 'job': 'Miner', 'location': town},
-            {'name': NPC_NAMES.pop(), 'job': 'Blacksmith', 'location': town}
-        ]
-        npcs.extend(npc_list)
+        npc_roles = ['Merchant', 'Guard', 'Guard', 'Farmer', 'Farmer', 'Miner', 'Blacksmith']
+        for role in npc_roles:
+            name = random.choice(NPC_NAMES)
+            job = NPC_JOBS[role]
+            npcs.append({'name': name, 'job': role, 'position': town})
 
     return enemies, npcs, buildings
 
@@ -602,20 +599,21 @@ def complete_ready_quests(player):
     completed_quests = []
     for quest in player['quests']:
         if quest['completed']:
-            player['rewards'].extend(quest['rewards'])
+            player['rewards'].append(quest['reward'])
             completed_quests.append(quest['name'])
-    player['quests'] = [quest for quest in player['quests'] if not quest['completed']]
+            player['quests'].remove(quest)
     return completed_quests
 
 def harvest_nearby(player, WORLD_MAP):
-    location = player['location']
-    biome = WORLD_MAP.get(location)
-    if biome == 'Forest':
+    biome = WORLD_MAP[player['position']]['biome']
+    if biome == 'forest':
         return 'chop'
-    elif biome == 'Mountain':
+    elif biome == 'mountain':
         return 'mine'
-    else:
+    elif biome == 'plain':
         return 'gather'
+    else:
+        return ''
 
 # ── ECONOMY MODULE ───────────────────────────────────────────────────────────
 # MyGame Economy and Crafting Module
@@ -628,32 +626,32 @@ CRAFT_RECIPES = {
         {'name': 'Bow', 'cost': {'Wood': 3, 'String': 2}, 'out': {'Bow': 1}}
     ],
     'Blacksmith': [
-        {'name': 'Iron Sword', 'cost': {'Iron Ingot': 5}, 'out': {'Iron Sword': 1}},
-        {'name': 'Steel Shield', 'cost': {'Steel Ingot': 4, 'Leather': 2}, 'out': {'Steel Shield': 1}},
-        {'name': 'Horse Shoe', 'cost': {'Iron Ingot': 2}, 'out': {'Horse Shoe': 4}},
+        {'name': 'Iron Sword', 'cost': {'Iron Ingot': 5, 'Stone': 2}, 'out': {'Iron Sword': 1}},
+        {'name': 'Steel Shield', 'cost': {'Steel Ingot': 4, 'Leather': 3}, 'out': {'Steel Shield': 1}},
+        {'name': 'Horse Shoe', 'cost': {'Iron Ingot': 2, 'Nail': 5}, 'out': {'Horse Shoe': 4}},
         {'name': 'Axe', 'cost': {'Iron Ingot': 3, 'Wood': 2}, 'out': {'Axe': 1}}
     ],
     'Alchemy': [
-        {'name': 'Health Potion', 'cost': {'Herb': 3, 'Water Bottle': 1}, 'out': {'Health Potion': 5}},
-        {'name': 'Mana Potion', 'cost': {'Crystal Dust': 2, 'Water Bottle': 1}, 'out': {'Mana Potion': 4}},
-        {'name': 'Poison', 'cost': {'Venom Sac': 1, 'Herb': 2}, 'out': {'Poison': 3}},
-        {'name': 'Invisibility Potion', 'cost': {'Mushroom': 5, 'Water Bottle': 1}, 'out': {'Invisibility Potion': 2}}
+        {'name': 'Healing Potion', 'cost': {'Herb': 5, 'Water Bottle': 1}, 'out': {'Healing Potion': 3}},
+        {'name': 'Mana Potion', 'cost': {'Crystal Dust': 2, 'Water Bottle': 1}, 'out': {'Mana Potion': 2}},
+        {'name': 'Fire Scroll', 'cost': {'Sulfur': 4, 'Paper': 1}, 'out': {'Fire Scroll': 1}},
+        {'name': 'Invisibility Potion', 'cost': {'Mushroom': 3, 'Water Bottle': 1}, 'out': {'Invisibility Potion': 1}}
     ],
     'Building': [
-        {'name': 'House', 'cost': {'Wood': 10, 'Stone': 5}, 'out': {'House': 1}},
-        {'name': 'Shop', 'cost': {'Wood': 8, 'Iron Ingot': 3}, 'out': {'Shop': 1}},
-        {'name': 'Barracks', 'cost': {'Steel Ingot': 6, 'Stone': 7}, 'out': {'Barracks': 1}},
-        {'name': 'Farm', 'cost': {'Wood': 5, 'Iron Ingot': 2}, 'out': {'Farm': 1}}
+        {'name': 'House', 'cost': {'Wood': 20, 'Stone': 15}, 'out': {'House': 1}},
+        {'name': 'Shop', 'cost': {'Wood': 30, 'Iron Ingot': 10}, 'out': {'Shop': 1}},
+        {'name': 'Barracks', 'cost': {'Steel Ingot': 25, 'Stone': 20}, 'out': {'Barracks': 1}},
+        {'name': 'Farm', 'cost': {'Wood': 15, 'Soil': 30}, 'out': {'Farm': 1}}
     ]
 }
 
 BUILDING_TYPES = {
-    'House': {'col': (204, 153, 255), 'w': 3, 'h': 3, 'cost': {'Wood': 10, 'Stone': 5}},
-    'Shop': {'col': (255, 204, 153), 'w': 4, 'h': 4, 'cost': {'Wood': 8, 'Iron Ingot': 3}},
-    'Barracks': {'col': (153, 204, 255), 'w': 6, 'h': 6, 'cost': {'Steel Ingot': 6, 'Stone': 7}},
-    'Farm': {'col': (153, 255, 153), 'w': 5, 'h': 5, 'cost': {'Wood': 5, 'Iron Ingot': 2}},
-    'Tower': {'col': (204, 153, 153), 'w': 7, 'h': 7, 'cost': {'Steel Ingot': 8, 'Stone': 10}},
-    'Warehouse': {'col': (255, 255, 153), 'w': 6, 'h': 4, 'cost': {'Wood': 12, 'Iron Ingot': 5}}
+    'House': {'col': (255, 204, 153), 'w': 64, 'h': 64, 'cost': {'Wood': 20, 'Stone': 15}},
+    'Shop': {'col': (255, 255, 153), 'w': 96, 'h': 64, 'cost': {'Wood': 30, 'Iron Ingot': 10}},
+    'Barracks': {'col': (153, 204, 255), 'w': 128, 'h': 96, 'cost': {'Steel Ingot': 25, 'Stone': 20}},
+    'Farm': {'col': (153, 255, 153), 'w': 96, 'h': 96, 'cost': {'Wood': 15, 'Soil': 30}},
+    'Tower': {'col': (204, 153, 255), 'w': 128, 'h': 128, 'cost': {'Steel Ingot': 30, 'Stone': 40}},
+    'Warehouse': {'col': (255, 153, 153), 'w': 96, 'h': 128, 'cost': {'Wood': 40, 'Iron Ingot': 20}}
 }
 
 def buy_item(player, npc, item_name):
@@ -662,27 +660,29 @@ def buy_item(player, npc, item_name):
         player.inventory[item_name] = player.inventory.get(item_name, 0) + 1
         npc.inventory[item_name] -= 1
         return True, 'Item bought successfully'
-    else:
-        return False, 'Not enough gold or item not available'
+    return False, 'Not enough gold or item not available'
 
 def sell_item(player, npc, item_name):
-    if item_name in player.inventory and player.inventory[item_name] > 0:
+    if item_name in player.inventory:
         player.gold += npc.prices[item_name]
         player.inventory[item_name] -= 1
+        if player.inventory[item_name] == 0:
+            del player.inventory[item_name]
         npc.inventory[item_name] = npc.inventory.get(item_name, 0) + 1
         return True, 'Item sold successfully'
-    else:
-        return False, 'Item not in inventory'
+    return False, 'Item not in inventory'
 
 def craft_item(player, recipe):
-    if all(player.inventory.get(mat, 0) >= qty for mat, qty in recipe['cost'].items()):
+    can_craft = all(player.inventory.get(mat, 0) >= qty for mat, qty in recipe['cost'].items())
+    if can_craft:
         for mat, qty in recipe['cost'].items():
             player.inventory[mat] -= qty
+            if player.inventory[mat] == 0:
+                del player.inventory[mat]
         for item, qty in recipe['out'].items():
             player.inventory[item] = player.inventory.get(item, 0) + qty
         return True, 'Item crafted successfully'
-    else:
-        return False, 'Not enough materials'
+    return False, 'Not enough materials'
 
 # ── FALLBACK DEFINITIONS (only used if agents returned nothing) ──────────────
 
