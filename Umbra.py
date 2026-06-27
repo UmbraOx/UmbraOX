@@ -1,4 +1,4 @@
-"""
+﻿"""
 UMBRA -- Autonomous AI Runtime OS  v2.3.0
 Complete drop-in replacement.
 
