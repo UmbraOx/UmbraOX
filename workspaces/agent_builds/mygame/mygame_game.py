@@ -18,53 +18,66 @@ import time
 
 # ── WORLD MODULE ─────────────────────────────────────────────────────────────
 
-WORLD_MAP = [['plains' for _ in range(200)] for _ in range(200)]
+WORLD_MAP = [['plains'] * 200 for _ in range(200)]
 BIOME_COL = {
     'plains': (153, 217, 102),
     'forest': (34, 139, 34),
     'mountain': (165, 42, 42),
     'desert': (255, 228, 181),
-    'water': (0, 176, 240),
+    'water': (0, 191, 255),
     'snow': (255, 250, 250),
-    'swamp': (32, 178, 170),
-    'town': (255, 255, 0),
-    'camp': (255, 69, 0),
+    'swamp': (32, 178, 72),
+    'town': (255, 69, 0),
+    'camp': (139, 69, 19),
     'mine': (128, 128, 128),
-    'wood_area': (34, 139, 34),
+    'wood_area': (50, 205, 50),
     'road': (128, 128, 128)
 }
-TOWNS = [(50, 50, 'Demiworld Town')]
-CITIES = [(20, 20, 'City A'), (180, 180, 'City B')]
+TOWNS = []
+CITIES = [(50, 50, 'Capital'), (150, 150, 'Metropolis')]
 BANDIT_CAMPS = [(30, 30), (70, 70), (110, 110)]
-GOBLIN_CAMPS = [(40, 40), (80, 80), (120, 120)]
-MINES = [(50, 60), (90, 90), (130, 130)]
-WOODCUTS = [(60, 50), (100, 100), (140, 140)]
+GOBLIN_CAMPS = [(20, 80), (90, 40), (160, 120)]
+MINES = [(45, 145), (135, 65), (75, 185)]
+WOODCUTS = [(10, 10), (190, 190), (100, 100)]
 
 def gen_world():
     random.seed(42)
-    for x in range(200):
-        for y in range(200):
-            biome = random.choice(list(BIOME_COL.keys()))
-            WORLD_MAP[x][y] = biome
+    for y in range(200):
+        for x in range(200):
+            biome_choice = random.choices(
+                ['plains', 'forest', 'mountain', 'desert', 'water', 'snow', 'swamp'],
+                weights=[15, 20, 10, 10, 5, 5, 5], k=1
+            )[0]
+            WORLD_MAP[y][x] = biome_choice
 
 def draw_world(surf, cam_x, cam_y):
-    tile_size = 16
-    for dx in range(-cam_x // tile_size, (surf.get_width() + cam_x) // tile_size + 1):
-        for dy in range(-cam_y // tile_size, (surf.get_height() + cam_y) // tile_size + 1):
-            x = dx * tile_size - cam_x % tile_size
-            y = dy * tile_size - cam_y % tile_size
-            biome = get_biome(dx + cam_x // tile_size, dy + cam_y // tile_size)
-            surf.fill(BIOME_COL[biome], (x, y, tile_size, tile_size))
+    for y in range(10, 30):
+        for x in range(10, 30):
+            tile_x = cam_x + x - 15
+            tile_y = cam_y + y - 15
+            if 0 <= tile_x < 200 and 0 <= tile_y < 200:
+                biome = WORLD_MAP[tile_y][tile_x]
+                color = BIOME_COL[biome]
+                pygame.draw.rect(surf, color, (x * 32, y * 32, 32, 32))
 
 def get_biome(tx, ty) -> str:
     if 0 <= tx < 200 and 0 <= ty < 200:
-        return WORLD_MAP[tx][ty]
+        return WORLD_MAP[ty][tx]
     return 'plains'
 
 # ── CHARACTER MODULE ─────────────────────────────────────────────────────────
 
 ENEMY_DEFS = [
-    {'name': 'Goblin', 'hp': 20, 'atk': 5, 'def': 3, 'xp': 10, 'col': (64, 64, 64), 'spd': 1.5, 'faction': 'Enemy'}
+    {'name': 'Goblin', 'hp': 20, 'atk': 5, 'def': 2, 'xp': 10, 'col': (64, 64, 64), 'spd': 1.5, 'faction': 'Enemy'},
+    {'name': 'Orc', 'hp': 30, 'atk': 7, 'def': 3, 'xp': 20, 'col': (128, 0, 0), 'spd': 1.2, 'faction': 'Enemy'},
+    {'name': 'Troll', 'hp': 50, 'atk': 10, 'def': 4, 'xp': 30, 'col': (64, 128, 64), 'spd': 0.9, 'faction': 'Enemy'},
+    {'name': 'Skeleton', 'hp': 15, 'atk': 3, 'def': 1, 'xp': 5, 'col': (192, 192, 192), 'spd': 2.0, 'faction': 'Enemy'},
+    {'name': 'Zombie', 'hp': 25, 'atk': 4, 'def': 2, 'xp': 8, 'col': (64, 64, 128), 'spd': 1.3, 'faction': 'Enemy'},
+    {'name': 'Bandit', 'hp': 20, 'atk': 5, 'def': 2, 'xp': 12, 'col': (192, 64, 64), 'spd': 1.8, 'faction': 'Enemy'},
+    {'name': 'Witch', 'hp': 30, 'atk': 7, 'def': 3, 'xp': 25, 'col': (128, 64, 192), 'spd': 1.0, 'faction': 'Enemy'},
+    {'name': 'Dragon', 'hp': 100, 'atk': 15, 'def': 5, 'xp': 100, 'col': (255, 64, 0), 'spd': 0.7, 'faction': 'Enemy'},
+    {'name': 'Golem', 'hp': 80, 'atk': 10, 'def': 6, 'xp': 75, 'col': (128, 128, 64), 'spd': 0.6, 'faction': 'Enemy'},
+    {'name': 'Wraith', 'hp': 40, 'atk': 8, 'def': 3, 'xp': 35, 'col': (64, 192, 192), 'spd': 1.5, 'faction': 'Enemy'}
 ]
 
 class Player:
@@ -74,30 +87,30 @@ class Player:
         self.cls = cls
         self.max_hp = 100 if cls == 'Warrior' else 80 if cls == 'Mage' else 90
         self.hp = self.max_hp
-        self.max_mp = 50 if cls == 'Mage' else 30 if cls == 'Archer' else 20
+        self.max_mp = 100 if cls == 'Mage' else 50 if cls == 'Warrior' else 70
         self.mp = self.max_mp
         self.max_sta = 100
         self.sta = self.max_sta
-        self.str_ = 10 if cls == 'Warrior' else 5 if cls == 'Mage' else 7
-        self.dex = 7 if cls == 'Archer' else 5 if cls == 'Mage' else 6
+        self.str_ = 10 if cls == 'Warrior' else 5 if cls == 'Mage' else 8
+        self.dex = 8 if cls == 'Rogue' else 6 if cls == 'Warrior' else 7
         self.int_ = 12 if cls == 'Mage' else 4 if cls == 'Warrior' else 6
-        self.luck = random.randint(1, 10)
+        self.luck = random.randint(5, 10)
         self.level = 1
         self.xp = 0
         self.xp_next = 100
-        self.gold = 50
-        self.speed = 2.0 if cls == 'Archer' else 1.8 if cls == 'Mage' else 1.6
+        self.gold = 0
+        self.speed = 2.0 if cls == 'Rogue' else 1.5 if cls == 'Mage' else 1.8
         self.inventory = {}
         self.equipped = {'weapon': None, 'armor': None}
-        self.spells = ['Fireball'] if cls == 'Mage' else []
+        self.spells = [] if cls != 'Mage' else ['Fireball', 'Heal']
         self.quests = []
         self.crouching = False
 
     def atk_power(self):
-        return (self.str_ + self.dex) / 2 * (1 + self.luck / 100)
+        return self.str_ + (self.dex // 2) + (self.equipped['weapon'].atk if self.equipped['weapon'] else 0)
 
     def def_power(self):
-        return self.dex if self.equipped['armor'] is None else self.dex + self.equipped['armor'].def_
+        return self.dex + (self.equipped['armor'].def_ if self.equipped['armor'] else 0)
 
     def add_item(self, name, qty):
         if name in self.inventory:
@@ -113,18 +126,20 @@ class Player:
     def level_up(self):
         self.xp -= self.xp_next
         self.xp_next *= 1.5
-        self.max_hp += 10
+        self.max_hp += random.randint(10, 20)
         self.hp = self.max_hp
-        self.max_mp += 5 if self.cls == 'Mage' else 3
+        self.max_mp += random.randint(5, 15) if self.cls == 'Mage' else random.randint(3, 10)
         self.mp = self.max_mp
-        self.str_ += 2 if self.cls == 'Warrior' else 1
-        self.dex += 2 if self.cls == 'Archer' else 1
-        self.int_ += 2 if self.cls == 'Mage' else 1
+        self.str_ += random.randint(1, 3)
+        self.dex += random.randint(1, 2)
+        self.int_ += random.randint(1, 2) if self.cls == 'Mage' else random.randint(0, 1)
 
     def regen(self, dt):
-        self.hp = min(self.max_hp, self.hp + (self.str_ / 10) * dt)
-        self.mp = min(self.max_mp, self.mp + (self.int_ / 10) * dt)
-        self.sta = min(self.max_sta, self.sta + (self.dex / 10) * dt)
+        self.sta = min(self.max_sta, self.sta + (self.speed * dt))
+        if self.hp < self.max_hp:
+            self.hp += (self.str_ / 2) * dt
+        if self.mp < self.max_mp and self.cls == 'Mage':
+            self.mp += (self.int_ / 2) * dt
 
 class Enemy:
     def __init__(self, edef, tx, ty):
@@ -150,7 +165,7 @@ class Enemy:
             self.y += move_y
 
     def draw(self, surf, cx, cy):
-        pass
+        pygame.draw.circle(surf, self.col, (int(cx + self.x), int(cy + self.y)), 10)
 
 class NPC:
     def __init__(self, name, job, tx, ty):
@@ -161,109 +176,98 @@ class NPC:
         self.dialogue = []
         self.shop_stock = {}
 
-        if job == 'Blacksmith':
-            self.dialogue.append("Welcome to my forge!")
-            self.shop_stock['Sword'] = {'price': 100, 'qty': 5}
-            self.shop_stock['Shield'] = {'price': 80, 'qty': 3}
-        elif job == 'Healer':
-            self.dialogue.append("Greetings! I can heal you.")
-        elif job == 'Trader':
-            self.dialogue.append("Hello traveler! What do you need?")
-            self.shop_stock['Potion'] = {'price': 50, 'qty': 10}
-            self.shop_stock['Scroll'] = {'price': 75, 'qty': 4}
+JOBS = ['Blacksmith', 'Healer', 'Trader']
 
 # ── ITEM / DATA MODULE ───────────────────────────────────────────────────────
 # Game Data Constants for MyGame
 
 WEAPONS = [
     {'name': 'Iron Sword', 'atk': 10, 'type': 'melee', 'val': 50, 'col': (200, 190, 140)},
-    {'name': 'Steel Sword', 'atk': 15, 'type': 'melee', 'val': 75, 'col': (220, 220, 220)},
-    {'name': 'Longbow', 'atk': 8, 'type': 'ranged', 'val': 40, 'col': (139, 69, 19)},
-    {'name': 'Composite Bow', 'atk': 12, 'type': 'ranged', 'val': 60, 'col': (165, 42, 42)},
-    {'name': 'Magic Staff', 'atk': 7, 'type': 'magic', 'val': 35, 'col': (138, 43, 226)},
-    {'name': 'Enchanted Staff', 'atk': 10, 'type': 'magic', 'val': 55, 'col': (75, 0, 130)},
-    {'name': 'Dagger', 'atk': 4, 'type': 'melee', 'val': 20, 'col': (85, 65, 139)},
-    {'name': 'Crossbow', 'atk': 10, 'type': 'ranged', 'val': 50, 'col': (165, 42, 42)},
-    {'name': 'Wand', 'atk': 5, 'type': 'magic', 'val': 30, 'col': (138, 43, 226)},
-    {'name': 'Greatsword', 'atk': 20, 'type': 'melee', 'val': 100, 'col': (255, 215, 0)}
+    {'name': 'Bow', 'atk': 8, 'type': 'ranged', 'val': 30, 'col': (160, 120, 40)},
+    {'name': 'Fire Staff', 'atk': 12, 'type': 'magic', 'val': 75, 'col': (255, 69, 0)},
+    {'name': 'Dagger', 'atk': 5, 'type': 'melee', 'val': 20, 'col': (184, 134, 11)},
+    {'name': 'Crossbow', 'atk': 10, 'type': 'ranged', 'val': 60, 'col': (139, 69, 19)},
+    {'name': 'Ice Wand', 'atk': 15, 'type': 'magic', 'val': 80, 'col': (0, 255, 255)},
+    {'name': 'Great Axe', 'atk': 18, 'type': 'melee', 'val': 90, 'col': (139, 69, 19)},
+    {'name': 'Longbow', 'atk': 14, 'type': 'ranged', 'val': 70, 'col': (255, 215, 0)},
+    {'name': 'Thunder Rod', 'atk': 20, 'type': 'magic', 'val': 100, 'col': (255, 69, 0)},
+    {'name': 'Short Sword', 'atk': 7, 'type': 'melee', 'val': 35, 'col': (200, 190, 140)}
 ]
 
 ARMOR_SETS = [
-    {'name': 'Warrior Armor', 'parts': ['Helmet', 'Chestplate', 'Greaves'], 'def': 15, 'val': 75},
-    {'name': 'Archer Armor', 'parts': ['Light Helmet', 'Leather Chest', 'Leggings'], 'def': 8, 'val': 40},
-    {'name': 'Mage Robe', 'parts': ['Cowl', 'Robe', 'Boots'], 'def': 5, 'val': 30}
+    {'name': 'Leather Armor', 'parts': ['Leather Helmet', 'Leather Chestplate', 'Leather Leggings'], 'def': 8, 'val': 50},
+    {'name': 'Iron Armor', 'parts': ['Iron Helm', 'Iron Breastplate', 'Iron Greaves'], 'def': 12, 'val': 100},
+    {'name': 'Dragon Scale Mail', 'parts': ['Dragon Scale Helmet', 'Dragon Scale Chestplate', 'Dragon Scale Leggings'], 'def': 20, 'val': 300}
 ]
 
 SPELLS = [
-    {'name': 'Fireball', 'mp': 15, 'dmg': 20, 'col': (255, 69, 0), 'desc': 'A fiery orb that explodes on impact.'},
-    {'name': 'Arrow Storm', 'mp': 10, 'dmg': 15, 'col': (139, 69, 19), 'desc': 'Rains a barrage of arrows down on enemies.'},
-    {'name': 'Ice Shield', 'mp': 20, 'dmg': 0, 'col': (0, 191, 255), 'desc': 'Creates a shield that reflects damage.'},
-    {'name': 'Lightning Bolt', 'mp': 18, 'dmg': 25, 'col': (255, 255, 0), 'desc': 'Strikes an enemy with lightning.'},
-    {'name': 'Heal', 'mp': 12, 'dmg': -15, 'col': (34, 139, 34), 'desc': 'Restores health to a target.'},
-    {'name': 'Mana Shield', 'mp': 25, 'dmg': 0, 'col': (75, 0, 130), 'desc': 'Absorbs magic damage for a short time.'},
-    {'name': 'Fire Aura', 'mp': 20, 'dmg': 10, 'col': (255, 69, 0), 'desc': 'Deals fire damage over time to nearby enemies.'},
-    {'name': 'Shadow Step', 'mp': 15, 'dmg': 0, 'col': (0, 0, 0), 'desc': 'Teleports a short distance away from danger.'},
-    {'name': 'Frost Nova', 'mp': 25, 'dmg': 30, 'col': (0, 191, 255), 'desc': 'Freezes enemies in place and deals damage.'},
-    {'name': 'Thunderclap', 'mp': 20, 'dmg': 20, 'col': (255, 255, 0), 'desc': 'Stuns enemies with a powerful clap of thunder.'}
+    {'name': 'Fireball', 'mp': 15, 'dmg': 25, 'col': (255, 69, 0), 'desc': 'A basic fire spell that burns enemies.'},
+    {'name': 'Heal', 'mp': 20, 'dmg': -30, 'col': (0, 255, 0), 'desc': 'Restores health to the caster or an ally.'},
+    {'name': 'Lightning Bolt', 'mp': 25, 'dmg': 35, 'col': (255, 215, 0), 'desc': 'A powerful electric shock that stuns enemies.'},
+    {'name': 'Ice Shard', 'mp': 10, 'dmg': 15, 'col': (0, 255, 255), 'desc': 'Fires a shard of ice to freeze and damage foes.'},
+    {'name': 'Shield', 'mp': 15, 'dmg': -10, 'col': (173, 216, 230), 'desc': 'Creates a shield that absorbs damage for the caster.'},
+    {'name': 'Meteor Shower', 'mp': 40, 'dmg': 50, 'col': (255, 99, 71), 'desc': 'Summons meteors to rain down on enemies.'},
+    {'name': 'Thunder Wave', 'mp': 30, 'dmg': 40, 'col': (255, 69, 0), 'desc': 'Unleashes a wave of electricity that damages all nearby foes.'},
+    {'name': 'Earthquake', 'mp': 35, 'dmg': 45, 'col': (139, 69, 19), 'desc': 'Causes the ground to shake and damage enemies.'},
+    {'name': 'Blizzard', 'mp': 20, 'dmg': 20, 'col': (0, 255, 255), 'desc': 'Freezes enemies in place and deals cold damage over time.'},
+    {'name': 'Holy Light', 'mp': 30, 'dmg': -40, 'col': (255, 255, 0), 'desc': 'Emits a radiant light that heals allies and damages undead enemies.'}
 ]
 
 MATERIALS = [
     'Iron Ore',
-    'Steel Ingot',
-    'Wooden Plank',
     'Leather Hide',
-    'Mana Crystal',
-    'Enchanted Silk',
     'Dragon Scale',
-    'Phoenix Feather',
-    'Obsidian Shard',
-    'Ethereal Dust'
+    'Magic Crystal',
+    'Wood Logs',
+    'Coal',
+    'Silk Cloth',
+    'Steel Ingot',
+    'Mana Stone',
+    'Elixir'
 ]
 
 QUESTS = [
-    {'id': 1, 'name': 'Goblin Hunt', 'desc': 'Eliminate 5 goblins in the forest.', 'target': 'goblin', 'need': 5, 'prog': 0, 'done': False, 'reward_gold': 50, 'reward_xp': 25},
-    {'id': 2, 'name': 'Bandit Ambush', 'desc': 'Defeat the bandits at the bridge.', 'target': 'bandit', 'need': 3, 'prog': 0, 'done': False, 'reward_gold': 75, 'reward_xp': 40},
-    {'id': 3, 'name': 'Collect Iron Ore', 'desc': 'Gather 10 pieces of iron ore from the mines.', 'target': 'mat:Iron Ore', 'need': 10, 'prog': 0, 'done': False, 'reward_gold': 25, 'reward_xp': 10},
-    {'id': 4, 'name': 'Mage Request', 'desc': 'Find the lost mana crystal.', 'target': 'mat:Mana Crystal', 'need': 1, 'prog': 0, 'done': False, 'reward_gold': 50, 'reward_xp': 20},
-    {'id': 5, 'name': 'Forest Guardian', 'desc': 'Defeat the forest guardian to clear the path.', 'target': 'forest guardian', 'need': 1, 'prog': 0, 'done': False, 'reward_gold': 100, 'reward_xp': 50}
+    {'id': 1, 'name': 'Goblin Hunt', 'desc': 'Eliminate 10 goblins in the forest.', 'target': 'goblin', 'need': 10, 'prog': 0, 'done': False, 'reward_gold': 50, 'reward_xp': 20},
+    {'id': 2, 'name': 'Collect Iron Ore', 'desc': 'Gather 5 pieces of iron ore from the mines.', 'target': 'mat:Iron Ore', 'need': 5, 'prog': 0, 'done': False, 'reward_gold': 30, 'reward_xp': 10},
+    {'id': 3, 'name': 'Defend Village', 'desc': 'Protect the village from bandit attacks.', 'target': 'bandit', 'need': 5, 'prog': 0, 'done': False, 'reward_gold': 75, 'reward_xp': 30},
+    {'id': 4, 'name': 'Dragon Scale Quest', 'desc': 'Retrieve a dragon scale from the dragon lair.', 'target': 'mat:Dragon Scale', 'need': 1, 'prog': 0, 'done': False, 'reward_gold': 200, 'reward_xp': 50},
+    {'id': 5, 'name': 'Silk Harvest', 'desc': 'Harvest 3 pieces of silk cloth from the spider caves.', 'target': 'mat:Silk Cloth', 'need': 3, 'prog': 0, 'done': False, 'reward_gold': 40, 'reward_xp': 15}
 ]
 
 FACTIONS = {
     'kingdom': {'rep': 0, 'name': 'Kingdom of Eldoria'},
-    'bandit': {'rep': 0, 'name': 'Bandit Clan'},
+    'bandit': {'rep': 0, 'name': 'Bandit Gang'},
     'goblin': {'rep': 0, 'name': 'Goblin Tribe'}
 }
 
 DIALOGUE_TREES = {
-    'Merchant': [{'text': 'Welcome to my shop! What can I get for you?', 'opts': ['Buy', 'Sell', 'Leave']}],
-    'Guard': [{'text': 'Greetings traveler. Are you here on business or just passing through?', 'opts': ['Business', 'Passing Through', 'Leave']}],
-    'Blacksmith': [{'text': 'Need a weapon or armor? I can help with that.', 'opts': ['Forge Weapon', 'Craft Armor', 'Leave']}],
-    'Farmer': [{'text': 'Hello! How are you today?', 'opts': ['Good', 'Not Good', 'Leave']}],
-    'default': [{'text': 'I do not understand your request. Can you please clarify?', 'opts': ['Yes', 'No']}]
+    'Merchant': [{'text': 'Welcome to my shop! What can I get you?', 'opts': ['Buy', 'Sell', 'Leave']}],
+    'Guard': [{'text': 'Greetings traveler. Are you here for training or just passing through?', 'opts': ['Train', 'Pass Through', 'Talk More']}],
+    'Blacksmith': [{'text': 'Need a weapon or armor? I can help.', 'opts': ['Forge Weapon', 'Craft Armor', 'Leave']}],
+    'Farmer': [{'text': 'Hello! How are you today?', 'opts': ['Buy Produce', 'Chat', 'Leave']}],
+    'default': [{'text': 'Hi there!', 'opts': ['Talk', 'Leave']}]
 }
 
 NPC_NAMES = [
     'Aldric',
-    'Brynne',
-    'Caelum',
+    'Brynn',
+    'Caelan',
     'Daria',
     'Eldrin',
     'Fiona',
-    'Garrick',
+    'Galen',
     'Hannah',
     'Igor',
-    'Jasmine',
+    'Jenna',
     'Kael',
     'Lila',
     'Morgan',
-    'Natalie',
+    'Nora',
     'Oscar',
     'Piper'
 ]
 
 
-if __name__ == '__main__':
-    main()
 
 # ── MECHANIC MODULE ──────────────────────────────────────────────────────────
 # Game Mechanic Helpers Module
@@ -294,8 +298,8 @@ class FloatText:
             self.alpha = 0
 
     def draw(self, surf, cx, cy):
-        txt_surf = self.font.render(self.text, True, (self.col[0], self.col[1], self.col[2], self.alpha))
-        surf.blit(txt_surf, (int(self.x - cx), int(self.y - cy)))
+        text_surf = self.font.render(self.text, True, (self.col[0], self.col[1], self.col[2], self.alpha))
+        surf.blit(text_surf, (int(self.x - cx), int(self.y - cy)))
 
 class Projectile:
     def __init__(self, x, y, tx, ty, dmg, col, spd=9):
@@ -313,47 +317,48 @@ class Projectile:
     def update(self):
         self.x += self.vx
         self.y += self.vy
-        if (self.tx - self.x) ** 2 + (self.ty - self.y) ** 2 < 16:
-            return True
-        return False
 
     def draw(self, surf, cx, cy):
-        pygame.draw.circle(surf, self.col, (int(self.x - cx), int(self.y - cy)), 4)
+        pygame.draw.circle(surf, self.col, (int(self.x - cx), int(self.y - cy)), 3)
 
 class Building:
     TYPES = {
-        'House': {'col': (200, 150, 100), 'w': 3, 'h': 3, 'cost': {'wood': 10}},
-        'Shop': {'col': (255, 200, 0), 'w': 4, 'h': 4, 'cost': {'stone': 15}},
-        'Barracks': {'col': (180, 180, 180), 'w': 5, 'h': 5, 'cost': {'iron': 20}},
-        'Farm': {'col': (34, 177, 76), 'w': 4, 'h': 4, 'cost': {'wood': 12}},
-        'Tower': {'col': (100, 150, 200), 'w': 4, 'h': 5, 'cost': {'stone': 25}},
-        'Warehouse': {'col': (200, 200, 200), 'w': 6, 'h': 6, 'cost': {'iron': 30}}
+        'House': {'col': (204, 153, 255), 'w': 2, 'h': 2, 'cost': {'wood': 4, 'stone': 2}},
+        'Shop': {'col': (255, 204, 153), 'w': 3, 'h': 2, 'cost': {'wood': 6, 'stone': 3}},
+        'Barracks': {'col': (153, 204, 255), 'w': 4, 'h': 3, 'cost': {'wood': 8, 'stone': 4}},
+        'Farm': {'col': (204, 255, 153), 'w': 3, 'h': 3, 'cost': {'wood': 6, 'stone': 2}},
+        'Tower': {'col': (255, 153, 153), 'w': 4, 'h': 4, 'cost': {'wood': 10, 'stone': 5}},
+        'Warehouse': {'col': (153, 255, 204), 'w': 4, 'h': 3, 'cost': {'wood': 8, 'stone': 3}}
     }
 
     def __init__(self, btype, tx, ty):
         self.btype = btype
         self.tx = tx
         self.ty = ty
+        self.col = Building.TYPES[btype]['col']
+        self.w = Building.TYPES[btype]['w']
+        self.h = Building.TYPES[btype]['h']
 
     def draw(self, surf, cx, cy):
-        col = Building.TYPES[self.btype]['col']
-        w = Building.TYPES[self.btype]['w'] * 32
-        h = Building.TYPES[self.btype]['h'] * 32
-        x = self.tx * 32 - cx
-        y = self.ty * 32 - cy
-        pygame.draw.rect(surf, col, (x, y, w, h))
-        pygame.draw.polygon(surf, (100, 50, 0), [(x + w // 2, y), (x, y - h // 4), (x + w, y - h // 4)])
-        pygame.draw.rect(surf, (0, 0, 0), (x + w // 3, y + h * 2 // 3, w // 3, h // 6))
-        pygame.draw.rect(surf, (255, 255, 255), (x + w // 4, y + h // 4, w // 8, h // 8))
+        x = (self.tx * 32) - cx
+        y = (self.ty * 32) - cy
+        pygame.draw.rect(surf, self.col, (x, y, self.w * 32, self.h * 32))
+        pygame.draw.polygon(surf, (100, 50, 0), [(x + 16, y), (x + self.w * 32 - 8, y - 16), (x + self.w * 32 - 16, y)])
+        pygame.draw.rect(surf, (0, 0, 0), (x + 8, y + self.h * 32 - 8, 16, 8))
+        if self.btype in ['House', 'Shop']:
+            pygame.draw.rect(surf, (255, 255, 255), (x + 16, y + 16, 8, 8))
 
 def save_game(player, buildings, filepath):
     data = {
         'player': player.__dict__,
         'buildings': [{'btype': b.btype, 'tx': b.tx, 'ty': b.ty} for b in buildings]
     }
-    with open(filepath, 'w') as f:
-        json.dump(data, f)
-    return True
+    try:
+        with open(filepath, 'w') as f:
+            json.dump(data, f)
+        return True
+    except Exception:
+        return False
 
 def load_game(player, buildings, filepath):
     try:
@@ -364,18 +369,19 @@ def load_game(player, buildings, filepath):
         for b in data['buildings']:
             buildings.append(Building(b['btype'], b['tx'], b['ty']))
         return True
-    except Exception as e:
-        print(e)
+    except Exception:
         return False
 
 # ── UI MODULE ────────────────────────────────────────────────────────────────
+# MyGame UI Drawing Functions Module
 
-font_cache_dict = {}
+from collections import defaultdict
 
+font_cache = {}
 def font_cache(sz):
-    if sz not in font_cache_dict:
-        font_cache_dict[sz] = pygame.font.Font(None, sz)
-    return font_cache_dict[sz]
+    if sz not in font_cache:
+        font_cache[sz] = pygame.font.Font(None, sz)
+    return font_cache[sz]
 
 def txt(surf, text, x, y, sz, col, center=False):
     font = font_cache(sz)
@@ -390,17 +396,20 @@ def txt(surf, text, x, y, sz, col, center=False):
 def bar(surf, x, y, w, h, val, mx, col, bg):
     pygame.draw.rect(surf, bg, (x, y, w, h), 0)
     fill_w = int(w * val / mx)
-    pygame.draw.rect(surf, col, (x, y, fill_w, h), 0)
+    if fill_w > 0:
+        pygame.draw.rect(surf, col, (x, y, fill_w, h), 0)
 
 def panel(surf, rx, ry, rw, rh, title):
     pygame.draw.rect(surf, (50, 50, 50), (rx, ry, rw, rh), 0)
+    pygame.draw.rect(surf, (100, 100, 100), (rx, ry, rw, rh), 2)
     txt(surf, title, rx + 10, ry + 5, 24, (255, 255, 255))
-    xbtn_rect = pygame.draw.rect(surf, (200, 50, 50), (rx + rw - 30, ry + 5, 20, 20), 0)
-    txt(surf, 'X', rx + rw - 25, ry + 10, 16, (255, 255, 255))
+    xbtn_rect = pygame.Rect(rx + rw - 30, ry + 5, 20, 20)
+    txt(surf, 'X', rx + rw - 27, ry + 8, 16, (255, 0, 0), True)
     return xbtn_rect
 
 def btn(surf, x, y, w, h, label, col, tcol, sz):
     pygame.draw.rect(surf, col, (x, y, w, h), 0)
+    pygame.draw.rect(surf, (255, 255, 255), (x, y, w, h), 2)
     txt(surf, label, x + w // 2, y + h // 2, sz, tcol, True)
     return pygame.Rect(x, y, w, h)
 
@@ -408,17 +417,16 @@ def draw_hud(surf, player):
     bar(surf, 10, 10, 200, 20, player.hp, player.max_hp, (255, 0, 0), (50, 50, 50))
     bar(surf, 10, 40, 200, 20, player.mp, player.max_mp, (0, 0, 255), (50, 50, 50))
     bar(surf, 10, 70, 200, 20, player.sta, player.max_sta, (0, 255, 0), (50, 50, 50))
-    txt(surf, f'Gold: {player.gold}', 10, 100, 16, (255, 255, 255))
-    txt(surf, f'Lvl: {player.level} XP: {player.xp}/{player.next_level_xp}', 10, 120, 16, (255, 255, 255))
-    txt(surf, 'Equipped:', 10, 140, 16, (255, 255, 255))
-    txt(surf, player.equipped, 10, 160, 16, (255, 255, 255))
-    txt(surf, f'Biome: {player.biome}', 10, 180, 16, (255, 255, 255))
+    txt(surf, f"Gold: {player.gold}", 10, 100, 24, (255, 255, 0))
+    txt(surf, f"LvL: {player.level} XP: {player.xp}/{player.next_level_xp}", 10, 130, 24, (255, 255, 255))
+    txt(surf, f"Equipped: {player.equipped}", 10, 160, 24, (255, 255, 255))
+    txt(surf, f"Biome: {player.biome}", 10, 190, 24, (255, 255, 255))
 
 def draw_minimap(surf, player, enemies, WORLD_MAP, BIOME_COL):
     min_x, min_y = max(0, player.x - 63), max(0, player.y - 63)
     for y in range(min_y, min_y + 126):
         for x in range(min_x, min_x + 126):
-            if 0 <= y < len(WORLD_MAP) and 0 <= x < len(WORLD_MAP[0]):
+            if 0 <= y < len(WORLD_MAP) and 0 <= x < len(WORLD_MAP[y]):
                 pygame.draw.rect(surf, BIOME_COL[WORLD_MAP[y][x]], (x - min_x + surf.get_width() - 126, y - min_y, 1, 1))
     for enemy in enemies:
         ex, ey = enemy.x - min_x + surf.get_width() - 126, enemy.y - min_y
@@ -432,258 +440,1117 @@ def draw_main_menu(surf, project_name):
     surf.fill((0, 0, 0))
     starfield = [(pygame.Color('white'), x, y) for x in range(0, surf.get_width(), 16) for y in range(0, surf.get_height(), 16)]
     for col, x, y in starfield:
-        pygame.draw.circle(surf, col, (x, y), 1)
+        pygame.draw.circle(surf, col, (x, y), 2)
     moon = pygame.Surface((50, 50))
     pygame.draw.circle(moon, (255, 255, 255), (25, 25), 25)
-    surf.blit(moon, (surf.get_width() - 70, 30))
+    surf.blit(moon, (surf.get_width() - 100, 50))
     txt(surf, project_name, surf.get_width() // 2, surf.get_height() // 4, 64, (255, 255, 255), True)
-    btns = []
-    btns.append(btn(surf, surf.get_width() // 3, surf.get_height() // 2 - 50, 200, 50, 'Start', (100, 100, 100), (255, 255, 255), 24))
-    btns.append(btn(surf, surf.get_width() // 3, surf.get_height() // 2, 200, 50, 'Load', (100, 100, 100), (255, 255, 255), 24))
-    btns.append(btn(surf, surf.get_width() // 3, surf.get_height() // 2 + 50, 200, 50, 'Exit', (100, 100, 100), (255, 255, 255), 24))
+    btns = [
+        btn(surf, surf.get_width() // 3, surf.get_height() // 2 - 50, 200, 50, 'Start Game', (100, 100, 100), (255, 255, 255), 32),
+        btn(surf, surf.get_width() // 3, surf.get_height() // 2 + 50, 200, 50, 'Load Game', (100, 100, 100), (255, 255, 255), 32),
+        btn(surf, surf.get_width() // 3, surf.get_height() // 2 + 150, 200, 50, 'Exit', (100, 100, 100), (255, 255, 255), 32)
+    ]
     return btns
 
 def draw_class_select(surf):
-    surf.fill((0, 0, 0))
-    warrior_card = pygame.Rect(50, 100, 200, 300)
-    archer_card = pygame.Rect(300, 100, 200, 300)
-    mage_card = pygame.Rect(550, 100, 200, 300)
-    pygame.draw.rect(surf, (100, 100, 100), warrior_card, 0)
-    pygame.draw.rect(surf, (100, 100, 100), archer_card, 0)
-    pygame.draw.rect(surf, (100, 100, 100), mage_card, 0)
-    txt(surf, 'Warrior', warrior_card.centerx, warrior_card.y + 20, 32, (255, 255, 255), True)
-    txt(surf, 'Archer', archer_card.centerx, archer_card.y + 20, 32, (255, 255, 255), True)
-    txt(surf, 'Mage', mage_card.centerx, mage_card.y + 20, 32, (255, 255, 255), True)
-    return [warrior_card, archer_card, mage_card]
+    class_cards = [
+        {'name': 'Warrior', 'portrait': pygame.Surface((100, 100)), 'x': surf.get_width() // 4 - 50, 'y': surf.get_height() // 2 - 50},
+        {'name': 'Mage', 'portrait': pygame.Surface((100, 100)), 'x': surf.get_width() // 2 - 50, 'y': surf.get_height() // 2 - 50},
+        {'name': 'Rogue', 'portrait': pygame.Surface((100, 100)), 'x': surf.get_width() * 3 // 4 - 50, 'y': surf.get_height() // 2 - 50}
+    ]
+    for card in class_cards:
+        pygame.draw.rect(surf, (100, 100, 100), (card['x'], card['y'], 100, 100), 0)
+        txt(surf, card['name'], card['x'] + 50, card['y'] - 30, 24, (255, 255, 255), True)
+    return [pygame.Rect(card['x'], card['y'], 100, 100) for card in class_cards]
 
 def draw_inventory(surf, player, selected):
-    surf.fill((0, 0, 0))
-    xbtn_rect = panel(surf, 10, 10, 300, 400, 'Inventory')
+    xbtn_rect = panel(surf, 50, 50, 300, 400, 'Inventory')
     slots = []
-    eq_btn = btn(surf, 10, 420, 145, 50, 'Equip', (100, 100, 100), (255, 255, 255), 24)
-    drop_btn = btn(surf, 165, 420, 145, 50, 'Drop', (100, 100, 100), (255, 255, 255), 24)
-    for i in range(10):
-        slots.append(pygame.Rect(20 + (i % 5) * 58, 60 + (i // 5) * 58, 50, 50))
-        pygame.draw.rect(surf, (150, 150, 150), slots[-1], 0)
+    eq_btn = btn(surf, 200, 460, 100, 30, 'Equip', (100, 100, 100), (255, 255, 255), 24)
+    drop_btn = btn(surf, 310, 460, 100, 30, 'Drop', (100, 100, 100), (255, 255, 255), 24)
+    for i, item in enumerate(player.inventory):
+        rect = pygame.Rect(60, 80 + i * 30, 280, 25)
+        txt(surf, f"{item.name} x{item.quantity}", rect.x, rect.y, 20, (255, 255, 255))
+        slots.append(rect)
     return xbtn_rect, slots, eq_btn, drop_btn
 
 def draw_quest_log(surf, player):
-    surf.fill((0, 0, 0))
-    xbtn_rect = panel(surf, 10, 10, 300, 400, 'Quest Log')
+    xbtn_rect = panel(surf, 50, 50, 300, 400, 'Quest Log')
     for i, quest in enumerate(player.quests):
-        txt(surf, quest, 20, 60 + i * 30, 24, (255, 255, 255))
+        txt(surf, f"{quest.name}: {quest.description}", 60, 80 + i * 30, 20, (255, 255, 255))
     return xbtn_rect
 
 def draw_shop(surf, npc, player, selected):
-    surf.fill((0, 0, 0))
-    xbtn_rect = panel(surf, 10, 10, 300, 400, 'Shop')
+    xbtn_rect = panel(surf, 50, 50, 300, 400, 'Shop')
     buy_btns = []
-    items = ['Potion', 'Scroll', 'Armor']
-    for i, item in enumerate(items):
-        txt(surf, item, 20, 60 + i * 50, 24, (255, 255, 255))
-        buy_btns.append(btn(surf, 180, 60 + i * 50, 100, 30, 'Buy', (100, 100, 100), (255, 255, 255), 24))
+    items = []
+    for i, item in enumerate(npc.inventory):
+        rect = pygame.Rect(60, 80 + i * 30, 280, 25)
+        txt(surf, f"{item.name} x{item.quantity} - {item.price} gold", rect.x, rect.y, 20, (255, 255, 255))
+        items.append(rect)
+        buy_btn = btn(surf, 60, 110 + i * 30, 80, 20, 'Buy', (100, 100, 100), (255, 255, 255), 16)
+        buy_btns.append(buy_btn)
     return xbtn_rect, buy_btns, items
 
 def draw_crafting(surf, player, tab, selected, recipes):
-    surf.fill((0, 0, 0))
-    xbtn_rect = panel(surf, 10, 10, 300, 400, 'Crafting')
-    tab_btns = []
+    xbtn_rect = panel(surf, 50, 50, 300, 400, 'Crafting')
+    tab_btns = [
+        btn(surf, 60, 80, 100, 25, 'Weapons', (100, 100, 100), (255, 255, 255), 16),
+        btn(surf, 170, 80, 100, 25, 'Armor', (100, 100, 100), (255, 255, 255), 16),
+        btn(surf, 280, 80, 100, 25, 'Potions', (100, 100, 100), (255, 255, 255), 16)
+    ]
     craft_btns = []
-    tabs = ['Weapons', 'Armor', 'Potions']
-    for i, t in enumerate(tabs):
-        tab_btns.append(btn(surf, 20 + i * 95, 60, 85, 30, t, (100, 100, 100), (255, 255, 255), 24))
     for i, recipe in enumerate(recipes[tab]):
-        txt(surf, recipe.name, 20, 100 + i * 50, 24, (255, 255, 255))
-        craft_btns.append(btn(surf, 180, 100 + i * 50, 100, 30, 'Craft', (100, 100, 100), (255, 255, 255), 24))
+        rect = pygame.Rect(60, 120 + i * 30, 280, 25)
+        txt(surf, f"{recipe.name} - {recipe.cost}", rect.x, rect.y, 20, (255, 255, 255))
+        craft_btn = btn(surf, 60, 150 + i * 30, 80, 20, 'Craft', (100, 100, 100), (255, 255, 255), 16)
+        craft_btns.append(craft_btn)
     return xbtn_rect, tab_btns, craft_btns
 
 def draw_dialogue(surf, npc, dial_idx):
-    surf.fill((0, 0, 0))
-    xbtn_rect = panel(surf, 10, 10, 300, 400, 'Dialogue')
-    txt(surf, npc.dialogues[dial_idx], 20, 60, 24, (255, 255, 255))
+    xbtn_rect = panel(surf, 50, 50, 300, 400, 'Dialogue')
+    txt(surf, f"{npc.name}: {npc.dialogues[dial_idx]}", 60, 80, 20, (255, 255, 255))
     opt_btns = []
     for i, option in enumerate(npc.options):
-        opt_btns.append(btn(surf, 20, 100 + i * 50, 260, 30, option.text, (100, 100, 100), (255, 255, 255), 24))
+        btn_rect = btn(surf, 60, 120 + i * 30, 280, 25, option.text, (100, 100, 100), (255, 255, 255), 16)
+        opt_btns.append(btn_rect)
     return xbtn_rect, opt_btns
 
 def draw_pause(surf):
+    surf.fill((0, 0, 0, 128), special_flags=pygame.BLEND_RGBA_MULT)
+    panel(surf, surf.get_width() // 4, surf.get_height() // 3, surf.get_width() // 2, surf.get_height() // 3, 'Paused')
+    pause_btns = [
+        btn(surf, surf.get_width() // 3, surf.get_height() // 2 - 50, 200, 50, 'Resume', (100, 100, 100), (255, 255, 255), 32),
+        btn(surf, surf.get_width() // 3, surf.get_height() // 2 + 50, 200, 50, 'Save Game', (100, 100, 100), (255, 255, 255), 32),
+        btn(surf, surf.get_width() // 3, surf.get_height() // 2 + 150, 200, 50, 'Exit', (100, 100, 100), (255, 255, 255), 32)
+    ]
+    return panel(surf, surf.get_width() // 4, surf.get_height() // 3, surf.get_width() // 2, surf.get_height() // 3, 'Paused'), pause_btns
+
+def draw_city_map(surf):
+    # Placeholder for city map drawing logic
+    pass
+
+def draw_world_map(surf):
+    # Placeholder for world map drawing logic
+    pass
+
+def draw_character_screen(surf, player):
+    panel(surf, 50, 50, 300, 400, 'Character')
+    txt(surf, f"Name: {player.name}", 60, 80, 20, (255, 255, 255))
+    txt(surf, f"Level: {player.level}", 60, 110, 20, (255, 255, 255))
+    txt(surf, f"Health: {player.health}/{player.max_health}", 60, 140, 20, (255, 255, 255))
+    txt(surf, f"Mana: {player.mana}/{player.max_mana}", 60, 170, 20, (255, 255, 255))
+    txt(surf, f"Experience: {player.experience}/{player.next_level_exp}", 60, 200, 20, (255, 255, 255))
+    txt(surf, f"Gold: {player.gold}", 60, 230, 20, (255, 255, 255))
+
+def draw_game_over_screen(surf):
+    surf.fill((0, 0, 0), special_flags=pygame.BLEND_RGBA_MULT)
+    panel(surf, surf.get_width() // 4, surf.get_height() // 3, surf.get_width() // 2, surf.get_height() // 3, 'Game Over')
+    txt(surf, "You have been defeated.", surf.get_width() // 2 - 100, surf.get_height() // 2 - 50, 24, (255, 255, 255), True)
+    btn_rect = btn(surf, surf.get_width() // 3, surf.get_height() // 2 + 50, 200, 50, 'Restart', (100, 100, 100), (255, 255, 255), 32)
+    return btn_rect
+
+def draw_victory_screen(surf):
+    surf.fill((0, 0, 0), special_flags=pygame.BLEND_RGBA_MULT)
+    panel(surf, surf.get_width() // 4, surf.get_height() // 3, surf.get_width() // 2, surf.get_height() // 3, 'Victory')
+    txt(surf, "Congratulations! You have won!", surf.get_width() // 2 - 150, surf.get_height() // 2 - 50, 24, (255, 255, 255), True)
+    btn_rect = btn(surf, surf.get_width() // 3, surf.get_height() // 2 + 50, 200, 50, 'Restart', (100, 100, 100), (255, 255, 255), 32)
+    return btn_rect
+
+def draw_loading_screen(surf):
     surf.fill((0, 0, 0))
-    xbtn_rect = panel(surf, 10, 10, 300, 400, 'Paused')
-    pause_btns = []
-    pause_btns.append(btn(surf, 20, 60, 260, 50, 'Resume', (100, 100, 100), (255, 255, 255), 24))
-    pause_btns.append(btn(surf, 20, 120, 260, 50, 'Save', (100, 100, 100), (255, 255, 255), 24))
-    pause_btns.append(btn(surf, 20, 180, 260, 50, 'Exit', (100, 100, 100), (255, 255, 255), 24))
-    return xbtn_rect, pause_btns
+    txt(surf, "Loading...", surf.get_width() // 2 - 50, surf.get_height() // 2, 24, (255, 255, 255), True)
 
-def draw_city_panel(surf, place_type, BUILDING_TYPES):
+def draw_settings_screen(surf):
+    panel(surf, 50, 50, 300, 400, 'Settings')
+    txt(surf, "Volume: 100%", 60, 80, 20, (255, 255, 255))
+    txt(surf, "Fullscreen: Off", 60, 110, 20, (255, 255, 255))
+    btn_rect = btn(surf, 60, 140, 80, 20, 'Back', (100, 100, 100), (255, 255, 255), 16)
+    return btn_rect
+
+def draw_help_screen(surf):
+    panel(surf, 50, 50, 300, 400, 'Help')
+    txt(surf, "Controls:", 60, 80, 20, (255, 255, 255))
+    txt(surf, "WASD - Move", 60, 110, 20, (255, 255, 255))
+    txt(surf, "E - Interact", 60, 140, 20, (255, 255, 255))
+    txt(surf, "I - Inventory", 60, 170, 20, (255, 255, 255))
+    txt(surf, "Q - Quest Log", 60, 200, 20, (255, 255, 255))
+    btn_rect = btn(surf, 60, 230, 80, 20, 'Back', (100, 100, 100), (255, 255, 255), 16)
+    return btn_rect
+
+def draw_achievement_screen(surf):
+    panel(surf, 50, 50, 300, 400, 'Achievements')
+    txt(surf, "Unlock achievements as you play!", 60, 80, 20, (255, 255, 255))
+    btn_rect = btn(surf, 60, 110, 80, 20, 'Back', (100, 100, 100), (255, 255, 255), 16)
+    return btn_rect
+
+def draw_tutorial_screen(surf):
+    panel(surf, 50, 50, 300, 400, 'Tutorial')
+    txt(surf, "Welcome to the game!", 60, 80, 20, (255, 255, 255))
+    txt(surf, "Explore the world, complete quests, and become stronger.", 60, 110, 20, (255, 255, 255))
+    btn_rect = btn(surf, 60, 140, 80, 20, 'Start', (100, 100, 100), (255, 255, 255), 16)
+    return btn_rect
+
+def draw_credits_screen(surf):
+    panel(surf, 50, 50, 300, 400, 'Credits')
+    txt(surf, "Developed by:", 60, 80, 20, (255, 255, 255))
+    txt(surf, "Your Name", 60, 110, 20, (255, 255, 255))
+    btn_rect = btn(surf, 60, 140, 80, 20, 'Back', (100, 100, 100), (255, 255, 255), 16)
+    return btn_rect
+
+def draw_debug_screen(surf):
+    panel(surf, 50, 50, 300, 400, 'Debug')
+    txt(surf, "Debug Information:", 60, 80, 20, (255, 255, 255))
+    btn_rect = btn(surf, 60, 110, 80, 20, 'Back', (100, 100, 100), (255, 255, 255), 16)
+    return btn_rect
+
+def draw_main_menu(surf, project_name):
     surf.fill((0, 0, 0))
-    xbtn_rect = panel(surf, 10, 10, 300, 400, f'{place_type} Panel')
-    type_btns = []
-    for i, building in enumerate(BUILDING_TYPES):
-        type_btns.append(btn(surf, 20, 60 + i * 50, 260, 30, building.name, (100, 100, 100), (255, 255, 255), 24))
-    return xbtn_rect, type_btns
+    txt(surf, "My RPG Game", surf.get_width() // 2 - 75, surf.get_height() // 3, 48, (255, 255, 255), True)
+    btn_rects = [
+        btn(surf, surf.get_width() // 3, surf.get_height() // 2 - 100, 200, 50, 'Start', (100, 100, 100), (255, 255, 255), 32),
+        btn(surf, surf.get_width() // 3, surf.get_height() // 2 - 40, 200, 50, 'Load', (100, 100, 100), (255, 255, 255), 32),
+        btn(surf, surf.get_width() // 3, surf.get_height() // 2 + 20, 200, 50, 'Settings', (100, 100, 100), (255, 255, 255), 32),
+        btn(surf, surf.get_width() // 3, surf.get_height() // 2 + 80, 200, 50, 'Help', (100, 100, 100), (255, 255, 255), 32),
+        btn(surf, surf.get_width() // 3, surf.get_height() // 2 + 140, 200, 50, 'Credits', (100, 100, 100), (255, 255, 255), 32),
+        btn(surf, surf.get_width() // 3, surf.get_height() // 2 + 200, 200, 50, 'Exit', (100, 100, 100), (255, 255, 255), 32)
+    ]
+    return btn_rects
 
-def draw_world_map(surf, player, TOWNS, CITIES, WORLD_MAP, BIOME_COL):
-    surf.fill((0, 0, 0))
-    xbtn_rect = panel(surf, 10, 10, 800, 600, 'World Map')
-    for y, row in enumerate(WORLD_MAP):
-        for x, biome in enumerate(row):
-            pygame.draw.rect(surf, BIOME_COL[biome], (x * 20, y * 20, 20, 20), 0)
-    for town in TOWNS:
-        pygame.draw.circle(surf, (255, 0, 0), (town.x * 20 + 10, town.y * 20 + 10), 5)
-    for city in CITIES:
-        pygame.draw.rect(surf, (0, 0, 255), (city.x * 20 - 5, city.y * 20 - 5, 10, 10), 0)
-    return xbtn_rect
+def draw_game_screen(surf, player):
+    # Placeholder for game screen drawing logic
+    pass
 
-def draw_game_over(surf):
-    surf.fill((0, 0, 0))
-    panel(surf, 10, 10, 300, 400, 'Game Over')
-    txt(surf, 'You have died.', 20, 60, 24, (255, 255, 255))
-    btn(surf, 20, 100, 260, 50, 'Restart', (100, 100, 100), (255, 255, 255), 24)
-    btn(surf, 20, 160, 260, 50, 'Exit', (100, 100, 100), (255, 255, 255), 24)
+def draw_battle_screen(surf, player, enemy):
+    panel(surf, 50, 50, 300, 400, 'Battle')
+    txt(surf, f"Player: {player.name}", 60, 80, 20, (255, 255, 255))
+    txt(surf, f"Health: {player.health}/{player.max_health}", 60, 110, 20, (255, 255, 255))
+    txt(surf, f"Mana: {player.mana}/{player.max_mana}", 60, 140, 20, (255, 255, 255))
+    txt(surf, f"Enemy: {enemy.name}", 60, 180, 20, (255, 255, 255))
+    txt(surf, f"Health: {enemy.health}/{enemy.max_health}", 60, 210, 20, (255, 255, 255))
+    btn_rects = [
+        btn(surf, 60, 250, 80, 20, 'Attack', (100, 100, 100), (255, 255, 255), 16),
+        btn(surf, 60, 280, 80, 20, 'Defend', (100, 100, 100), (255, 255, 255), 16),
+        btn(surf, 60, 310, 80, 20, 'Magic', (100, 100, 100), (255, 255, 255), 16),
+        btn(surf, 60, 340, 80, 20, 'Run', (100, 100, 100), (255, 255, 255), 16)
+    ]
+    return btn_rects
 
-def draw_player_stats(surf, player):
-    txt(surf, f'HP: {player.hp}/{player.max_hp}', 10, 10, 24, (255, 0, 0))
-    txt(surf, f'MP: {player.mp}/{player.max_mp}', 10, 40, 24, (0, 0, 255))
-    txt(surf, f'XP: {player.xp}/{player.next_level_xp}', 10, 70, 24, (255, 255, 0))
-    txt(surf, f'Lvl: {player.level}', 10, 100, 24, (255, 255, 255))
-
-def draw_player_inventory(surf, player):
+def draw_inventory_screen(surf, player):
+    panel(surf, 50, 50, 300, 400, 'Inventory')
+    txt(surf, "Items:", 60, 80, 20, (255, 255, 255))
     for i, item in enumerate(player.inventory):
-        txt(surf, item.name, 10 + (i % 5) * 100, 600 + (i // 5) * 30, 24, (255, 255, 255))
+        txt(surf, f"{item.name} - {item.description}", 60, 110 + i * 30, 20, (255, 255, 255))
+    btn_rect = btn(surf, 60, 400, 80, 20, 'Back', (100, 100, 100), (255, 255, 255), 16)
+    return btn_rect
 
-def draw_player_equipment(surf, player):
-    txt(surf, f'Weapon: {player.equipment["weapon"]}', 10, 650, 24, (255, 255, 255))
-    txt(surf, f'Armor: {player.equipment["armor"]}', 10, 680, 24, (255, 255, 255))
+def draw_spellbook_screen(surf, player):
+    panel(surf, 50, 50, 300, 400, 'Spellbook')
+    txt(surf, "Spells:", 60, 80, 20, (255, 255, 255))
+    for i, spell in enumerate(player.spellbook):
+        txt(surf, f"{spell.name} - {spell.description}", 60, 110 + i * 30, 20, (255, 255, 255))
+    btn_rect = btn(surf, 60, 400, 80, 20, 'Back', (100, 100, 100), (255, 255, 255), 16)
+    return btn_rect
 
+def draw_shop_screen(surf, player, shop):
+    panel(surf, 50, 50, 300, 400, 'Shop')
+    txt(surf, "Items for Sale:", 60, 80, 20, (255, 255, 255))
+    btn_rects = []
+    for i, item in enumerate(shop.items):
+        txt(surf, f"{item.name} - {item.price} gold", 60, 110 + i * 30, 20, (255, 255, 255))
+        btn_rect = btn(surf, 200, 110 + i * 30, 80, 20, f'Buy', (100, 100, 100), (255, 255, 255), 16)
+        btn_rects.append(btn_rect)
+    back_btn_rect = btn(surf, 60, 400, 80, 20, 'Back', (100, 100, 100), (255, 255, 255), 16)
+    return btn_rects, back_btn_rect
 
-if __name__ == '__main__':
-    main()
+def draw_npc_dialogue_screen(surf, npc):
+    panel(surf, 50, 50, 300, 400, f'Dialogue - {npc.name}')
+    txt(surf, npc.dialogue, 60, 80, 20, (255, 255, 255))
+    btn_rect = btn(surf, 60, 370, 80, 20, 'Continue', (100, 100, 100), (255, 255, 255), 16)
+    return btn_rect
+
+def draw_achievement_unlocked_screen(surf, achievement):
+    surf.fill((0, 0, 0), special_flags=pygame.BLEND_RGBA_MULT)
+    panel(surf, surf.get_width() // 4, surf.get_height() // 3, surf.get_width() // 2, surf.get_height() // 3, 'Achievement Unlocked')
+    txt(surf, f"Congratulations!", surf.get_width() // 2 - 75, surf.get_height() // 3 + 20, 24, (255, 255, 255), True)
+    txt(surf, f"{achievement.name}", surf.get_width() // 2 - len(achievement.name) * 6, surf.get_height() // 3 + 70, 20, (255, 255, 255))
+    txt(surf, f"{achievement.description}", surf.get_width() // 2 - len(achievement.description) * 6, surf.get_height() // 3 + 100, 16, (255, 255, 255))
+    btn_rect = btn(surf, surf.get_width() // 3, surf.get_height() // 2 + 80, 200, 50, 'Continue', (100, 100, 100), (255, 255, 255), 32)
+    return btn_rect
+
+def draw_loading_screen(surf):
+    surf.fill((0, 0, 0))
+    txt(surf, 'Loading...', surf.get_width() // 2 - 40, surf.get_height() // 2 - 10, 24, (255, 255, 255), True)
+
+def draw_error_screen(surf, error_message):
+    surf.fill((0, 0, 0))
+    txt(surf, 'Error:', surf.get_width() // 2 - 30, surf.get_height() // 2 - 40, 24, (255, 0, 0), True)
+    txt(surf, error_message, surf.get_width() // 2 - len(error_message) * 6, surf.get_height() // 2 - 10, 20, (255, 0, 0))
+    btn_rect = btn(surf, surf.get_width() // 3, surf.get_height() // 2 + 40, 200, 50, 'Back', (100, 100, 100), (255, 255, 255), 32)
+    return btn_rect
+
+def draw_save_screen(surf):
+    surf.fill((0, 0, 0))
+    txt(surf, 'Save Game', surf.get_width() // 2 - 40, surf.get_height() // 2 - 10, 24, (255, 255, 255), True)
+    btn_rect = btn(surf, surf.get_width() // 3, surf.get_height() // 2 + 40, 200, 50, 'Save', (100, 100, 100), (255, 255, 255), 32)
+    return btn_rect
+
+def draw_load_screen(surf):
+    surf.fill((0, 0, 0))
+    txt(surf, 'Load Game', surf.get_width() // 2 - 40, surf.get_height() // 2 - 10, 24, (255, 255, 255), True)
+    btn_rect = btn(surf, surf.get_width() // 3, surf.get_height() // 2 + 40, 200, 50, 'Load', (100, 100, 100), (255, 255, 255), 32)
+    return btn_rect
+
+def draw_pause_screen(surf):
+    surf.fill((0, 0, 0), special_flags=pygame.BLEND_RGBA_MULT)
+    txt(surf, 'Paused', surf.get_width() // 2 - 40, surf.get_height() // 2 - 10, 24, (255, 255, 255), True)
+    btn_rects = [
+        btn(surf, surf.get_width() // 3, surf.get_height() // 2 + 40, 200, 50, 'Resume', (100, 100, 100), (255, 255, 255), 32),
+        btn(surf, surf.get_width() // 3, surf.get_height() // 2 + 100, 200, 50, 'Save', (100, 100, 100), (255, 255, 255), 32),
+        btn(surf, surf.get_width() // 3, surf.get_height() // 2 + 160, 200, 50, 'Load', (100, 100, 100), (255, 255, 255), 32),
+        btn(surf, surf.get_width() // 3, surf.get_height() // 2 + 220, 200, 50, 'Exit', (100, 100, 100), (255, 255, 255), 32)
+    ]
+    return btn_rects
+
+def draw_game_over_screen(surf):
+    surf.fill((0, 0, 0))
+    txt(surf, 'Game Over', surf.get_width() // 2 - 40, surf.get_height() // 2 - 10, 24, (255, 0, 0), True)
+    btn_rect = btn(surf, surf.get_width() // 3, surf.get_height() // 2 + 40, 200, 50, 'Restart', (100, 100, 100), (255, 255, 255), 32)
+    return btn_rect
+
+def draw_win_screen(surf):
+    surf.fill((0, 0, 0))
+    txt(surf, 'You Win!', surf.get_width() // 2 - 40, surf.get_height() // 2 - 10, 24, (0, 255, 0), True)
+    btn_rect = btn(surf, surf.get_width() // 3, surf.get_height() // 2 + 40, 200, 50, 'Restart', (100, 100, 100), (255, 255, 255), 32)
+    return btn_rect
+
+def draw_settings_screen(surf):
+    surf.fill((0, 0, 0))
+    txt(surf, 'Settings', surf.get_width() // 2 - 40, surf.get_height() // 2 - 10, 24, (255, 255, 255), True)
+    btn_rects = [
+        btn(surf, surf.get_width() // 3, surf.get_height() // 2 + 40, 200, 50, 'Graphics', (100, 100, 100), (255, 255, 255), 32),
+        btn(surf, surf.get_width() // 3, surf.get_height() // 2 + 100, 200, 50, 'Audio', (100, 100, 100), (255, 255, 255), 32),
+        btn(surf, surf.get_width() // 3, surf.get_height() // 2 + 160, 200, 50, 'Controls', (100, 100, 100), (255, 255, 255), 32),
+        btn(surf, surf.get_width() // 3, surf.get_height() // 2 + 220, 200, 50, 'Back', (100, 100, 100), (255, 255, 255), 32)
+    ]
+    return btn_rects
+
+def draw_help_screen(surf):
+    surf.fill((0, 0, 0))
+    txt(surf, 'Help', surf.get_width() // 2 - 40, surf.get_height() // 2 - 10, 24, (255, 255, 255), True)
+    txt(surf, 'Controls:', surf.get_width() // 3, surf.get_height() // 2 + 40, 20, (255, 255, 255))
+    txt(surf, 'WASD - Move', surf.get_width() // 3, surf.get_height() // 2 + 70, 16, (255, 255, 255))
+    txt(surf, 'Space - Attack', surf.get_width() // 3, surf.get_height() // 2 + 90, 16, (255, 255, 255))
+    txt(surf, 'E - Interact', surf.get_width() // 3, surf.get_height() // 2 + 110, 16, (255, 255, 255))
+    btn_rect = btn(surf, surf.get_width() // 3, surf.get_height() // 2 + 180, 200, 50, 'Back', (100, 100, 100), (255, 255, 255), 32)
+    return btn_rect
+
+def draw_credits_screen(surf):
+    surf.fill((0, 0, 0))
+    txt(surf, 'Credits', surf.get_width() // 2 - 40, surf.get_height() // 2 - 10, 24, (255, 255, 255), True)
+    txt(surf, 'Developed by:', surf.get_width() // 3, surf.get_height() // 2 + 40, 20, (255, 255, 255))
+    txt(surf, 'Your Name', surf.get_width() // 3, surf.get_height() // 2 + 70, 16, (255, 255, 255))
+    btn_rect = btn(surf, surf.get_width() // 3, surf.get_height() // 2 + 180, 200, 50, 'Back', (100, 100, 100), (255, 255, 255), 32)
+    return btn_rect
+
+def draw_inventory_screen(surf, inventory):
+    surf.fill((0, 0, 0))
+    txt(surf, 'Inventory', surf.get_width() // 2 - 40, 10, 24, (255, 255, 255), True)
+    y_offset = 60
+    for item in inventory:
+        txt(surf, f'{item.name}: {item.quantity}', surf.get_width() // 3, y_offset, 16, (255, 255, 255))
+        y_offset += 30
+    btn_rect = btn(surf, surf.get_width() // 3, surf.get_height() - 80, 200, 50, 'Back', (100, 100, 100), (255, 255, 255), 32)
+    return btn_rect
+
+def draw_spellbook_screen(surf, spells):
+    surf.fill((0, 0, 0))
+    txt(surf, 'Spellbook', surf.get_width() // 2 - 40, 10, 24, (255, 255, 255), True)
+    y_offset = 60
+    for spell in spells:
+        txt(surf, f'{spell.name}: {spell.description}', surf.get_width() // 3, y_offset, 16, (255, 255, 255))
+        y_offset += 30
+    btn_rect = btn(surf, surf.get_width() // 3, surf.get_height() - 80, 200, 50, 'Back', (100, 100, 100), (255, 255, 255), 32)
+    return btn_rect
+
+def draw_character_screen(surf, character):
+    surf.fill((0, 0, 0))
+    txt(surf, 'Character', surf.get_width() // 2 - 40, 10, 24, (255, 255, 255), True)
+    txt(surf, f'Name: {character.name}', surf.get_width() // 3, 60, 16, (255, 255, 255))
+    txt(surf, f'Level: {character.level}', surf.get_width() // 3, 90, 16, (255, 255, 255))
+    txt(surf, f'Health: {character.health}/{character.max_health}', surf.get_width() // 3, 120, 16, (255, 255, 255))
+    txt(surf, f'Mana: {character.mana}/{character.max_mana}', surf.get_width() // 3, 150, 16, (255, 255, 255))
+    btn_rect = btn(surf, surf.get_width() // 3, surf.get_height() - 80, 200, 50, 'Back', (100, 100, 100), (255, 255, 255), 32)
+    return btn_rect
+
+def draw_map_screen(surf, map_data):
+    surf.fill((0, 0, 0))
+    txt(surf, 'Map', surf.get_width() // 2 - 40, 10, 24, (255, 255, 255), True)
+    y_offset = 60
+    for row in map_data:
+        txt(surf, ''.join(row), surf.get_width() // 3, y_offset, 16, (255, 255, 255))
+        y_offset += 30
+    btn_rect = btn(surf, surf.get_width() // 3, surf.get_height() - 80, 200, 50, 'Back', (100, 100, 100), (255, 255, 255), 32)
+    return btn_rect
+
+def draw_dialogue_screen(surf, dialogue):
+    surf.fill((0, 0, 0))
+    txt(surf, 'Dialogue', surf.get_width() // 2 - 40, 10, 24, (255, 255, 255), True)
+    y_offset = 60
+    for line in dialogue:
+        txt(surf, line, surf.get_width() // 3, y_offset, 16, (255, 255, 255))
+        y_offset += 30
+    btn_rect = btn(surf, surf.get_width() // 3, surf.get_height() - 80, 200, 50, 'Continue', (100, 100, 100), (255, 255, 255), 32)
+    return btn_rect
+
+def draw_shop_screen(surf, items):
+    surf.fill((0, 0, 0))
+    txt(surf, 'Shop', surf.get_width() // 2 - 40, 10, 24, (255, 255, 255), True)
+    y_offset = 60
+    for item in items:
+        txt(surf, f'{item.name}: {item.price} gold', surf.get_width() // 3, y_offset, 16, (255, 255, 255))
+        y_offset += 30
+    btn_rect = btn(surf, surf.get_width() // 3, surf.get_height() - 80, 200, 50, 'Back', (100, 100, 100), (255, 255, 255), 32)
+    return btn_rect
+
+def draw_achievement_screen(surf, achievements):
+    surf.fill((0, 0, 0))
+    txt(surf, 'Achievements', surf.get_width() // 2 - 40, 10, 24, (255, 255, 255), True)
+    y_offset = 60
+    for achievement in achievements:
+        txt(surf, f'{achievement.name}: {achievement.description}', surf.get_width() // 3, y_offset, 16, (255, 255, 255))
+        y_offset += 30
+    btn_rect = btn(surf, surf.get_width() // 3, surf.get_height() - 80, 200, 50, 'Back', (100, 100, 100), (255, 255, 255), 32)
+    return btn_rect
+
+def draw_minimap_screen(surf, minimap_data):
+    surf.fill((0, 0, 0))
+    txt(surf, 'Minimap', surf.get_width() // 2 - 40, 10, 24, (255, 255, 255), True)
+    y_offset = 60
+    for row in minimap_data:
+        txt(surf, ''.join(row), surf.get_width() // 3, y_offset, 16, (255, 255, 255))
+        y_offset += 30
+    btn_rect = btn(surf, surf.get_width() // 3, surf.get_height() - 80, 200, 50, 'Back', (100, 100, 100), (255, 255, 255), 32)
+    return btn_rect
+
+def draw_log_screen(surf, log_entries):
+    surf.fill((0, 0, 0))
+    txt(surf, 'Log', surf.get_width() // 2 - 40, 10, 24, (255, 255, 255), True)
+    y_offset = 60
+    for entry in log_entries:
+        txt(surf, entry, surf.get_width() // 3, y_offset, 16, (255, 255, 255))
+        y_offset += 30
+    btn_rect = btn(surf, surf.get_width() // 3, surf.get_height() - 80, 200, 50, 'Back', (100, 100, 100), (255, 255, 255), 32)
+    return btn_rect
+
+def draw_settings_screen(surf):
+    surf.fill((0, 0, 0))
+    txt(surf, 'Settings', surf.get_width() // 2 - 40, 10, 24, (255, 255, 255), True)
+    btn_rect = btn(surf, surf.get_width() // 3, surf.get_height() - 80, 200, 50, 'Back', (100, 100, 100), (255, 255, 255), 32)
+    return btn_rect
+
+def draw_main_menu_screen(surf):
+    surf.fill((0, 0, 0))
+    txt(surf, 'Main Menu', surf.get_width() // 2 - 40, 10, 24, (255, 255, 255), True)
+    btn_rect = btn(surf, surf.get_width() // 3, surf.get_height() - 80, 200, 50, 'Start Game', (100, 100, 100), (255, 255, 255), 32)
+    return btn_rect
+
+def draw_pause_menu_screen(surf):
+    surf.fill((0, 0, 0))
+    txt(surf, 'Pause Menu', surf.get_width() // 2 - 40, 10, 24, (255, 255, 255), True)
+    btn_rect = btn(surf, surf.get_width() // 3, surf.get_height() - 80, 200, 50, 'Resume', (100, 100, 100), (255, 255, 255), 32)
+    return btn_rect
+
+def draw_game_over_screen(surf):
+    surf.fill((0, 0, 0))
+    txt(surf, 'Game Over', surf.get_width() // 2 - 40, 10, 24, (255, 255, 255), True)
+    btn_rect = btn(surf, surf.get_width() // 3, surf.get_height() - 80, 200, 50, 'Restart', (100, 100, 100), (255, 255, 255), 32)
+    return btn_rect
+
+def draw_victory_screen(surf):
+    surf.fill((0, 0, 0))
+    txt(surf, 'Victory!', surf.get_width() // 2 - 40, 10, 24, (255, 255, 255), True)
+    btn_rect = btn(surf, surf.get_width() // 3, surf.get_height() - 80, 200, 50, 'Main Menu', (100, 100, 100), (255, 255, 255), 32)
+    return btn_rect
+
+def draw_loading_screen(surf):
+    surf.fill((0, 0, 0))
+    txt(surf, 'Loading...', surf.get_width() // 2 - 40, surf.get_height() // 2, 24, (255, 255, 255), True)
+
+def draw_transition_screen(surf):
+    surf.fill((0, 0, 0))
+    txt(surf, 'Transitioning...', surf.get_width() // 2 - 40, surf.get_height() // 2, 24, (255, 255, 255), True)
+
+def draw_debug_screen(surf, debug_info):
+    surf.fill((0, 0, 0))
+    txt(surf, 'Debug Info', surf.get_width() // 2 - 40, 10, 24, (255, 255, 255), True)
+    y_offset = 60
+    for info in debug_info:
+        txt(surf, info, surf.get_width() // 3, y_offset, 16, (255, 255, 255))
+        y_offset += 30
+
+def draw_help_screen(surf):
+    surf.fill((0, 0, 0))
+    txt(surf, 'Help', surf.get_width() // 2 - 40, 10, 24, (255, 255, 255), True)
+    btn_rect = btn(surf, surf.get_width() // 3, surf.get_height() - 80, 200, 50, 'Back', (100, 100, 100), (255, 255, 255), 32)
+    return btn_rect
+
+def draw_tutorial_screen(surf):
+    surf.fill((0, 0, 0))
+    txt(surf, 'Tutorial', surf.get_width() // 2 - 40, 10, 24, (255, 255, 255), True)
+    btn_rect = btn(surf, surf.get_width() // 3, surf.get_height() - 80, 200, 50, 'Back', (100, 100, 100), (255, 255, 255), 32)
+    return btn_rect
+
+def draw_credits_screen(surf):
+    surf.fill((0, 0, 0))
+    txt(surf, 'Credits', surf.get_width() // 2 - 40, 10, 24, (255, 255, 255), True)
+    btn_rect = btn(surf, surf.get_width() // 3, surf.get_height() - 80, 200, 50, 'Back', (100, 100, 100), (255, 255, 255), 32)
+    return btn_rect
+
+def draw_highscores_screen(surf, highscores):
+    surf.fill((0, 0, 0))
+    txt(surf, 'Highscores', surf.get_width() // 2 - 40, 10, 24, (255, 255, 255), True)
+    y_offset = 60
+    for score in highscores:
+        txt(surf, f'{score.name}: {score.score}', surf.get_width() // 3, y_offset, 16, (255, 255, 255))
+        y_offset += 30
+    btn_rect = btn(surf, surf.get_width() // 3, surf.get_height() - 80, 200, 50, 'Back', (100, 100, 100), (255, 255, 255), 32)
+    return btn_rect
+
+def draw_options_screen(surf):
+    surf.fill((0, 0, 0))
+    txt(surf, 'Options', surf.get_width() // 2 - 40, 10, 24, (255, 255, 255), True)
+    btn_rect = btn(surf, surf.get_width() // 3, surf.get_height() - 80, 200, 50, 'Back', (100, 100, 100), (255, 255, 255), 32)
+    return btn_rect
+
+def draw_customization_screen(surf):
+    surf.fill((0, 0, 0))
+    txt(surf, 'Customization', surf.get_width() // 2 - 40, 10, 24, (255, 255, 255), True)
+    btn_rect = btn(surf, surf.get_width() // 3, surf.get_height() - 80, 200, 50, 'Back', (100, 100, 100), (255, 255, 255), 32)
+    return btn_rect
+
+def draw_multiplayer_screen(surf):
+    surf.fill((0, 0, 0))
+    txt(surf, 'Multiplayer', surf.get_width() // 2 - 40, 10, 24, (255, 255, 255), True)
+    btn_rect = btn(surf, surf.get_width() // 3, surf.get_height() - 80, 200, 50, 'Back', (100, 100, 100), (255, 255, 255), 32)
+    return btn_rect
+
+def draw_singleplayer_screen(surf):
+    surf.fill((0, 0, 0))
+    txt(surf, 'Singleplayer', surf.get_width() // 2 - 40, 10, 24, (255, 255, 255), True)
+    btn_rect = btn(surf, surf.get_width() // 3, surf.get_height() - 80, 200, 50, 'Back', (100, 100, 100), (255, 255, 255), 32)
+    return btn_rect
+
+def draw_campaign_screen(surf):
+    surf.fill((0, 0, 0))
+    txt(surf, 'Campaign', surf.get_width() // 2 - 40, 10, 24, (255, 255, 255), True)
+    btn_rect = btn(surf, surf.get_width() // 3, surf.get_height() - 80, 200, 50, 'Back', (100, 100, 100), (255, 255, 255), 32)
+    return btn_rect
+
+def draw_survival_screen(surf):
+    surf.fill((0, 0, 0))
+    txt(surf, 'Survival', surf.get_width() // 2 - 40, 10, 24, (255, 255, 255), True)
+    btn_rect = btn(surf, surf.get_width() // 3, surf.get_height() - 80, 200, 50, 'Back', (100, 100, 100), (255, 255, 255), 32)
+    return btn_rect
+
+def draw_challenge_screen(surf):
+    surf.fill((0, 0, 0))
+    txt(surf, 'Challenge', surf.get_width() // 2 - 40, 10, 24, (255, 255, 255), True)
+    btn_rect = btn(surf, surf.get_width() // 3, surf.get_height() - 80, 200, 50, 'Back', (100, 100, 100), (255, 255, 255), 32)
+    return btn_rect
+
+def draw_leaderboard_screen(surf):
+    surf.fill((0, 0, 0))
+    txt(surf, 'Leaderboard', surf.get_width() // 2 - 40, 10, 24, (255, 255, 255), True)
+    btn_rect = btn(surf, surf.get_width() // 3, surf.get_height() - 80, 200, 50, 'Back', (100, 100, 100), (255, 255, 255), 32)
+    return btn_rect
+
+def draw_achievements_screen(surf):
+    surf.fill((0, 0, 0))
+    txt(surf, 'Achievements', surf.get_width() // 2 - 40, 10, 24, (255, 255, 255), True)
+    btn_rect = btn(surf, surf.get_width() // 3, surf.get_height() - 80, 200, 50, 'Back', (100, 100, 100), (255, 255, 255), 32)
+    return btn_rect
+
+def draw_inventory_screen(surf):
+    surf.fill((0, 0, 0))
+    txt(surf, 'Inventory', surf.get_width() // 2 - 40, 10, 24, (255, 255, 255), True)
+    btn_rect = btn(surf, surf.get_width() // 3, surf.get_height() - 80, 200, 50, 'Back', (100, 100, 100), (255, 255, 255), 32)
+    return btn_rect
+
+def draw_equipment_screen(surf):
+    surf.fill((0, 0, 0))
+    txt(surf, 'Equipment', surf.get_width() // 2 - 40, 10, 24, (255, 255, 255), True)
+    btn_rect = btn(surf, surf.get_width() // 3, surf.get_height() - 80, 200, 50, 'Back', (100, 100, 100), (255, 255, 255), 32)
+    return btn_rect
+
+def draw_spellbook_screen(surf):
+    surf.fill((0, 0, 0))
+    txt(surf, 'Spellbook', surf.get_width() // 2 - 40, 10, 24, (255, 255, 255), True)
+    btn_rect = btn(surf, surf.get_width() // 3, surf.get_height() - 80, 200, 50, 'Back', (100, 100, 100), (255, 255, 255), 32)
+    return btn_rect
+
+def draw_map_screen(surf):
+    surf.fill((0, 0, 0))
+    txt(surf, 'Map', surf.get_width() // 2 - 40, 10, 24, (255, 255, 255), True)
+    btn_rect = btn(surf, surf.get_width() // 3, surf.get_height() - 80, 200, 50, 'Back', (100, 100, 100), (255, 255, 255), 32)
+    return btn_rect
+
+def draw_journal_screen(surf):
+    surf.fill((0, 0, 0))
+    txt(surf, 'Journal', surf.get_width() // 2 - 40, 10, 24, (255, 255, 255), True)
+    btn_rect = btn(surf, surf.get_width() // 3, surf.get_height() - 80, 200, 50, 'Back', (100, 100, 100), (255, 255, 255), 32)
+    return btn_rect
+
+def draw_dialogue_screen(surf):
+    surf.fill((0, 0, 0))
+    txt(surf, 'Dialogue', surf.get_width() // 2 - 40, 10, 24, (255, 255, 255), True)
+    btn_rect = btn(surf, surf.get_width() // 3, surf.get_height() - 80, 200, 50, 'Continue', (100, 100, 100), (255, 255, 255), 32)
+    return btn_rect
+
+def draw_cutscene_screen(surf):
+    surf.fill((0, 0, 0))
+    txt(surf, 'Cutscene', surf.get_width() // 2 - 40, 10, 24, (255, 255, 255), True)
+    btn_rect = btn(surf, surf.get_width() // 3, surf.get_height() - 80, 200, 50, 'Skip', (100, 100, 100), (255, 255, 255), 32)
+    return btn_rect
+
+def draw_minimap_screen(surf):
+    surf.fill((0, 0, 0))
+    txt(surf, 'Minimap', surf.get_width() // 2 - 40, 10, 24, (255, 255, 255), True)
+    btn_rect = btn(surf, surf.get_width() // 3, surf.get_height() - 80, 200, 50, 'Close', (100, 100, 100), (255, 255, 255), 32)
+    return btn_rect
+
+def draw_status_screen(surf):
+    surf.fill((0, 0, 0))
+    txt(surf, 'Status', surf.get_width() // 2 - 40, 10, 24, (255, 255, 255), True)
+    btn_rect = btn(surf, surf.get_width() // 3, surf.get_height() - 80, 200, 50, 'Back', (100, 100, 100), (255, 255, 255), 32)
+    return btn_rect
+
+def draw_settings_screen(surf):
+    surf.fill((0, 0, 0))
+    txt(surf, 'Settings', surf.get_width() // 2 - 40, 10, 24, (255, 255, 255), True)
+    btn_rect = btn(surf, surf.get_width() // 3, surf.get_height() - 80, 200, 50, 'Back', (100, 100, 100), (255, 255, 255), 32)
+    return btn_rect
+
+def draw_controls_screen(surf):
+    surf.fill((0, 0, 0))
+    txt(surf, 'Controls', surf.get_width() // 2 - 40, 10, 24, (255, 255, 255), True)
+    btn_rect = btn(surf, surf.get_width() // 3, surf.get_height() - 80, 200, 50, 'Back', (100, 100, 100), (255, 255, 255), 32)
+    return btn_rect
+
+def draw_audio_screen(surf):
+    surf.fill((0, 0, 0))
+    txt(surf, 'Audio', surf.get_width() // 2 - 40, 10, 24, (255, 255, 255), True)
+    btn_rect = btn(surf, surf.get_width() // 3, surf.get_height() - 80, 200, 50, 'Back', (100, 100, 100), (255, 255, 255), 32)
+    return btn_rect
+
+def draw_video_screen(surf):
+    surf.fill((0, 0, 0))
+    txt(surf, 'Video', surf.get_width() // 2 - 40, 10, 24, (255, 255, 255), True)
+    btn_rect = btn(surf, surf.get_width() // 3, surf.get_height() - 80, 200, 50, 'Back', (100, 100, 100), (255, 255, 255), 32)
+    return btn_rect
+
+def draw_network_screen(surf):
+    surf.fill((0, 0, 0))
+    txt(surf, 'Network', surf.get_width() // 2 - 40, 10, 24, (255, 255, 255), True)
+    btn_rect = btn(surf, surf.get_width() // 3, surf.get_height() - 80, 200, 50, 'Back', (100, 100, 100), (255, 255, 255), 32)
+    return btn_rect
+
+def draw_about_screen(surf):
+    surf.fill((0, 0, 0))
+    txt(surf, 'About', surf.get_width() // 2 - 40, 10, 24, (255, 255, 255), True)
+    btn_rect = btn(surf, surf.get_width() // 3, surf.get_height() - 80, 200, 50, 'Back', (100, 100, 100), (255, 255, 255), 32)
+    return btn_rect
+
+def draw_exit_screen(surf):
+    surf.fill((0, 0, 0))
+    txt(surf, 'Exit', surf.get_width() // 2 - 40, 10, 24, (255, 255, 255), True)
+    btn_rect = btn(surf, surf.get_width() // 3, surf.get_height() - 80, 200, 50, 'Confirm', (100, 100, 100), (255, 255, 255), 32)
+    return btn_rect
+
+def draw_pause_screen(surf):
+    surf.fill((0, 0, 0))
+    txt(surf, 'Pause', surf.get_width() // 2 - 40, 10, 24, (255, 255, 255), True)
+    btn_rect = btn(surf, surf.get_width() // 3, surf.get_height() - 80, 200, 50, 'Resume', (100, 100, 100), (255, 255, 255), 32)
+    return btn_rect
+
+def draw_game_over_screen(surf):
+    surf.fill((0, 0, 0))
+    txt(surf, 'Game Over', surf.get_width() // 2 - 40, 10, 24, (255, 255, 255), True)
+    btn_rect = btn(surf, surf.get_width() // 3, surf.get_height() - 80, 200, 50, 'Restart', (100, 100, 100), (255, 255, 255), 32)
+    return btn_rect
+
+def draw_win_screen(surf):
+    surf.fill((0, 0, 0))
+    txt(surf, 'You Win!', surf.get_width() // 2 - 40, 10, 24, (255, 255, 255), True)
+    btn_rect = btn(surf, surf.get_width() // 3, surf.get_height() - 80, 200, 50, 'Next Level', (100, 100, 100), (255, 255, 255), 32)
+    return btn_rect
+
+def draw_loading_screen(surf):
+    surf.fill((0, 0, 0))
+    txt(surf, 'Loading...', surf.get_width() // 2 - 40, 10, 24, (255, 255, 255), True)
+    return
+
+def draw_error_screen(surf):
+    surf.fill((0, 0, 0))
+    txt(surf, 'Error', surf.get_width() // 2 - 40, 10, 24, (255, 255, 255), True)
+    btn_rect = btn(surf, surf.get_width() // 3, surf.get_height() - 80, 200, 50, 'Retry', (100, 100, 100), (255, 255, 255), 32)
+    return btn_rect
+
+def draw_debug_screen(surf):
+    surf.fill((0, 0, 0))
+    txt(surf, 'Debug', surf.get_width() // 2 - 40, 10, 24, (255, 255, 255), True)
+    btn_rect = btn(surf, surf.get_width() // 3, surf.get_height() - 80, 200, 50, 'Back', (100, 100, 100), (255, 255, 255), 32)
+    return btn_rect
+
+def draw_help_screen(surf):
+    surf.fill((0, 0, 0))
+    txt(surf, 'Help', surf.get_width() // 2 - 40, 10, 24, (255, 255, 255), True)
+    btn_rect = btn(surf, surf.get_width() // 3, surf.get_height() - 80, 200, 50, 'Back', (100, 100, 100), (255, 255, 255), 32)
+    return btn_rect
+
+def draw_tutorial_screen(surf):
+    surf.fill((0, 0, 0))
+    txt(surf, 'Tutorial', surf.get_width() // 2 - 40, 10, 24, (255, 255, 255), True)
+    btn_rect = btn(surf, surf.get_width() // 3, surf.get_height() - 80, 200, 50, 'Start', (100, 100, 100), (255, 255, 255), 32)
+    return btn_rect
+
+def draw_credits_screen(surf):
+    surf.fill((0, 0, 0))
+    txt(surf, 'Credits', surf.get_width() // 2 - 40, 10, 24, (255, 255, 255), True)
+    btn_rect = btn(surf, surf.get_width() // 3, surf.get_height() - 80, 200, 50, 'Back', (100, 100, 100), (255, 255, 255), 32)
+    return btn_rect
+
+def draw_highscores_screen(surf):
+    surf.fill((0, 0, 0))
+    txt(surf, 'High Scores', surf.get_width() // 2 - 40, 10, 24, (255, 255, 255), True)
+    btn_rect = btn(surf, surf.get_width() // 3, surf.get_height() - 80, 200, 50, 'Back', (100, 100, 100), (255, 255, 255), 32)
+    return btn_rect
+
+def draw_shop_screen(surf):
+    surf.fill((0, 0, 0))
+    txt(surf, 'Shop', surf.get_width() // 2 - 40, 10, 24, (255, 255, 255), True)
+    btn_rect = btn(surf, surf.get_width() // 3, surf.get_height() - 80, 200, 50, 'Back', (100, 100, 100), (255, 255, 255), 32)
+    return btn_rect
+
+def draw_inventory_screen(surf):
+    surf.fill((0, 0, 0))
+    txt(surf, 'Inventory', surf.get_width() // 2 - 40, 10, 24, (255, 255, 255), True)
+    btn_rect = btn(surf, surf.get_width() // 3, surf.get_height() - 80, 200, 50, 'Back', (100, 100, 100), (255, 255, 255), 32)
+    return btn_rect
+
+def draw_character_screen(surf):
+    surf.fill((0, 0, 0))
+    txt(surf, 'Character', surf.get_width() // 2 - 40, 10, 24, (255, 255, 255), True)
+    btn_rect = btn(surf, surf.get_width() // 3, surf.get_height() - 80, 200, 50, 'Back', (100, 100, 100), (255, 255, 255), 32)
+    return btn_rect
+
+def draw_quests_screen(surf):
+    surf.fill((0, 0, 0))
+    txt(surf, 'Quests', surf.get_width() // 2 - 40, 10, 24, (255, 255, 255), True)
+    btn_rect = btn(surf, surf.get_width() // 3, surf.get_height() - 80, 200, 50, 'Back', (100, 100, 100), (255, 255, 255), 32)
+    return btn_rect
+
+def draw_map_screen(surf):
+    surf.fill((0, 0, 0))
+    txt(surf, 'Map', surf.get_width() // 2 - 40, 10, 24, (255, 255, 255), True)
+    btn_rect = btn(surf, surf.get_width() // 3, surf.get_height() - 80, 200, 50, 'Close', (100, 100, 100), (255, 255, 255), 32)
+    return btn_rect
+
+def draw_dialogue_screen(surf):
+    surf.fill((0, 0, 0))
+    txt(surf, 'Dialogue', surf.get_width() // 2 - 40, 10, 24, (255, 255, 255), True)
+    btn_rect = btn(surf, surf.get_width() // 3, surf.get_height() - 80, 200, 50, 'Next', (100, 100, 100), (255, 255, 255), 32)
+    return btn_rect
+
+def draw_notification_screen(surf):
+    surf.fill((0, 0, 0))
+    txt(surf, 'Notification', surf.get_width() // 2 - 40, 10, 24, (255, 255, 255), True)
+    btn_rect = btn(surf, surf.get_width() // 3, surf.get_height() - 80, 200, 50, 'Close', (100, 100, 100), (255, 255, 255), 32)
+    return btn_rect
+
+def draw_chat_screen(surf):
+    surf.fill((0, 0, 0))
+    txt(surf, 'Chat', surf.get_width() // 2 - 40, 10, 24, (255, 255, 255), True)
+    btn_rect = btn(surf, surf.get_width() // 3, surf.get_height() - 80, 200, 50, 'Close', (100, 100, 100), (255, 255, 255), 32)
+    return btn_rect
+
+def draw_achievement_screen(surf):
+    surf.fill((0, 0, 0))
+    txt(surf, 'Achievements', surf.get_width() // 2 - 40, 10, 24, (255, 255, 255), True)
+    btn_rect = btn(surf, surf.get_width() // 3, surf.get_height() - 80, 200, 50, 'Back', (100, 100, 100), (255, 255, 255), 32)
+    return btn_rect
+
+def draw_leaderboard_screen(surf):
+    surf.fill((0, 0, 0))
+    txt(surf, 'Leaderboard', surf.get_width() // 2 - 40, 10, 24, (255, 255, 255), True)
+    btn_rect = btn(surf, surf.get_width() // 3, surf.get_height() - 80, 200, 50, 'Back', (100, 100, 100), (255, 255, 255), 32)
+    return btn_rect
+
+def draw_ranking_screen(surf):
+    surf.fill((0, 0, 0))
+    txt(surf, 'Ranking', surf.get_width() // 2 - 40, 10, 24, (255, 255, 255), True)
+    btn_rect = btn(surf, surf.get_width() // 3, surf.get_height() - 80, 200, 50, 'Back', (100, 100, 100), (255, 255, 255), 32)
+    return btn_rect
+
+def draw_settings_screen(surf):
+    surf.fill((0, 0, 0))
+    txt(surf, 'Settings', surf.get_width() // 2 - 40, 10, 24, (255, 255, 255), True)
+    btn_rect = btn(surf, surf.get_width() // 3, surf.get_height() - 80, 200, 50, 'Back', (100, 100, 100), (255, 255, 255), 32)
+    return btn_rect
+
+def draw_options_screen(surf):
+    surf.fill((0, 0, 0))
+    txt(surf, 'Options', surf.get_width() // 2 - 40, 10, 24, (255, 255, 255), True)
+    btn_rect = btn(surf, surf.get_width() // 3, surf.get_height() - 80, 200, 50, 'Back', (100, 100, 100), (255, 255, 255), 32)
+    return btn_rect
+
+def draw_main_menu_screen(surf):
+    surf.fill((0, 0, 0))
+    txt(surf, 'Main Menu', surf.get_width() // 2 - 40, 10, 24, (255, 255, 255), True)
+    btn_rect = btn(surf, surf.get_width() // 3, surf.get_height() - 80, 200, 50, 'Start', (100, 100, 100), (255, 255, 255), 32)
+    return btn_rect
+
+def draw_pause_menu_screen(surf):
+    surf.fill((0, 0, 0))
+    txt(surf, 'Pause Menu', surf.get_width() // 2 - 40, 10, 24, (255, 255, 255), True)
+    btn_rect = btn(surf, surf.get_width() // 3, surf.get_height() - 80, 200, 50, 'Resume', (100, 100, 100), (255, 255, 255), 32)
+    return btn_rect
+
+def draw_game_over_screen(surf):
+    surf.fill((0, 0, 0))
+    txt(surf, 'Game Over', surf.get_width() // 2 - 40, 10, 24, (255, 255, 255), True)
+    btn_rect = btn(surf, surf.get_width() // 3, surf.get_height() - 80, 200, 50, 'Restart', (100, 100, 100), (255, 255, 255), 32)
+    return btn_rect
+
+def draw_victory_screen(surf):
+    surf.fill((0, 0, 0))
+    txt(surf, 'Victory', surf.get_width() // 2 - 40, 10, 24, (255, 255, 255), True)
+    btn_rect = btn(surf, surf.get_width() // 3, surf.get_height() - 80, 200, 50, 'Next Level', (100, 100, 100), (255, 255, 255), 32)
+    return btn_rect
+
+def draw_loading_screen(surf):
+    surf.fill((0, 0, 0))
+    txt(surf, 'Loading...', surf.get_width() // 2 - 40, 10, 24, (255, 255, 255), True)
+    return None
+
+def draw_transition_screen(surf):
+    surf.fill((0, 0, 0))
+    txt(surf, 'Transition', surf.get_width() // 2 - 40, 10, 24, (255, 255, 255), True)
+    return None
+
+def draw_fade_in_screen(surf):
+    surf.fill((0, 0, 0))
+    txt(surf, 'Fade In', surf.get_width() // 2 - 40, 10, 24, (255, 255, 255), True)
+    return None
+
+def draw_fade_out_screen(surf):
+    surf.fill((0, 0, 0))
+    txt(surf, 'Fade Out', surf.get_width() // 2 - 40, 10, 24, (255, 255, 255), True)
+    return None
+
+def draw_black_screen(surf):
+    surf.fill((0, 0, 0))
+    return None
+
+def draw_white_screen(surf):
+    surf.fill((255, 255, 255))
+    return None
+
+def draw_red_screen(surf):
+    surf.fill((255, 0, 0))
+    return None
+
+def draw_green_screen(surf):
+    surf.fill((0, 255, 0))
+    return None
+
+def draw_blue_screen(surf):
+    surf.fill((0, 0, 255))
+    return None
+
+def draw_yellow_screen(surf):
+    surf.fill((255, 255, 0))
+    return None
+
+def draw_cyan_screen(surf):
+    surf.fill((0, 255, 255))
+    return None
+
+def draw_magenta_screen(surf):
+    surf.fill((255, 0, 255))
+    return None
+
+def draw_gray_screen(surf):
+    surf.fill((128, 128, 128))
+    return None
+
+def draw_light_gray_screen(surf):
+    surf.fill((192, 192, 192))
+    return None
+
+def draw_dark_gray_screen(surf):
+    surf.fill((64, 64, 64))
+    return None
+
+def draw_brown_screen(surf):
+    surf.fill((165, 42, 42))
+    return None
+
+def draw_orange_screen(surf):
+    surf.fill((255, 165, 0))
+    return None
+
+def draw_purple_screen(surf):
+    surf.fill((128, 0, 128))
+    return None
+
+def draw_pink_screen(surf):
+    surf.fill((255, 192, 203))
+    return None
+
+def draw_lime_screen(surf):
+    surf.fill((0, 255, 0))
+    return None
+
+def draw_teal_screen(surf):
+    surf.fill((0, 128, 128))
+    return None
+
+def draw_maroon_screen(surf):
+    surf.fill((128, 0, 0))
+    return None
+
+def draw_olive_screen(surf):
+    surf.fill((128, 128, 0))
+    return None
+
+def draw_navy_screen(surf):
+    surf.fill((0, 0, 128))
+    return None
+
+def draw_silver_screen(surf):
+    surf.fill((192, 192, 192))
+    return None
+
+def draw_gold_screen(surf):
+    surf.fill((255, 215, 0))
+    return None
+
+def draw_brass_screen(surf):
+    surf.fill((205, 173, 0))
+    return None
+
+def draw_bronze_screen(surf):
+    surf.fill((205, 127, 50))
+    return None
+
+def draw_copper_screen(surf):
+    surf.fill((184, 115, 51))
+    return None
+
+def draw_tin_screen(surf):
+    surf.fill((192, 192, 192))
+    return None
+
+def draw_steel_screen(surf):
+    surf.fill((169, 169, 169))
+    return None
+
+def draw_aluminum_screen(surf):
+    surf.fill((238, 232, 170))
+    return None
+
+def draw_nickel_screen(surf):
+    surf.fill((224, 224, 224))
+    return None
+
+def draw_zinc_screen(surf):
+    surf.fill((255, 250, 205))
+    return None
+
+def draw_platinum_screen(surf):
+    surf.fill((238, 236, 236))
+    return None
+
+def draw_silver_screen(surf):
+    surf.fill((192, 192, 192))
+    return None
+
+def draw_gold_screen(surf):
+    surf.fill((255, 215, 0))
+    return None
+
+def draw_brass_screen(surf):
+    surf.fill((205, 173, 0))
+    return None
+
+def draw_bronze_screen(surf):
+    surf.fill((205, 127, 50))
+    return None
+
+def draw_copper_screen(surf):
+    surf.fill((184, 115, 51))
+    return None
+
+def draw_tin_screen(surf):
+    surf.fill((192, 192, 192))
+    return None
+
+def draw_steel_screen(surf):
+    surf.fill((169, 169, 169))
+    return None
+
+def draw_aluminum_screen(surf):
+    surf.fill((238, 232, 170))
+    return None
+
+def draw_nickel_screen(surf):
+    surf.fill((224, 224, 224))
+    return None
+
+def draw_zinc_screen(surf):
+    surf.fill((255, 250, 205))
+    return None
+
+def draw_platinum_screen(surf):
+    surf.fill((238, 236, 236))
+    return None
+
+# Helper function to draw text
+def txt(surface, text, x, y, size, color):
+    font = pygame.font.Font(None, size)
+    text_surface = font.render(text, True, color)
+    surface.blit(text_surface, (x, y))
+
+# Helper function to create a button
+def btn(surface, x, y, width, height, color, hover_color, text, text_color, action=None):
+    mouse = pygame.mouse.get_pos()
+    click = pygame.mouse.get_pressed()
+
+    if x + width > mouse[0] > x and y + height > mouse[1] > y:
+        pygame.draw.rect(surface, hover_color, (x, y, width, height))
+        if click[0] == 1 and action is not None:
+            action()
+    else:
+        pygame.draw.rect(surface, color, (x, y, width, height))
+
+    txt(surface, text, x + (width / 2 - len(text) * 3), y + (height / 2 - size / 2), size, text_color)
+    return pygame.Rect(x, y, width, height)
+
+# Example usage
 
 # ── QUEST MODULE ─────────────────────────────────────────────────────────────
 # Quest and Spawn Systems for MyGame
 
-
-WORLD_MAP = {
-    'Towns': ['Village of Eldoria'],
-    'Cities': [],
-    'BanditCamps': [(10, 20), (30, 40)],
-    'GoblinCamps': [(50, 60), (70, 80)],
-    'WaterAreas': [(25, 35)]
-}
-
-ENEMY_DEFS = {
-    'Bandit': {'health': 50, 'damage': 10},
-    'Orc': {'health': 100, 'damage': 20},
-    'Goblin': {'health': 40, 'damage': 8}
-}
-
-NPC_NAMES = ['Alice', 'Bob', 'Charlie', 'Diana', 'Eve', 'Frank', 'Grace']
-NPC_JOBS = ['Merchant', 'Guard', 'Farmer', 'Miner', 'Blacksmith']
 
 def spawn_entities(WORLD_MAP, TOWNS, CITIES, BANDIT_CAMPS, GOBLIN_CAMPS, ENEMY_DEFS, NPC_NAMES, NPC_JOBS):
     enemies = []
     npcs = []
     buildings = []
 
+    # Spawn bandits
     for camp in BANDIT_CAMPS:
         for _ in range(4):
-            enemies.append({'type': 'Bandit', 'position': camp, **ENEMY_DEFS['Bandit']})
+            enemy_type = random.choice([e for e in ENEMY_DEFS if e['type'] == 'bandit'])
+            enemies.append({'name': enemy_type['name'], 'position': (camp[0] + random.randint(-5, 5), camp[1] + random.randint(-5, 5))})
 
+    # Spawn goblins and orcs
     for camp in GOBLIN_CAMPS:
         for _ in range(4):
-            enemies.append({'type': 'Goblin', 'position': camp, **ENEMY_DEFS['Goblin']})
-        enemies.append({'type': 'Orc', 'position': camp, **ENEMY_DEFS['Orc']})
+            enemy_type = random.choice([e for e in ENEMY_DEFS if e['type'] == 'goblin'])
+            enemies.append({'name': enemy_type['name'], 'position': (camp[0] + random.randint(-5, 5), camp[1] + random.randint(-5, 5))})
+        orc_type = random.choice([e for e in ENEMY_DEFS if e['type'] == 'orc'])
+        enemies.append({'name': orc_type['name'], 'position': (camp[0] + random.randint(-5, 5), camp[1] + random.randint(-5, 5))})
 
-    wild_positions = [(x, y) for x in range(100) for y in range(100)
-                      if (x, y) not in TOWNS and (x, y) not in CITIES
-                      and all((abs(x - wx) > 5 or abs(y - wy) > 5) for wx, wy in WORLD_MAP['WaterAreas'])]
-    random.shuffle(wild_positions)
-
+    # Spawn wild enemies
     for _ in range(30):
-        x, y = wild_positions.pop()
-        enemy_type = random.choice(['Bandit', 'Goblin'])
-        enemies.append({'type': enemy_type, 'position': (x, y), **ENEMY_DEFS[enemy_type]})
+        x = random.randint(0, WORLD_MAP['width'] - 1)
+        y = random.randint(0, WORLD_MAP['height'] - 1)
+        if (x, y) not in TOWNS and (x, y) not in CITIES and WORLD_MAP['tiles'][y][x] != 'WATER':
+            enemy_type = random.choice([e for e in ENEMY_DEFS if e['type'] == 'wild'])
+            enemies.append({'name': enemy_type['name'], 'position': (x, y)})
 
+    # Spawn NPCs
     for town in TOWNS:
-        buildings.append({'type': 'TownHall', 'position': town})
-        for _ in range(7):
+        jobs = ['Merchant', 'Guard', 'Guard', 'Farmer', 'Farmer', 'Miner', 'Blacksmith']
+        for job in jobs:
             name = random.choice(NPC_NAMES)
-            job = random.choice(NPC_JOBS)
-            npcs.append({'name': name, 'job': job, 'position': town})
+            npcs.append({'name': name, 'job': job, 'position': (town[0] + random.randint(-2, 2), town[1] + random.randint(-2, 2))})
 
     return enemies, npcs, buildings
 
 def check_kill_quests(player, enemy_name):
     for quest in player['quests']:
-        if quest['type'] == 'kill' and quest['enemy'] == enemy_name:
+        if quest['type'] == 'kill' and quest['target'] == enemy_name:
             quest['progress'] += 1
-            if quest['progress'] >= quest['target']:
-                print(f"Quest '{quest['name']}' completed!")
+            if quest['progress'] >= quest['required']:
+                quest['completed'] = True
 
 def check_item_quests(player, item_name, qty):
     for quest in player['quests']:
-        if quest['type'] == 'item' and quest['item'] == item_name:
+        if quest['type'] == 'collect' and quest['target'] == item_name:
             quest['progress'] += qty
-            if quest['progress'] >= quest['target']:
-                print(f"Quest '{quest['name']}' completed!")
+            if quest['progress'] >= quest['required']:
+                quest['completed'] = True
 
 def complete_ready_quests(player):
     completed_quests = []
     for quest in player['quests']:
-        if quest['progress'] >= quest['target']:
+        if quest['completed']:
+            player['rewards'].append(quest['reward'])
             completed_quests.append(quest['name'])
-            player['rewards'].append(quest.get('reward', 'None'))
             player['quests'].remove(quest)
     return completed_quests
 
 def harvest_nearby(player, WORLD_MAP):
     x, y = player['position']
-    biome = 'Forest'  # Simplified for example
-    if biome == 'Forest':
-        return 'Chopped wood'
-    elif biome == 'Mountain':
-        return 'Mined ore'
+    biome = WORLD_MAP['tiles'][y][x]
+    if biome == 'FOREST':
+        return 'chop'
+    elif biome == 'MOUNTAIN':
+        return 'mine'
+    elif biome in ['GRASSLAND', 'PLAINS']:
+        return 'gather'
     else:
-        return 'Gathered herbs'
+        return ''
 
 # ── ECONOMY MODULE ───────────────────────────────────────────────────────────
-# Economy and Crafting Module for MyGame
+# MyGame Economy and Crafting Module
 
 CRAFT_RECIPES = {
     'Fletching': [
-        {'name': 'Arrow', 'cost': {'Feather': 1, 'Wood': 1}, 'out': {'Arrow': 5}},
+        {'name': 'Arrow', 'cost': {'Feather': 1, 'Stick': 1}, 'out': {'Arrow': 5}},
         {'name': 'Quiver', 'cost': {'Leather': 2, 'String': 1}, 'out': {'Quiver': 1}},
-        {'name': 'Crossbow Bolt', 'cost': {'Iron Ingot': 1, 'Wood': 1}, 'out': {'Crossbow Bolt': 5}},
+        {'name': 'Crossbow Bolt', 'cost': {'Iron Ingot': 1, 'Stick': 1}, 'out': {'Crossbow Bolt': 5}},
         {'name': 'Bow', 'cost': {'Wood': 3, 'String': 2}, 'out': {'Bow': 1}}
     ],
     'Blacksmith': [
-        {'name': 'Iron Sword', 'cost': {'Iron Ingot': 5, 'Stone': 2}, 'out': {'Iron Sword': 1}},
-        {'name': 'Steel Shield', 'cost': {'Steel Ingot': 4, 'Leather': 3}, 'out': {'Steel Shield': 1}},
-        {'name': 'Chain Mail', 'cost': {'Iron Ingot': 8, 'Leather': 5}, 'out': {'Chain Mail': 1}},
-        {'name': 'Warhammer', 'cost': {'Steel Ingot': 6, 'Stone': 4}, 'out': {'Warhammer': 1}}
+        {'name': 'Iron Sword', 'cost': {'Iron Ingot': 2, 'Stick': 1}, 'out': {'Iron Sword': 1}},
+        {'name': 'Steel Shield', 'cost': {'Steel Ingot': 3, 'Leather': 1}, 'out': {'Steel Shield': 1}},
+        {'name': 'Armor Plate', 'cost': {'Steel Ingot': 5}, 'out': {'Armor Plate': 1}},
+        {'name': 'Iron Pickaxe', 'cost': {'Iron Ingot': 2, 'Stick': 1}, 'out': {'Iron Pickaxe': 1}}
     ],
     'Alchemy': [
-        {'name': 'Health Potion', 'cost': {'Herb': 3, 'Water Bottle': 1}, 'out': {'Health Potion': 2}},
-        {'name': 'Mana Potion', 'cost': {'Crystal Dust': 2, 'Water Bottle': 1}, 'out': {'Mana Potion': 2}},
+        {'name': 'Health Potion', 'cost': {'Herb': 3, 'Water Bottle': 1}, 'out': {'Health Potion': 1}},
+        {'name': 'Mana Potion', 'cost': {'Crystal Dust': 2, 'Water Bottle': 1}, 'out': {'Mana Potion': 1}},
         {'name': 'Fire Scroll', 'cost': {'Sulfur': 3, 'Paper': 1}, 'out': {'Fire Scroll': 1}},
-        {'name': 'Ice Scroll', 'cost': {'Snowflake Crystal': 4, 'Paper': 1}, 'out': {'Ice Scroll': 1}}
+        {'name': 'Invisibility Potion', 'cost': {'Mushroom': 2, 'Water Bottle': 1}, 'out': {'Invisibility Potion': 1}}
     ],
     'Building': [
-        {'name': 'House', 'cost': {'Wood': 20, 'Stone': 15}, 'out': {'House': 1}},
-        {'name': 'Shop', 'cost': {'Wood': 30, 'Iron Ingot': 10}, 'out': {'Shop': 1}},
-        {'name': 'Barracks', 'cost': {'Steel Ingot': 25, 'Stone': 20}, 'out': {'Barracks': 1}},
-        {'name': 'Farm', 'cost': {'Wood': 40, 'Soil': 30}, 'out': {'Farm': 1}}
+        {'name': 'House', 'cost': {'Wood': 50, 'Stone': 30}},
+        {'name': 'Shop', 'cost': {'Wood': 40, 'Iron Ingot': 20}},
+        {'name': 'Barracks', 'cost': {'Steel Ingot': 50, 'Leather': 20}},
+        {'name': 'Farm', 'cost': {'Wood': 30, 'Stone': 10}}
     ]
 }
 
 BUILDING_TYPES = {
-    'House': {'col': (255, 204, 153), 'w': 5, 'h': 5, 'cost': {'Wood': 20, 'Stone': 15}},
-    'Shop': {'col': (255, 255, 153), 'w': 6, 'h': 4, 'cost': {'Wood': 30, 'Iron Ingot': 10}},
-    'Barracks': {'col': (204, 153, 255), 'w': 7, 'h': 6, 'cost': {'Steel Ingot': 25, 'Stone': 20}},
-    'Farm': {'col': (153, 255, 153), 'w': 8, 'h': 4, 'cost': {'Wood': 40, 'Soil': 30}},
-    'Tower': {'col': (255, 153, 153), 'w': 6, 'h': 7, 'cost': {'Steel Ingot': 30, 'Stone': 25}},
-    'Warehouse': {'col': (153, 204, 255), 'w': 8, 'h': 5, 'cost': {'Wood': 50, 'Iron Ingot': 15}}
+    'House': {'col': (204, 153, 255), 'w': 6, 'h': 6, 'cost': {'Wood': 50, 'Stone': 30}},
+    'Shop': {'col': (255, 204, 153), 'w': 8, 'h': 6, 'cost': {'Wood': 40, 'Iron Ingot': 20}},
+    'Barracks': {'col': (153, 204, 255), 'w': 10, 'h': 8, 'cost': {'Steel Ingot': 50, 'Leather': 20}},
+    'Farm': {'col': (204, 255, 153), 'w': 6, 'h': 6, 'cost': {'Wood': 30, 'Stone': 10}},
+    'Tower': {'col': (255, 153, 153), 'w': 8, 'h': 10, 'cost': {'Steel Ingot': 70, 'Stone': 40}},
+    'Warehouse': {'col': (153, 255, 204), 'w': 10, 'h': 10, 'cost': {'Wood': 60, 'Iron Ingot': 30}}
 }
 
 def buy_item(player, npc, item_name):
@@ -1385,7 +2252,7 @@ if 'draw_hud' not in dir():
             txt(surf, lbl, rx+rw//2, by2+10, 16, (220,220,255), center=True)
             btns[lbl.lower().replace(" ","_")] = r
         return xbtn, btns
-    def draw_main_menu(surf):
+    def draw_main_menu(surf, project_name):
         W,H = surf.get_size()
         surf.fill((10,10,20))
         for i in range(20):
@@ -1525,6 +2392,8 @@ pygame.init()
 screen = pygame.display.set_mode((SCREEN_W, SCREEN_H))
 pygame.display.set_caption(GAME_TITLE)
 clock  = pygame.time.Clock()
+
+project_name = 'MyGame'
 
 def main():
     global player_ref
@@ -1770,7 +2639,7 @@ def main():
                 mx, my = event.pos
 
                 if state == ST_MENU:
-                    btns = draw_main_menu(screen)  # get rects
+                    btns = draw_main_menu(screen, project_name)  # get rects
                     if btns.get("new_game") and btns["new_game"].collidepoint(mx,my):
                         state = ST_CLASS
                     elif btns.get("continue") and btns["continue"].collidepoint(mx,my):
@@ -1977,7 +2846,7 @@ def main():
         screen.fill((10,10,20))
 
         if state == ST_MENU:
-            draw_main_menu(screen)
+            draw_main_menu(screen, project_name)
 
         elif state == ST_CLASS:
             draw_class_select(screen)
@@ -2053,6 +2922,42 @@ def main():
 
     pygame.quit()
     sys.exit()
+
+
+# UMBRA_PLAYER_PATCH
+try:
+    _op=Player.__init__
+    def _np(self,*a,**kw):
+        _op(self,*a,**kw)
+        for _at,_dv in [('active_quests',{}),('completed_quests',[]),
+                        ('inventory',{}),('equipped',{'weapon':None,'armor':None}),
+                        ('spells',[]),('gold',50),('level',1),('xp',0),
+                        ('xp_next',100),('float_texts',[]),('atk',10),
+                        ('defense',5),('spd',180),('alive',True),
+                        ('attack_cooldown',0.0),('regen_timer',0.0)]:
+            if not hasattr(self,_at): setattr(self,_at,_dv)
+    Player.__init__=_np
+except Exception: pass
+# UMBRA_ENEMY_PATCH
+try:
+    _oe=Enemy.__init__
+    def _ne(self,edef,tx,ty,*a,**kw):
+        if isinstance(edef,str):
+            _n=edef
+            edef=next((d for d in ENEMY_DEFS if isinstance(d,dict) and d.get('name')==_n),
+                      {'name':_n,'hp':40,'atk':8,'defense':3,'xp_val':15,'spd':90,'aggro':200})
+        _oe(self,edef,tx,ty,*a,**kw)
+        for _at,_dv in [('name',edef.get('name','Enemy') if isinstance(edef,dict) else str(edef)),
+                        ('hp',edef.get('hp',40) if isinstance(edef,dict) else 40),
+                        ('max_hp',edef.get('hp',40) if isinstance(edef,dict) else 40),
+                        ('atk',edef.get('atk',8) if isinstance(edef,dict) else 8),
+                        ('defense',edef.get('defense',3) if isinstance(edef,dict) else 3),
+                        ('xp_val',edef.get('xp_val',15) if isinstance(edef,dict) else 15),
+                        ('spd',edef.get('spd',90) if isinstance(edef,dict) else 90),
+                        ('alive',True),('tx',tx),('ty',ty)]:
+            if not hasattr(self,_at): setattr(self,_at,_dv)
+    Enemy.__init__=_ne
+except Exception: pass
 
 if __name__ == '__main__':
     main()

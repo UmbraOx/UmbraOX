@@ -1,39 +1,39 @@
-# Economy and Crafting Module for MyGame
+# MyGame Economy and Crafting Module
 
 CRAFT_RECIPES = {
     'Fletching': [
-        {'name': 'Arrow', 'cost': {'Feather': 1, 'Wood': 1}, 'out': {'Arrow': 5}},
+        {'name': 'Arrow', 'cost': {'Feather': 1, 'Stick': 1}, 'out': {'Arrow': 5}},
         {'name': 'Quiver', 'cost': {'Leather': 2, 'String': 1}, 'out': {'Quiver': 1}},
-        {'name': 'Crossbow Bolt', 'cost': {'Iron Ingot': 1, 'Wood': 1}, 'out': {'Crossbow Bolt': 5}},
+        {'name': 'Crossbow Bolt', 'cost': {'Iron Ingot': 1, 'Stick': 1}, 'out': {'Crossbow Bolt': 5}},
         {'name': 'Bow', 'cost': {'Wood': 3, 'String': 2}, 'out': {'Bow': 1}}
     ],
     'Blacksmith': [
-        {'name': 'Iron Sword', 'cost': {'Iron Ingot': 5, 'Stone': 2}, 'out': {'Iron Sword': 1}},
-        {'name': 'Steel Shield', 'cost': {'Steel Ingot': 4, 'Leather': 3}, 'out': {'Steel Shield': 1}},
-        {'name': 'Chain Mail', 'cost': {'Iron Ingot': 8, 'Leather': 5}, 'out': {'Chain Mail': 1}},
-        {'name': 'Warhammer', 'cost': {'Steel Ingot': 6, 'Stone': 4}, 'out': {'Warhammer': 1}}
+        {'name': 'Iron Sword', 'cost': {'Iron Ingot': 2, 'Stick': 1}, 'out': {'Iron Sword': 1}},
+        {'name': 'Steel Shield', 'cost': {'Steel Ingot': 3, 'Leather': 1}, 'out': {'Steel Shield': 1}},
+        {'name': 'Armor Plate', 'cost': {'Steel Ingot': 5}, 'out': {'Armor Plate': 1}},
+        {'name': 'Iron Pickaxe', 'cost': {'Iron Ingot': 2, 'Stick': 1}, 'out': {'Iron Pickaxe': 1}}
     ],
     'Alchemy': [
-        {'name': 'Health Potion', 'cost': {'Herb': 3, 'Water Bottle': 1}, 'out': {'Health Potion': 2}},
-        {'name': 'Mana Potion', 'cost': {'Crystal Dust': 2, 'Water Bottle': 1}, 'out': {'Mana Potion': 2}},
+        {'name': 'Health Potion', 'cost': {'Herb': 3, 'Water Bottle': 1}, 'out': {'Health Potion': 1}},
+        {'name': 'Mana Potion', 'cost': {'Crystal Dust': 2, 'Water Bottle': 1}, 'out': {'Mana Potion': 1}},
         {'name': 'Fire Scroll', 'cost': {'Sulfur': 3, 'Paper': 1}, 'out': {'Fire Scroll': 1}},
-        {'name': 'Ice Scroll', 'cost': {'Snowflake Crystal': 4, 'Paper': 1}, 'out': {'Ice Scroll': 1}}
+        {'name': 'Invisibility Potion', 'cost': {'Mushroom': 2, 'Water Bottle': 1}, 'out': {'Invisibility Potion': 1}}
     ],
     'Building': [
-        {'name': 'House', 'cost': {'Wood': 20, 'Stone': 15}, 'out': {'House': 1}},
-        {'name': 'Shop', 'cost': {'Wood': 30, 'Iron Ingot': 10}, 'out': {'Shop': 1}},
-        {'name': 'Barracks', 'cost': {'Steel Ingot': 25, 'Stone': 20}, 'out': {'Barracks': 1}},
-        {'name': 'Farm', 'cost': {'Wood': 40, 'Soil': 30}, 'out': {'Farm': 1}}
+        {'name': 'House', 'cost': {'Wood': 50, 'Stone': 30}},
+        {'name': 'Shop', 'cost': {'Wood': 40, 'Iron Ingot': 20}},
+        {'name': 'Barracks', 'cost': {'Steel Ingot': 50, 'Leather': 20}},
+        {'name': 'Farm', 'cost': {'Wood': 30, 'Stone': 10}}
     ]
 }
 
 BUILDING_TYPES = {
-    'House': {'col': (255, 204, 153), 'w': 5, 'h': 5, 'cost': {'Wood': 20, 'Stone': 15}},
-    'Shop': {'col': (255, 255, 153), 'w': 6, 'h': 4, 'cost': {'Wood': 30, 'Iron Ingot': 10}},
-    'Barracks': {'col': (204, 153, 255), 'w': 7, 'h': 6, 'cost': {'Steel Ingot': 25, 'Stone': 20}},
-    'Farm': {'col': (153, 255, 153), 'w': 8, 'h': 4, 'cost': {'Wood': 40, 'Soil': 30}},
-    'Tower': {'col': (255, 153, 153), 'w': 6, 'h': 7, 'cost': {'Steel Ingot': 30, 'Stone': 25}},
-    'Warehouse': {'col': (153, 204, 255), 'w': 8, 'h': 5, 'cost': {'Wood': 50, 'Iron Ingot': 15}}
+    'House': {'col': (204, 153, 255), 'w': 6, 'h': 6, 'cost': {'Wood': 50, 'Stone': 30}},
+    'Shop': {'col': (255, 204, 153), 'w': 8, 'h': 6, 'cost': {'Wood': 40, 'Iron Ingot': 20}},
+    'Barracks': {'col': (153, 204, 255), 'w': 10, 'h': 8, 'cost': {'Steel Ingot': 50, 'Leather': 20}},
+    'Farm': {'col': (204, 255, 153), 'w': 6, 'h': 6, 'cost': {'Wood': 30, 'Stone': 10}},
+    'Tower': {'col': (255, 153, 153), 'w': 8, 'h': 10, 'cost': {'Steel Ingot': 70, 'Stone': 40}},
+    'Warehouse': {'col': (153, 255, 204), 'w': 10, 'h': 10, 'cost': {'Wood': 60, 'Iron Ingot': 30}}
 }
 
 def buy_item(player, npc, item_name):
@@ -63,6 +63,3 @@ def craft_item(player, recipe):
         return True, 'Item crafted successfully'
     else:
         return False, 'Not enough materials'
-
-if __name__ == '__main__':
-    main()

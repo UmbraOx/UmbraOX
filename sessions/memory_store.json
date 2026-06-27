@@ -1,12 +1,12 @@
 {
   "last_game_file": {
     "key": "last_game_file",
-    "value": "C:\\Umbra\\workspaces\\agent_builds\\optiopia\\optiopia_game.py",
+    "value": "C:\\Umbra\\workspaces\\agent_builds\\mygame\\mygame_game.py",
     "tags": [
       "game"
     ],
     "source": "runtime",
-    "created_at": "2026-06-26T19:15:28.766097",
+    "created_at": "2026-06-27T02:43:08.164785",
     "access_count": 0
   },
   "deep_build:testrpg": {

@@ -4,13 +4,43 @@
   "project_type": "general",
   "description": "make a test game of Demiworld just 1 town/area and 1 enemy, 3 classes, warrior, archer, mage.",
   "created_at": "2026-06-22T04:44:41.438909",
-  "updated_at": "2026-06-22T04:44:41.439907",
+  "updated_at": "2026-06-27T02:49:58.303047",
   "status": "active",
   "files": [
     {
       "path": "C:\\Umbra\\workspaces\\agent_builds\\mygame\\mygame_game.py",
       "type": "game",
       "added_at": "2026-06-22T04:44:41.439907"
+    },
+    {
+      "path": "C:\\Umbra\\workspaces\\agent_builds\\mygame\\mygame_game.py",
+      "type": "game",
+      "added_at": "2026-06-27T02:43:08.163785"
+    },
+    {
+      "path": "C:\\Umbra\\workspaces\\run_20260627_024600\\error_logs.py",
+      "type": "code",
+      "added_at": "2026-06-27T02:49:58.301044"
+    },
+    {
+      "path": "C:\\Umbra\\workspaces\\run_20260627_024600\\game.py",
+      "type": "code",
+      "added_at": "2026-06-27T02:49:58.302044"
+    },
+    {
+      "path": "C:\\Umbra\\workspaces\\run_20260627_024600\\test_game.py",
+      "type": "code",
+      "added_at": "2026-06-27T02:49:58.303047"
+    },
+    {
+      "path": "C:\\Umbra\\workspaces\\run_20260627_024600\\game.py",
+      "type": "code",
+      "added_at": "2026-06-27T02:49:58.303047"
+    },
+    {
+      "path": "C:\\Umbra\\workspaces\\run_20260627_024600\\test_game.py",
+      "type": "code",
+      "added_at": "2026-06-27T02:49:58.303047"
     }
   ],
   "conversation": [],

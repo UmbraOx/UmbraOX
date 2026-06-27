@@ -819,27 +819,39 @@ def _clean_agent_output(raw):
 
 
 def _syntax_repair(code, model):
-    """
-    Attempt to repair a syntax error without sending the whole file.
-    Strips trailing broken lines until the file parses, then adds main() guard.
-    Returns repaired code (may still have issues but won't be empty).
-    """
+    """Strip trailing broken lines first; fall back to LLM fix."""
     lines = code.splitlines()
-    # Walk backwards stripping broken lines
     for _ in range(min(30, len(lines))):
         test = "\n".join(lines)
         try:
             ast.parse(test)
-            break
+            return test
         except SyntaxError as se:
             if se.lineno and se.lineno >= len(lines) - 2:
                 lines.pop()
             else:
                 break
-    repaired = "\n".join(lines)
-    if "if __name__" not in repaired:
-        repaired += "\n\nif __name__ == '__main__':\n    main()\n"
-    return repaired
+    # LLM targeted fix
+    try:
+        err_info = ""
+        try:
+            ast.parse("\n".join(lines))
+        except SyntaxError as se2:
+            bad_ln = lines[se2.lineno-1] if se2.lineno and se2.lineno <= len(lines) else "?"
+            err_info = "Line " + str(se2.lineno) + ": " + str(se2.msg) + "\n  >>> " + bad_ln
+        fix_prompt = (
+            "Fix ONLY the Python syntax error below. Return the complete corrected Python file. "
+            "No explanations. No markdown. Pure Python only.\n\nERROR:\n" + err_info +
+            "\n\nCODE:\n" + "\n".join(lines)
+        )
+        fixed = _ollama_stream(fix_prompt, model=model, timeout=120, num_predict=4096)
+        if fixed:
+            fixed = _clean_agent_output(fixed)
+            ast.parse(fixed)
+            return fixed
+    except Exception:
+        pass
+    return "\n".join(lines)
 
 
 def _run_agent(agent_name, prompt, model, proj_dir, proj_slug):
@@ -967,8 +979,10 @@ def _stitch_game(project_name, brief, components):
                 i += 1; continue
             # Strip agent def main() / def run_game() / def game_loop() 
             # that would override the skeleton's main()
-            if s.startswith("def ") and any(s.startswith("def "+n+"()") for n in
-                                             ["main","run_game","game_loop","game_main","start_game","run"]):
+            # Strip agent redefinitions of skeleton helpers (txt, draw_main_menu variants, etc.)
+            _SKELETON_FUNS = {"main","run_game","game_loop","game_main","start_game","run",
+                              "txt","draw_text","render_text"}
+            if s.startswith("def ") and any(s.startswith("def "+n+"(") for n in _SKELETON_FUNS):
                 # Skip entire function body
                 i += 1
                 while i < len(lines) and (lines[i].startswith("    ") or lines[i].strip() == ""):
@@ -2788,6 +2802,37 @@ def _process_command(runtime, user_input):
 
     if cmd in ("fix workspace", "fix workspaces", "repair workspace"):
         handle_workspace_repair(runtime, target="all")
+        return
+
+    if re.search(r"\b(fix|repair)\b.{0,25}\b(last game|game|last build)\b", cmd) or cmd in ("fix game", "fix last game", "repair game", "fix last", "repair last"):
+        _gp3 = None
+        _ws3 = os.path.join(_UMBRA_ROOT, "workspaces", "agent_builds")
+        _gc3 = []
+        if os.path.isdir(_ws3):
+            for _r3, _d3, _f3 in os.walk(_ws3):
+                for _fn3 in _f3:
+                    if _fn3.endswith("_game.py"):
+                        _fp3 = os.path.join(_r3, _fn3)
+                        _gc3.append((_fp3, os.path.getmtime(_fp3)))
+        if _gc3:
+            _gp3 = sorted(_gc3, key=lambda x: x[1], reverse=True)[0][0]
+        if not _gp3:
+            _umbra_print("[FIX] No game found. Build one first."); return
+        _umbra_print("[FIX] Checking: " + _gp3)
+        try:
+            _gs3 = open(_gp3, "r", encoding="utf-8").read()
+            ast.parse(_gs3)
+            _umbra_print("[FIX] No syntax errors. Type: play last")
+        except SyntaxError as _ge3:
+            _umbra_print("[FIX] Line " + str(_ge3.lineno) + ": " + str(_ge3.msg) + " — repairing...")
+            _gs3 = open(_gp3, "r", encoding="utf-8").read()
+            _gf3 = _syntax_repair(_gs3, _get_agent_model())
+            try:
+                ast.parse(_gf3)
+                open(_gp3, "w", encoding="utf-8").write(_gf3)
+                _umbra_print("[FIX] Repaired. Type: play last")
+            except SyntaxError:
+                _umbra_print("[FIX] Could not repair. Try: build " + os.path.basename(_gp3).replace("_game.py",""))
         return
 
     if re.search(r"fix.{1,30}(gui|window|gif|video|tts|voice|search|converter)", cmd):

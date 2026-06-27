@@ -2,7 +2,16 @@ import random
 import math
 
 ENEMY_DEFS = [
-    {'name': 'Goblin', 'hp': 20, 'atk': 5, 'def': 3, 'xp': 10, 'col': (64, 64, 64), 'spd': 1.5, 'faction': 'Enemy'}
+    {'name': 'Goblin', 'hp': 20, 'atk': 5, 'def': 2, 'xp': 10, 'col': (64, 64, 64), 'spd': 1.5, 'faction': 'Enemy'},
+    {'name': 'Orc', 'hp': 30, 'atk': 7, 'def': 3, 'xp': 20, 'col': (128, 0, 0), 'spd': 1.2, 'faction': 'Enemy'},
+    {'name': 'Troll', 'hp': 50, 'atk': 10, 'def': 4, 'xp': 30, 'col': (64, 128, 64), 'spd': 0.9, 'faction': 'Enemy'},
+    {'name': 'Skeleton', 'hp': 15, 'atk': 3, 'def': 1, 'xp': 5, 'col': (192, 192, 192), 'spd': 2.0, 'faction': 'Enemy'},
+    {'name': 'Zombie', 'hp': 25, 'atk': 4, 'def': 2, 'xp': 8, 'col': (64, 64, 128), 'spd': 1.3, 'faction': 'Enemy'},
+    {'name': 'Bandit', 'hp': 20, 'atk': 5, 'def': 2, 'xp': 12, 'col': (192, 64, 64), 'spd': 1.8, 'faction': 'Enemy'},
+    {'name': 'Witch', 'hp': 30, 'atk': 7, 'def': 3, 'xp': 25, 'col': (128, 64, 192), 'spd': 1.0, 'faction': 'Enemy'},
+    {'name': 'Dragon', 'hp': 100, 'atk': 15, 'def': 5, 'xp': 100, 'col': (255, 64, 0), 'spd': 0.7, 'faction': 'Enemy'},
+    {'name': 'Golem', 'hp': 80, 'atk': 10, 'def': 6, 'xp': 75, 'col': (128, 128, 64), 'spd': 0.6, 'faction': 'Enemy'},
+    {'name': 'Wraith', 'hp': 40, 'atk': 8, 'def': 3, 'xp': 35, 'col': (64, 192, 192), 'spd': 1.5, 'faction': 'Enemy'}
 ]
 
 class Player:
@@ -12,30 +21,30 @@ class Player:
         self.cls = cls
         self.max_hp = 100 if cls == 'Warrior' else 80 if cls == 'Mage' else 90
         self.hp = self.max_hp
-        self.max_mp = 50 if cls == 'Mage' else 30 if cls == 'Archer' else 20
+        self.max_mp = 100 if cls == 'Mage' else 50 if cls == 'Warrior' else 70
         self.mp = self.max_mp
         self.max_sta = 100
         self.sta = self.max_sta
-        self.str_ = 10 if cls == 'Warrior' else 5 if cls == 'Mage' else 7
-        self.dex = 7 if cls == 'Archer' else 5 if cls == 'Mage' else 6
+        self.str_ = 10 if cls == 'Warrior' else 5 if cls == 'Mage' else 8
+        self.dex = 8 if cls == 'Rogue' else 6 if cls == 'Warrior' else 7
         self.int_ = 12 if cls == 'Mage' else 4 if cls == 'Warrior' else 6
-        self.luck = random.randint(1, 10)
+        self.luck = random.randint(5, 10)
         self.level = 1
         self.xp = 0
         self.xp_next = 100
-        self.gold = 50
-        self.speed = 2.0 if cls == 'Archer' else 1.8 if cls == 'Mage' else 1.6
+        self.gold = 0
+        self.speed = 2.0 if cls == 'Rogue' else 1.5 if cls == 'Mage' else 1.8
         self.inventory = {}
         self.equipped = {'weapon': None, 'armor': None}
-        self.spells = ['Fireball'] if cls == 'Mage' else []
+        self.spells = [] if cls != 'Mage' else ['Fireball', 'Heal']
         self.quests = []
         self.crouching = False
 
     def atk_power(self):
-        return (self.str_ + self.dex) / 2 * (1 + self.luck / 100)
+        return self.str_ + (self.dex // 2) + (self.equipped['weapon'].atk if self.equipped['weapon'] else 0)
 
     def def_power(self):
-        return self.dex if self.equipped['armor'] is None else self.dex + self.equipped['armor'].def_
+        return self.dex + (self.equipped['armor'].def_ if self.equipped['armor'] else 0)
 
     def add_item(self, name, qty):
         if name in self.inventory:
@@ -51,18 +60,20 @@ class Player:
     def level_up(self):
         self.xp -= self.xp_next
         self.xp_next *= 1.5
-        self.max_hp += 10
+        self.max_hp += random.randint(10, 20)
         self.hp = self.max_hp
-        self.max_mp += 5 if self.cls == 'Mage' else 3
+        self.max_mp += random.randint(5, 15) if self.cls == 'Mage' else random.randint(3, 10)
         self.mp = self.max_mp
-        self.str_ += 2 if self.cls == 'Warrior' else 1
-        self.dex += 2 if self.cls == 'Archer' else 1
-        self.int_ += 2 if self.cls == 'Mage' else 1
+        self.str_ += random.randint(1, 3)
+        self.dex += random.randint(1, 2)
+        self.int_ += random.randint(1, 2) if self.cls == 'Mage' else random.randint(0, 1)
 
     def regen(self, dt):
-        self.hp = min(self.max_hp, self.hp + (self.str_ / 10) * dt)
-        self.mp = min(self.max_mp, self.mp + (self.int_ / 10) * dt)
-        self.sta = min(self.max_sta, self.sta + (self.dex / 10) * dt)
+        self.sta = min(self.max_sta, self.sta + (self.speed * dt))
+        if self.hp < self.max_hp:
+            self.hp += (self.str_ / 2) * dt
+        if self.mp < self.max_mp and self.cls == 'Mage':
+            self.mp += (self.int_ / 2) * dt
 
 class Enemy:
     def __init__(self, edef, tx, ty):
@@ -88,7 +99,7 @@ class Enemy:
             self.y += move_y
 
     def draw(self, surf, cx, cy):
-        pass
+        pygame.draw.circle(surf, self.col, (int(cx + self.x), int(cy + self.y)), 10)
 
 class NPC:
     def __init__(self, name, job, tx, ty):
@@ -99,16 +110,4 @@ class NPC:
         self.dialogue = []
         self.shop_stock = {}
 
-        if job == 'Blacksmith':
-            self.dialogue.append("Welcome to my forge!")
-            self.shop_stock['Sword'] = {'price': 100, 'qty': 5}
-            self.shop_stock['Shield'] = {'price': 80, 'qty': 3}
-        elif job == 'Healer':
-            self.dialogue.append("Greetings! I can heal you.")
-        elif job == 'Trader':
-            self.dialogue.append("Hello traveler! What do you need?")
-            self.shop_stock['Potion'] = {'price': 50, 'qty': 10}
-            self.shop_stock['Scroll'] = {'price': 75, 'qty': 4}
-
-if __name__ == '__main__':
-    main()
+JOBS = ['Blacksmith', 'Healer', 'Trader']

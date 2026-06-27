@@ -2,6 +2,7 @@
 
 import json
 import math
+import pygame
 
 class Camera:
     def __init__(self, x=0, y=0):
@@ -28,8 +29,8 @@ class FloatText:
             self.alpha = 0
 
     def draw(self, surf, cx, cy):
-        txt_surf = self.font.render(self.text, True, (self.col[0], self.col[1], self.col[2], self.alpha))
-        surf.blit(txt_surf, (int(self.x - cx), int(self.y - cy)))
+        text_surf = self.font.render(self.text, True, (self.col[0], self.col[1], self.col[2], self.alpha))
+        surf.blit(text_surf, (int(self.x - cx), int(self.y - cy)))
 
 class Projectile:
     def __init__(self, x, y, tx, ty, dmg, col, spd=9):
@@ -47,47 +48,48 @@ class Projectile:
     def update(self):
         self.x += self.vx
         self.y += self.vy
-        if (self.tx - self.x) ** 2 + (self.ty - self.y) ** 2 < 16:
-            return True
-        return False
 
     def draw(self, surf, cx, cy):
-        pygame.draw.circle(surf, self.col, (int(self.x - cx), int(self.y - cy)), 4)
+        pygame.draw.circle(surf, self.col, (int(self.x - cx), int(self.y - cy)), 3)
 
 class Building:
     TYPES = {
-        'House': {'col': (200, 150, 100), 'w': 3, 'h': 3, 'cost': {'wood': 10}},
-        'Shop': {'col': (255, 200, 0), 'w': 4, 'h': 4, 'cost': {'stone': 15}},
-        'Barracks': {'col': (180, 180, 180), 'w': 5, 'h': 5, 'cost': {'iron': 20}},
-        'Farm': {'col': (34, 177, 76), 'w': 4, 'h': 4, 'cost': {'wood': 12}},
-        'Tower': {'col': (100, 150, 200), 'w': 4, 'h': 5, 'cost': {'stone': 25}},
-        'Warehouse': {'col': (200, 200, 200), 'w': 6, 'h': 6, 'cost': {'iron': 30}}
+        'House': {'col': (204, 153, 255), 'w': 2, 'h': 2, 'cost': {'wood': 4, 'stone': 2}},
+        'Shop': {'col': (255, 204, 153), 'w': 3, 'h': 2, 'cost': {'wood': 6, 'stone': 3}},
+        'Barracks': {'col': (153, 204, 255), 'w': 4, 'h': 3, 'cost': {'wood': 8, 'stone': 4}},
+        'Farm': {'col': (204, 255, 153), 'w': 3, 'h': 3, 'cost': {'wood': 6, 'stone': 2}},
+        'Tower': {'col': (255, 153, 153), 'w': 4, 'h': 4, 'cost': {'wood': 10, 'stone': 5}},
+        'Warehouse': {'col': (153, 255, 204), 'w': 4, 'h': 3, 'cost': {'wood': 8, 'stone': 3}}
     }
 
     def __init__(self, btype, tx, ty):
         self.btype = btype
         self.tx = tx
         self.ty = ty
+        self.col = Building.TYPES[btype]['col']
+        self.w = Building.TYPES[btype]['w']
+        self.h = Building.TYPES[btype]['h']
 
     def draw(self, surf, cx, cy):
-        col = Building.TYPES[self.btype]['col']
-        w = Building.TYPES[self.btype]['w'] * 32
-        h = Building.TYPES[self.btype]['h'] * 32
-        x = self.tx * 32 - cx
-        y = self.ty * 32 - cy
-        pygame.draw.rect(surf, col, (x, y, w, h))
-        pygame.draw.polygon(surf, (100, 50, 0), [(x + w // 2, y), (x, y - h // 4), (x + w, y - h // 4)])
-        pygame.draw.rect(surf, (0, 0, 0), (x + w // 3, y + h * 2 // 3, w // 3, h // 6))
-        pygame.draw.rect(surf, (255, 255, 255), (x + w // 4, y + h // 4, w // 8, h // 8))
+        x = (self.tx * 32) - cx
+        y = (self.ty * 32) - cy
+        pygame.draw.rect(surf, self.col, (x, y, self.w * 32, self.h * 32))
+        pygame.draw.polygon(surf, (100, 50, 0), [(x + 16, y), (x + self.w * 32 - 8, y - 16), (x + self.w * 32 - 16, y)])
+        pygame.draw.rect(surf, (0, 0, 0), (x + 8, y + self.h * 32 - 8, 16, 8))
+        if self.btype in ['House', 'Shop']:
+            pygame.draw.rect(surf, (255, 255, 255), (x + 16, y + 16, 8, 8))
 
 def save_game(player, buildings, filepath):
     data = {
         'player': player.__dict__,
         'buildings': [{'btype': b.btype, 'tx': b.tx, 'ty': b.ty} for b in buildings]
     }
-    with open(filepath, 'w') as f:
-        json.dump(data, f)
-    return True
+    try:
+        with open(filepath, 'w') as f:
+            json.dump(data, f)
+        return True
+    except Exception:
+        return False
 
 def load_game(player, buildings, filepath):
     try:
@@ -98,9 +100,5 @@ def load_game(player, buildings, filepath):
         for b in data['buildings']:
             buildings.append(Building(b['btype'], b['tx'], b['ty']))
         return True
-    except Exception as e:
-        print(e)
+    except Exception:
         return False
-
-if __name__ == '__main__':
-    main()
