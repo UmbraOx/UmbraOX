@@ -1179,7 +1179,8 @@ def _build_agent_prompt_v2(agent_name, project_name, spec, brief):
             "  Include: Merchant, Guard, Blacksmith, Farmer, default\n"
             "NPC_NAMES = list of 16 first names\n"
             "NPC_JOBS = " + str(npcs) + "\n"
-            "No imports needed — just pure data."
+            "No imports needed.\n"
+            "STRICT RULES: No classes. No functions. No if/for/while. No f-strings. Under 90 lines."
         ),
         "mechanic": (
             "Write a Python MODULE for GAME MECHANIC HELPERS.\n"
@@ -2609,11 +2610,6 @@ def build_runtime():
 def print_banner():
     _umbra_print("\n" + "=" * 64)
     _umbra_print("  UMBRA v2.4.0 — Autonomous AI Runtime OS")
-    try:
-        from core.runtime.runtime_version import get_full_version
-        _umbra_print("  " + get_full_version())
-    except Exception:
-        pass
     _umbra_print("  type 'help' for commands | 'exit' to quit")
     _umbra_print("=" * 64 + "\n")
 
@@ -3333,12 +3329,16 @@ def run_prompt(runtime, prompt, project_override=None):
             "4. Key features? (crafting/magic/building/stealth/multiplayer/none)",
             "5. Art style? (pixel art/top-down/side-scroll/isometric/graveyard-keeper-style)",
         ]
-        _umbra_print("\n[UMBRA] Before I build, a few quick questions:")
-        for _q in _clarify_qs: _umbra_print("  " + _q)
-        _umbra_print("  (or type 'skip' to use defaults)")
-        _clarify_ans = _safe_input("your answers > ", "skip").strip()
-        if _clarify_ans and _clarify_ans.lower() != "skip":
-            prompt = prompt + ". Details: " + _clarify_ans
+        _umbra_print("\n[UMBRA] Answer each popup to customise your game (close to skip):\n")
+        _answers = []
+        for _ql, _qh in [("Genre","RPG/platformer/shooter/puzzle/survival/strategy"),
+                          ("Setting","fantasy/sci-fi/horror/modern/post-apocalyptic"),
+                          ("Enemies","how many types? 0-10"),
+                          ("Features","crafting/magic/building/stealth/none"),
+                          ("Art style","pixel/top-down/side-scroll/isometric")]:
+            _a = _safe_input(_ql + "?\n(" + _qh + ")", "").strip()
+            if _a: _answers.append(_ql + ": " + _a)
+        if _answers: prompt = prompt + ". Details: " + "; ".join(_answers)
         _umbra_print("[UMBRA] Building game: " + _pname + " — launching agents...")
         _res = _run_deep_build(runtime, prompt, _pname)
         if _res:

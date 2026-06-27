@@ -537,18 +537,20 @@ if 'buy_item' not in dir():
         player.add_item(recipe_name, 1)
         return True, "Crafted " + recipe_name
 
+# --- Always-available helpers ---
+_FONT_CACHE = {}
+def font(size):
+    if size not in _FONT_CACHE:
+        _FONT_CACHE[size] = pygame.font.SysFont("Arial", size)
+    return _FONT_CACHE[size]
+def txt(surf, text, x, y, size=16, col=(255,255,255), center=False):
+    f = font(size)
+    s = f.render(str(text), True, col)
+    if center: x -= s.get_width()//2
+    surf.blit(s, (x, y))
+
 # --- Fallback: UI ---
 if 'draw_hud' not in dir():
-    _FONT_CACHE = {}
-    def font(size):
-        if size not in _FONT_CACHE:
-            _FONT_CACHE[size] = pygame.font.SysFont("Arial", size)
-        return _FONT_CACHE[size]
-    def txt(surf, text, x, y, size=16, col=(255,255,255), center=False):
-        f = font(size)
-        s = f.render(str(text), True, col)
-        if center: x -= s.get_width()//2
-        surf.blit(s, (x, y))
     def draw_bar(surf, x, y, w, h, val, mx, col, bg=(40,40,40)):
         pygame.draw.rect(surf, bg, (x, y, w, h))
         if mx > 0:
