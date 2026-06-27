@@ -4,7 +4,7 @@
   "project_type": "general",
   "description": "make a test game of Demiworld just 1 town/area and 1 enemy, 3 classes, warrior, archer, mage.",
   "created_at": "2026-06-22T04:44:41.438909",
-  "updated_at": "2026-06-27T02:49:58.303047",
+  "updated_at": "2026-06-27T14:30:22.564531",
   "status": "active",
   "files": [
     {
@@ -41,6 +41,16 @@
       "path": "C:\\Umbra\\workspaces\\run_20260627_024600\\test_game.py",
       "type": "code",
       "added_at": "2026-06-27T02:49:58.303047"
+    },
+    {
+      "path": "C:\\Umbra\\workspaces\\agent_builds\\mygame\\mygame_game.py",
+      "type": "game",
+      "added_at": "2026-06-27T13:28:50.841564"
+    },
+    {
+      "path": "C:\\Umbra\\workspaces\\agent_builds\\mygame\\mygame_game.py",
+      "type": "game",
+      "added_at": "2026-06-27T14:30:22.564531"
     }
   ],
   "conversation": [],

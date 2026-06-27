@@ -1,40 +1,39 @@
-# Quest and Spawn Systems for MyGame
-
 import random
+
+WORLD_BIOMES = ['Forest', 'Mountain', 'Desert', 'Plains']
+ENEMY_TYPES = ['Bandit', 'Goblin', 'Orc', 'Wolf', 'Bear']
 
 def spawn_entities(WORLD_MAP, TOWNS, CITIES, BANDIT_CAMPS, GOBLIN_CAMPS, ENEMY_DEFS, NPC_NAMES, NPC_JOBS):
     enemies = []
     npcs = []
     buildings = []
 
-    # Spawn bandits
     for camp in BANDIT_CAMPS:
         for _ in range(4):
-            enemy_type = random.choice([e for e in ENEMY_DEFS if e['type'] == 'bandit'])
-            enemies.append({'name': enemy_type['name'], 'position': (camp[0] + random.randint(-5, 5), camp[1] + random.randint(-5, 5))})
+            enemies.append({'name': 'Bandit', 'location': camp})
 
-    # Spawn goblins and orcs
     for camp in GOBLIN_CAMPS:
         for _ in range(4):
-            enemy_type = random.choice([e for e in ENEMY_DEFS if e['type'] == 'goblin'])
-            enemies.append({'name': enemy_type['name'], 'position': (camp[0] + random.randint(-5, 5), camp[1] + random.randint(-5, 5))})
-        orc_type = random.choice([e for e in ENEMY_DEFS if e['type'] == 'orc'])
-        enemies.append({'name': orc_type['name'], 'position': (camp[0] + random.randint(-5, 5), camp[1] + random.randint(-5, 5))})
+            enemies.append({'name': 'Goblin', 'location': camp})
+        enemies.append({'name': 'Orc', 'location': camp})
 
-    # Spawn wild enemies
+    wild_enemy_locations = [loc for loc, biome in WORLD_MAP.items() if loc not in TOWNS and loc not in CITIES and biome != 'Water']
     for _ in range(30):
-        x = random.randint(0, WORLD_MAP['width'] - 1)
-        y = random.randint(0, WORLD_MAP['height'] - 1)
-        if (x, y) not in TOWNS and (x, y) not in CITIES and WORLD_MAP['tiles'][y][x] != 'WATER':
-            enemy_type = random.choice([e for e in ENEMY_DEFS if e['type'] == 'wild'])
-            enemies.append({'name': enemy_type['name'], 'position': (x, y)})
+        location = random.choice(wild_enemy_locations)
+        enemy_type = random.choice(ENEMY_TYPES)
+        enemies.append({'name': enemy_type, 'location': location})
 
-    # Spawn NPCs
     for town in TOWNS:
-        jobs = ['Merchant', 'Guard', 'Guard', 'Farmer', 'Farmer', 'Miner', 'Blacksmith']
-        for job in jobs:
-            name = random.choice(NPC_NAMES)
-            npcs.append({'name': name, 'job': job, 'position': (town[0] + random.randint(-2, 2), town[1] + random.randint(-2, 2))})
+        npc_list = [
+            {'name': NPC_NAMES.pop(), 'job': 'Merchant', 'location': town},
+            {'name': NPC_NAMES.pop(), 'job': 'Guard', 'location': town},
+            {'name': NPC_NAMES.pop(), 'job': 'Guard', 'location': town},
+            {'name': NPC_NAMES.pop(), 'job': 'Farmer', 'location': town},
+            {'name': NPC_NAMES.pop(), 'job': 'Farmer', 'location': town},
+            {'name': NPC_NAMES.pop(), 'job': 'Miner', 'location': town},
+            {'name': NPC_NAMES.pop(), 'job': 'Blacksmith', 'location': town}
+        ]
+        npcs.extend(npc_list)
 
     return enemies, npcs, buildings
 
@@ -42,33 +41,31 @@ def check_kill_quests(player, enemy_name):
     for quest in player['quests']:
         if quest['type'] == 'kill' and quest['target'] == enemy_name:
             quest['progress'] += 1
-            if quest['progress'] >= quest['required']:
+            if quest['progress'] >= quest['goal']:
                 quest['completed'] = True
 
 def check_item_quests(player, item_name, qty):
     for quest in player['quests']:
         if quest['type'] == 'collect' and quest['target'] == item_name:
             quest['progress'] += qty
-            if quest['progress'] >= quest['required']:
+            if quest['progress'] >= quest['goal']:
                 quest['completed'] = True
 
 def complete_ready_quests(player):
     completed_quests = []
     for quest in player['quests']:
         if quest['completed']:
-            player['rewards'].append(quest['reward'])
+            player['rewards'].extend(quest['rewards'])
             completed_quests.append(quest['name'])
-            player['quests'].remove(quest)
+    player['quests'] = [quest for quest in player['quests'] if not quest['completed']]
     return completed_quests
 
 def harvest_nearby(player, WORLD_MAP):
-    x, y = player['position']
-    biome = WORLD_MAP['tiles'][y][x]
-    if biome == 'FOREST':
+    location = player['location']
+    biome = WORLD_MAP.get(location)
+    if biome == 'Forest':
         return 'chop'
-    elif biome == 'MOUNTAIN':
+    elif biome == 'Mountain':
         return 'mine'
-    elif biome in ['GRASSLAND', 'PLAINS']:
-        return 'gather'
     else:
-        return ''
+        return 'gather'

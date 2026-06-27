@@ -2,38 +2,38 @@
 
 CRAFT_RECIPES = {
     'Fletching': [
-        {'name': 'Arrow', 'cost': {'Feather': 1, 'Stick': 1}, 'out': {'Arrow': 5}},
+        {'name': 'Arrow', 'cost': {'Feather': 1, 'Wood': 1}, 'out': {'Arrow': 5}},
         {'name': 'Quiver', 'cost': {'Leather': 2, 'String': 1}, 'out': {'Quiver': 1}},
-        {'name': 'Crossbow Bolt', 'cost': {'Iron Ingot': 1, 'Stick': 1}, 'out': {'Crossbow Bolt': 5}},
+        {'name': 'Crossbow Bolt', 'cost': {'Iron Ingot': 1, 'Wood': 1}, 'out': {'Crossbow Bolt': 5}},
         {'name': 'Bow', 'cost': {'Wood': 3, 'String': 2}, 'out': {'Bow': 1}}
     ],
     'Blacksmith': [
-        {'name': 'Iron Sword', 'cost': {'Iron Ingot': 2, 'Stick': 1}, 'out': {'Iron Sword': 1}},
-        {'name': 'Steel Shield', 'cost': {'Steel Ingot': 3, 'Leather': 1}, 'out': {'Steel Shield': 1}},
-        {'name': 'Armor Plate', 'cost': {'Steel Ingot': 5}, 'out': {'Armor Plate': 1}},
-        {'name': 'Iron Pickaxe', 'cost': {'Iron Ingot': 2, 'Stick': 1}, 'out': {'Iron Pickaxe': 1}}
+        {'name': 'Iron Sword', 'cost': {'Iron Ingot': 5}, 'out': {'Iron Sword': 1}},
+        {'name': 'Steel Shield', 'cost': {'Steel Ingot': 4, 'Leather': 2}, 'out': {'Steel Shield': 1}},
+        {'name': 'Horse Shoe', 'cost': {'Iron Ingot': 2}, 'out': {'Horse Shoe': 4}},
+        {'name': 'Axe', 'cost': {'Iron Ingot': 3, 'Wood': 2}, 'out': {'Axe': 1}}
     ],
     'Alchemy': [
-        {'name': 'Health Potion', 'cost': {'Herb': 3, 'Water Bottle': 1}, 'out': {'Health Potion': 1}},
-        {'name': 'Mana Potion', 'cost': {'Crystal Dust': 2, 'Water Bottle': 1}, 'out': {'Mana Potion': 1}},
-        {'name': 'Fire Scroll', 'cost': {'Sulfur': 3, 'Paper': 1}, 'out': {'Fire Scroll': 1}},
-        {'name': 'Invisibility Potion', 'cost': {'Mushroom': 2, 'Water Bottle': 1}, 'out': {'Invisibility Potion': 1}}
+        {'name': 'Health Potion', 'cost': {'Herb': 3, 'Water Bottle': 1}, 'out': {'Health Potion': 5}},
+        {'name': 'Mana Potion', 'cost': {'Crystal Dust': 2, 'Water Bottle': 1}, 'out': {'Mana Potion': 4}},
+        {'name': 'Poison', 'cost': {'Venom Sac': 1, 'Herb': 2}, 'out': {'Poison': 3}},
+        {'name': 'Invisibility Potion', 'cost': {'Mushroom': 5, 'Water Bottle': 1}, 'out': {'Invisibility Potion': 2}}
     ],
     'Building': [
-        {'name': 'House', 'cost': {'Wood': 50, 'Stone': 30}},
-        {'name': 'Shop', 'cost': {'Wood': 40, 'Iron Ingot': 20}},
-        {'name': 'Barracks', 'cost': {'Steel Ingot': 50, 'Leather': 20}},
-        {'name': 'Farm', 'cost': {'Wood': 30, 'Stone': 10}}
+        {'name': 'House', 'cost': {'Wood': 10, 'Stone': 5}, 'out': {'House': 1}},
+        {'name': 'Shop', 'cost': {'Wood': 8, 'Iron Ingot': 3}, 'out': {'Shop': 1}},
+        {'name': 'Barracks', 'cost': {'Steel Ingot': 6, 'Stone': 7}, 'out': {'Barracks': 1}},
+        {'name': 'Farm', 'cost': {'Wood': 5, 'Iron Ingot': 2}, 'out': {'Farm': 1}}
     ]
 }
 
 BUILDING_TYPES = {
-    'House': {'col': (204, 153, 255), 'w': 6, 'h': 6, 'cost': {'Wood': 50, 'Stone': 30}},
-    'Shop': {'col': (255, 204, 153), 'w': 8, 'h': 6, 'cost': {'Wood': 40, 'Iron Ingot': 20}},
-    'Barracks': {'col': (153, 204, 255), 'w': 10, 'h': 8, 'cost': {'Steel Ingot': 50, 'Leather': 20}},
-    'Farm': {'col': (204, 255, 153), 'w': 6, 'h': 6, 'cost': {'Wood': 30, 'Stone': 10}},
-    'Tower': {'col': (255, 153, 153), 'w': 8, 'h': 10, 'cost': {'Steel Ingot': 70, 'Stone': 40}},
-    'Warehouse': {'col': (153, 255, 204), 'w': 10, 'h': 10, 'cost': {'Wood': 60, 'Iron Ingot': 30}}
+    'House': {'col': (204, 153, 255), 'w': 3, 'h': 3, 'cost': {'Wood': 10, 'Stone': 5}},
+    'Shop': {'col': (255, 204, 153), 'w': 4, 'h': 4, 'cost': {'Wood': 8, 'Iron Ingot': 3}},
+    'Barracks': {'col': (153, 204, 255), 'w': 6, 'h': 6, 'cost': {'Steel Ingot': 6, 'Stone': 7}},
+    'Farm': {'col': (153, 255, 153), 'w': 5, 'h': 5, 'cost': {'Wood': 5, 'Iron Ingot': 2}},
+    'Tower': {'col': (204, 153, 153), 'w': 7, 'h': 7, 'cost': {'Steel Ingot': 8, 'Stone': 10}},
+    'Warehouse': {'col': (255, 255, 153), 'w': 6, 'h': 4, 'cost': {'Wood': 12, 'Iron Ingot': 5}}
 }
 
 def buy_item(player, npc, item_name):
