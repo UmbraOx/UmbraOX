@@ -1050,7 +1050,7 @@ def _plan_project(description, project_name, model):
         '"towns":["list town names"],"key_npcs":["list npc job types"]}\n'
         "Return ONLY the JSON object. No markdown. No explanation."
     )
-    raw = _ollama_stream(prompt, model=model, timeout=120, num_predict=400)
+    raw = _ollama_stream(prompt, model=model, timeout=600, num_predict=400)
     raw = _strip_fences(raw or "")
     # find first { to last }
     try:
@@ -1365,7 +1365,7 @@ def _run_deep_build(runtime, description, project_name, agents_to_run=None):
         "Write a 80-word technical brief for game agents. Game: " + project_name +
         "\nDescription: " + short_desc[:200] +
         "\nFocus: systems, art via pygame.draw (no images), controls.\nReturn ONLY the brief.",
-        model=model, timeout=90, num_predict=160
+        model=model, timeout=300, num_predict=160
     )
     brief = (brief_raw or "").strip() or short_desc[:200]
 
@@ -3009,6 +3009,13 @@ def _process_command(runtime, user_input):
                 candidates.sort(reverse=True)
                 game_path = candidates[0][1]
         if game_path and os.path.exists(game_path):
+            # Auto-patch existing game files before launch
+            try:
+                _gsrc = open(game_path, "r", encoding="utf-8").read()
+                if "UMBRA_MENU_PATCH" not in _gsrc and "draw_main_menu" in _gsrc:
+                    _gsrc += "\n# UMBRA_MENU_PATCH\ntry:\n    _omm = draw_main_menu\n    def draw_main_menu(surf, project_name=''):\n        result = _omm(surf, project_name)\n        if isinstance(result, dict): return result\n        import pygame as _pg2\n        W,H = surf.get_size()\n        keys = ['new_game','load_game','settings','quit','start','play','continue','exit']\n        if isinstance(result, (list, tuple)):\n            out = {}\n            for i,item in enumerate(result):\n                k = keys[i] if i < len(keys) else 'btn_'+str(i)\n                if isinstance(item, _pg2.Rect): out[k] = item\n                elif isinstance(item, tuple) and len(item)==2 and isinstance(item[1],_pg2.Rect): out[k] = item[1]\n            return out if out else {'new_game':_pg2.Rect(W//2-100,H//2-20,200,40)}\n        return {'new_game':_pg2.Rect(W//2-100,H//2-20,200,40)}\nexcept Exception: pass\n"
+                    open(game_path, "w", encoding="utf-8").write(_gsrc)
+            except Exception: pass
             _umbra_print("[UMBRA] Launching: " + game_path)
             try:
                 subprocess.Popen([sys.executable, game_path], cwd=os.path.dirname(game_path))
