@@ -1471,6 +1471,29 @@ except Exception: pass
                 'def main():',
                 'project_name = ' + repr(project_name) + '\n\ndef main():'
             )
+        # Patch draw_main_menu to always return a dict
+        if 'UMBRA_MENU_PATCH' not in game_code:
+            game_code += '''
+# UMBRA_MENU_PATCH
+try:
+    _omm = draw_main_menu
+    def draw_main_menu(surf, project_name=''):
+        result = _omm(surf, project_name)
+        if isinstance(result, dict):
+            return result
+        import pygame as _pg2
+        W,H = surf.get_size()
+        keys = ['new_game','load_game','settings','quit','start','play','continue','exit']
+        if isinstance(result, (list, tuple)):
+            out = {}
+            for i,item in enumerate(result):
+                k = keys[i] if i < len(keys) else 'btn_'+str(i)
+                if isinstance(item, _pg2.Rect): out[k] = item
+                elif isinstance(item, tuple) and len(item)==2 and isinstance(item[1],_pg2.Rect): out[k] = item[1]
+            return out if out else {'new_game':_pg2.Rect(W//2-100,H//2-20,200,40)}
+        return {'new_game':_pg2.Rect(W//2-100,H//2-20,200,40)}
+except Exception: pass
+'''
 
     game_code, report = _test_game(
         os.path.join(proj_dir, proj_slug + "_game.py"), game_code

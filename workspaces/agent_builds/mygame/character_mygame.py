@@ -1,110 +1,102 @@
-import random
-import math
+import random  
+import math  
 
-ENEMY_DEFS = [
-    {'name': 'Goblin', 'hp': 20, 'atk': 5, 'def': 3, 'xp': 10, 'col': (64, 64, 64), 'spd': 1.5, 'faction': 'Enemy'},
-    {'name': 'Orc', 'hp': 30, 'atk': 7, 'def': 5, 'xp': 20, 'col': (128, 0, 0), 'spd': 1.0, 'faction': 'Enemy'},
-    {'name': 'Troll', 'hp': 40, 'atk': 9, 'def': 7, 'xp': 30, 'col': (0, 128, 0), 'spd': 0.5, 'faction': 'Enemy'}
-]
+ENEMY_DEFS = [  
+    {'name': 'Goblin', 'hp': 20, 'atk': 5, 'def': 2, 'xp': 10, 'col': (64, 64, 64), 'spd': 1.5, 'faction': 'Enemy'},  
+    {'name': 'Orc', 'hp': 30, 'atk': 7, 'def': 3, 'xp': 20, 'col': (128, 0, 0), 'spd': 1.2, 'faction': 'Enemy'},  
+    {'name': 'Troll', 'hp': 50, 'atk': 10, 'def': 4, 'xp': 30, 'col': (64, 0, 0), 'spd': 1.0, 'faction': 'Enemy'},  
+    {'name': 'Skeleton', 'hp': 25, 'atk': 4, 'def': 1, 'xp': 8, 'col': (255, 255, 255), 'spd': 1.6, 'faction': 'Enemy'},  
+    {'name': 'Zombie', 'hp': 35, 'atk': 5, 'def': 2, 'xp': 12, 'col': (0, 255, 0), 'spd': 1.4, 'faction': 'Enemy'},  
+    {'name': 'Bandit', 'hp': 28, 'atk': 6, 'def': 3, 'xp': 15, 'col': (192, 192, 192), 'spd': 1.3, 'faction': 'Enemy'},  
+    {'name': 'Golem', 'hp': 70, 'atk': 8, 'def': 6, 'xp': 40, 'col': (128, 128, 128), 'spd': 0.8, 'faction': 'Enemy'},  
+    {'name': 'Wraith', 'hp': 30, 'atk': 7, 'def': 5, 'xp': 25, 'col': (64, 64, 192), 'spd': 1.8, 'faction': 'Enemy'},  
+    {'name': 'Dragonling', 'hp': 40, 'atk': 9, 'def': 4, 'xp': 35, 'col': (255, 64, 64), 'spd': 1.1, 'faction': 'Enemy'},  
+    {'name': 'Gargoyle', 'hp': 55, 'atk': 8, 'def': 7, 'xp': 30, 'col': (64, 192, 64), 'spd': 0.9, 'faction': 'Enemy'}  
+]  
 
-class Player:
-    def __init__(self, cls):
-        self.x = 0
-        self.y = 0
-        self.cls = cls
-        self.max_hp = 100 if cls == 'Warrior' else 80 if cls == 'Mage' else 90
-        self.hp = self.max_hp
-        self.max_mp = 120 if cls == 'Mage' else 60 if cls == 'Warrior' else 70
-        self.mp = self.max_mp
-        self.max_sta = 100
-        self.sta = self.max_sta
-        self.str_ = 10 if cls == 'Warrior' else 5 if cls == 'Mage' else 8
-        self.dex = 8 if cls == 'Rogue' else 6 if cls == 'Warrior' else 7
-        self.int_ = 12 if cls == 'Mage' else 4 if cls == 'Warrior' else 6
-        self.luck = random.randint(5, 10)
-        self.level = 1
-        self.xp = 0
-        self.xp_next = 100
-        self.gold = 50
-        self.speed = 2.0 if cls == 'Rogue' else 1.5 if cls == 'Mage' else 1.0
-        self.inventory = {}
-        self.equipped = {'weapon': None, 'armor': None}
-        self.spells = [] if cls != 'Mage' else ['Fireball', 'Lightning']
-        self.quests = []
-        self.crouching = False
+JOBS = ['Merchant', 'Healer', 'Blacksmith']  
 
-    def atk_power(self):
-        return (self.str_ + self.dex) / 2 * (1 + self.luck / 100)
+class Player:  
+    def __init__(self, cls):  
+        self.x, self.y = 0, 0  
+        self.cls = cls  
+        self.max_hp, self.hp = 100, 100  
+        self.max_mp, self.mp = 50, 50  
+        self.max_sta, self.sta = 100, 100  
+        self.str_, self.dex, self.int_, self.luck = 10, 10, 10, 10  
+        self.level, self.xp, self.xp_next = 1, 0, 100  
+        self.gold = 50  
+        self.speed = 2.0  
+        self.inventory = {}  
+        self.equipped = {'weapon': None, 'armor': None}  
+        self.spells = [] if cls == 'Mage' else []  
+        self.quests = []  
+        self.crouching = False  
 
-    def def_power(self):
-        return self.dex * (1 + self.luck / 100)
+    def atk_power(self):  
+        return self.str_ + (self.dex // 2) + (self.equipped['weapon'].atk if self.equipped['weapon'] else 0)  
 
-    def add_item(self, name, qty):
-        if name in self.inventory:
-            self.inventory[name] += qty
-        else:
-            self.inventory[name] = qty
+    def def_power(self):  
+        return self.dex + (self.equipped['armor'].def_ if self.equipped['armor'] else 0)  
 
-    def gain_xp(self, amt):
-        self.xp += amt
-        while self.xp >= self.xp_next:
-            self.level_up()
+    def add_item(self, name, qty):  
+        if name in self.inventory:  
+            self.inventory[name] += qty  
+        else:  
+            self.inventory[name] = qty  
 
-    def level_up(self):
-        self.level += 1
-        self.max_hp += random.randint(5, 10)
-        self.hp = self.max_hp
-        self.max_mp += random.randint(5, 10) if self.cls == 'Mage' else random.randint(2, 5)
-        self.mp = self.max_mp
-        self.str_ += random.randint(1, 3)
-        self.dex += random.randint(1, 3)
-        self.int_ += random.randint(1, 3) if self.cls == 'Mage' else random.randint(0, 2)
-        self.xp_next *= 1.5
+    def gain_xp(self, amt):  
+        self.xp += amt  
+        while self.xp >= self.xp_next:  
+            self.level_up()  
 
-    def regen(self, dt):
-        self.hp = min(self.max_hp, self.hp + (self.str_ / 4) * dt)
-        self.mp = min(self.max_mp, self.mp + (self.int_ / 4) * dt if self.cls == 'Mage' else self.mp)
-        self.sta = min(self.max_sta, self.sta + (self.dex / 4) * dt)
+    def regen(self, dt):  
+        self.hp = min(self.max_hp, self.hp + (self.str_ * 0.1) * dt)  
+        self.mp = min(self.max_mp, self.mp + (self.int_ * 0.1) * dt)  
+        self.sta = min(self.max_sta, self.sta + (self.dex * 0.1) * dt)  
 
-class Enemy:
-    def __init__(self, edef, tx, ty):
-        self.name = edef['name']
-        self.hp = edef['hp']
-        self.atk = edef['atk']
-        self.def_ = edef['def']
-        self.xp = edef['xp']
-        self.col = edef['col']
-        self.spd = edef['spd']
-        self.faction = edef['faction']
-        self.x = tx
-        self.y = ty
+    def level_up(self):  
+        self.xp -= self.xp_next  
+        self.xp_next *= 1.5  
+        self.level += 1  
+        self.str_ += random.randint(1, 3)  
+        self.dex += random.randint(1, 3)  
+        self.int_ += random.randint(1, 3)  
+        self.luck += random.randint(0, 2)  
+        self.max_hp += random.randint(5, 10)  
+        self.hp = self.max_hp  
+        self.max_mp += random.randint(2, 5) if self.cls == 'Mage' else 0  
+        self.mp = self.max_mp  
 
-    def update(self, player, dt):
-        dx = player.x - self.x
-        dy = player.y - self.y
-        dist = math.sqrt(dx ** 2 + dy ** 2)
-        if dist > 0:
-            self.x += (dx / dist) * self.spd * dt
-            self.y += (dy / dist) * self.spd * dt
+class Enemy:  
+    def __init__(self, edef, tx, ty):  
+        self.name = edef['name']  
+        self.hp = edef['hp']  
+        self.atk = edef['atk']  
+        self.def_ = edef['def']  
+        self.xp = edef['xp']  
+        self.col = edef['col']  
+        self.spd = edef['spd']  
+        self.faction = edef['faction']  
+        self.x, self.y = tx, ty  
 
-    def draw(self, surf, cx, cy):
-        import pygame.draw
-        pygame.draw.circle(surf, self.col, (int(cx + self.x), int(cy + self.y)), 10)
+    def update(self, player, dt):  
+        dx = player.x - self.x  
+        dy = player.y - self.y  
+        dist = math.sqrt(dx**2 + dy**2)  
+        if dist > 0:  
+            self.x += (dx / dist * self.spd * dt)  
+            self.y += (dy / dist * self.spd * dt)  
 
-class NPC:
-    def __init__(self, name, job, tx, ty):
-        self.name = name
-        self.job = job
-        self.x = tx
-        self.y = ty
-        self.dialogue = []
-        self.shop_stock = {}
-        if job == 'Blacksmith':
-            self.dialogue.append("Welcome to my forge!")
-            self.shop_stock = {'Sword': 100, 'Shield': 150}
-        elif job == 'Alchemist':
-            self.dialogue.append("Greetings, traveler!")
-            self.shop_stock = {'Potion': 30, 'Elixir': 60}
-        elif job == 'Merchant':
-            self.dialogue.append("Hello! Browse my wares.")
-            self.shop_stock = {'Food': 10, 'Cloth': 20}
+    def draw(self, surf, cx, cy):  
+        pygame.draw.circle(surf, self.col, (int(cx + self.x), int(cy + self.y)), 10)  
+
+class NPC:  
+    def __init__(self, name, job, tx, ty):  
+        self.name = name  
+        self.job = job  
+        self.x, self.y = tx, ty  
+        self.dialogue = []  
+        self.shop_stock = {} if job == 'Merchant' else {}  
+
+# No main(), no pygame.init(). import random, math only.
