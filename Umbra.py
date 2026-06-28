@@ -3009,10 +3009,29 @@ def _process_command(runtime, user_input):
                 candidates.sort(reverse=True)
                 game_path = candidates[0][1]
         if game_path and os.path.exists(game_path):
-            # Auto-patch existing game files before launch
+            # Auto-patch game: fix draw_main_menu to return dict not list
             try:
+                import re as _rp, ast as _ast2
                 _gsrc = open(game_path, "r", encoding="utf-8").read()
-                if "UMBRA_MENU_PATCH" not in _gsrc and "draw_main_menu" in _gsrc:
+                _MENU_KEYS = ["new_game","continue","load_game","settings","quit","credits"]
+                def _fix_menu_ret(code):
+                    lines = code.splitlines()
+                    in_menu = False
+                    out = []
+                    for ln in lines:
+                        if ln.startswith("def draw_main_menu"): in_menu = True
+                        elif ln.startswith("def ") and in_menu: in_menu = False
+                        if in_menu and ln.strip().startswith("return [") and ln.strip().endswith("]"):
+                            items = [x.strip() for x in ln.strip()[8:-1].split(",")]
+                            pairs = ", ".join(f'"{_MENU_KEYS[i] if i<len(_MENU_KEYS) else "btn_"+str(i)}":{v}' for i,v in enumerate(items))
+                            ln = "    return {" + pairs + "}"
+                        out.append(ln)
+                    return "\n".join(out)
+                _gsrc2 = _fix_menu_ret(_gsrc)
+                if _gsrc2 != _gsrc:
+                    _ast2.parse(_gsrc2)
+                    open(game_path, "w", encoding="utf-8").write(_gsrc2)
+                if "UMBRA_MENU_PATCH" not in _gsrc:
                     _gsrc += "\n# UMBRA_MENU_PATCH\ntry:\n    _omm = draw_main_menu\n    def draw_main_menu(surf, project_name=''):\n        result = _omm(surf, project_name)\n        if isinstance(result, dict): return result\n        import pygame as _pg2\n        W,H = surf.get_size()\n        keys = ['new_game','load_game','settings','quit','start','play','continue','exit']\n        if isinstance(result, (list, tuple)):\n            out = {}\n            for i,item in enumerate(result):\n                k = keys[i] if i < len(keys) else 'btn_'+str(i)\n                if isinstance(item, _pg2.Rect): out[k] = item\n                elif isinstance(item, tuple) and len(item)==2 and isinstance(item[1],_pg2.Rect): out[k] = item[1]\n            return out if out else {'new_game':_pg2.Rect(W//2-100,H//2-20,200,40)}\n        return {'new_game':_pg2.Rect(W//2-100,H//2-20,200,40)}\nexcept Exception: pass\n"
                     open(game_path, "w", encoding="utf-8").write(_gsrc)
             except Exception: pass

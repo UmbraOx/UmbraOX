@@ -1,70 +1,70 @@
-# Game Data Constants
+# Game Data Constants for MyGame
 
 WEAPONS = [
-    {'name': 'Iron Sword', 'atk': 10, 'type': 'melee', 'val': 50, 'col': (200, 190, 140)},
-    {'name': 'Steel Axe', 'atk': 12, 'type': 'melee', 'val': 70, 'col': (220, 220, 220)},
-    {'name': 'Shadow Dagger', 'atk': 8, 'type': 'melee', 'val': 60, 'col': (139, 0, 139)},
-    {'name': 'Oak Bow', 'atk': 7, 'type': 'ranged', 'val': 45, 'col': (139, 69, 19)},
-    {'name': 'Flame Staff', 'atk': 9, 'type': 'magic', 'val': 80, 'col': (255, 69, 0)},
-    {'name': 'Frost Wand', 'atk': 9, 'type': 'magic', 'val': 80, 'col': (173, 216, 230)},
-    {'name': 'Battle Hammer', 'atk': 15, 'type': 'melee', 'val': 100, 'col': (192, 192, 192)},
-    {'name': 'Silver Spear', 'atk': 11, 'type': 'melee', 'val': 65, 'col': (192, 192, 192)},
-    {'name': 'Throwing Stars', 'atk': 5, 'type': 'ranged', 'val': 30, 'col': (255, 215, 0)},
-    {'name': 'Death Scythe', 'atk': 20, 'type': 'melee', 'val': 150, 'col': (0, 0, 0)}
+    {'name': 'Sword', 'atk': 10, 'type': 'melee', 'val': 50, 'col': (255, 69, 0)},
+    {'name': 'Bow', 'atk': 8, 'type': 'ranged', 'val': 40, 'col': (139, 69, 19)},
+    {'name': 'Staff', 'atk': 7, 'type': 'magic', 'val': 35, 'col': (255, 218, 185)},
+    {'name': 'Dagger', 'atk': 5, 'type': 'melee', 'val': 20, 'col': (169, 169, 169)},
+    {'name': 'Crossbow', 'atk': 12, 'type': 'ranged', 'val': 70, 'col': (139, 0, 0)},
+    {'name': 'Wand', 'atk': 9, 'type': 'magic', 'val': 60, 'col': (255, 20, 147)},
+    {'name': 'Mace', 'atk': 11, 'type': 'melee', 'val': 80, 'col': (139, 0, 139)},
+    {'name': 'Spear', 'atk': 6, 'type': 'ranged', 'val': 25, 'col': (0, 100, 0)},
+    {'name': 'Tome', 'atk': 8, 'type': 'magic', 'val': 45, 'col': (75, 0, 130)},
+    {'name': 'Hammer', 'atk': 9, 'type': 'melee', 'val': 65, 'col': (255, 140, 0)}
 ]
 
 ARMOR_SETS = [
-    {'name': 'Iron Set', 'parts': ['Iron Helmet', 'Iron Chestplate', 'Iron Greaves'], 'def': 8, 'val': 120},
-    {'name': 'Steel Set', 'parts': ['Steel Helmet', 'Steel Chestplate', 'Steel Greaves'], 'def': 10, 'val': 150},
-    {'name': 'Shadow Set', 'parts': ['Shadow Hood', 'Shadow Robe', 'Shadow Boots'], 'def': 9, 'val': 140}
+    {'name': 'Leather Armor', 'parts': ['Chestplate', 'Gauntlets', 'Boots'], 'def': 5, 'val': 30},
+    {'name': 'Iron Armor', 'parts': ['Chestplate', 'Gauntlets', 'Boots'], 'def': 10, 'val': 60},
+    {'name': 'Steel Armor', 'parts': ['Chestplate', 'Gauntlets', 'Boots'], 'def': 15, 'val': 90}
 ]
 
 SPELLS = [
-    {'name': 'Fireball', 'mp': 20, 'dmg': 15, 'col': (255, 69, 0), 'desc': 'Launches a fiery ball at the enemy.'},
-    {'name': 'Ice Spike', 'mp': 18, 'dmg': 14, 'col': (173, 216, 230), 'desc': 'Fires an icy spike to freeze the target.'},
-    {'name': 'Lightning Bolt', 'mp': 25, 'dmg': 20, 'col': (255, 255, 0), 'desc': 'Unleashes a bolt of lightning on the enemy.'},
-    {'name': 'Heal', 'mp': 15, 'dmg': -10, 'col': (0, 255, 0), 'desc': 'Restores health to an ally.'},
-    {'name': 'Shield', 'mp': 10, 'dmg': 0, 'col': (169, 169, 169), 'desc': 'Creates a shield to block incoming damage.'},
-    {'name': 'Teleport', 'mp': 30, 'dmg': 0, 'col': (255, 255, 255), 'desc': 'Instantly teleports you to a safe location.'},
-    {'name': 'Summon Wolf', 'mp': 40, 'dmg': 0, 'col': (139, 69, 19), 'desc': 'Summons a wolf to fight by your side.'},
-    {'name': 'Earthquake', 'mp': 25, 'dmg': 18, 'col': (139, 76, 57), 'desc': 'Causes the ground to shake and damage enemies.'},
-    {'name': 'Drain Life', 'mp': 20, 'dmg': 12, 'col': (128, 0, 0), 'desc': 'Drains life from an enemy to heal yourself.'},
-    {'name': 'Time Slow', 'mp': 35, 'dmg': 0, 'col': (75, 0, 130), 'desc': 'Slows down time for a short duration.'}
+    {'name': 'Fireball', 'mp': 20, 'dmg': 15, 'col': (255, 69, 0), 'desc': 'A basic fire spell'},
+    {'name': 'Ice Shard', 'mp': 18, 'dmg': 14, 'col': (173, 216, 230), 'desc': 'Throws a shard of ice'},
+    {'name': 'Lightning Bolt', 'mp': 25, 'dmg': 20, 'col': (255, 255, 0), 'desc': 'Unleashes a bolt of lightning'},
+    {'name': 'Heal', 'mp': 15, 'dmg': -10, 'col': (34, 139, 34), 'desc': 'Restores health to the target'},
+    {'name': 'Shield', 'mp': 20, 'dmg': 0, 'col': (165, 42, 42), 'desc': 'Creates a protective shield'},
+    {'name': 'Poison Arrow', 'mp': 10, 'dmg': 8, 'col': (34, 139, 34), 'desc': 'Fires an arrow coated in poison'},
+    {'name': 'Thunderclap', 'mp': 25, 'dmg': 18, 'col': (255, 69, 0), 'desc': 'A powerful clap of thunder'},
+    {'name': 'Blizzard', 'mp': 30, 'dmg': 25, 'col': (173, 216, 230), 'desc': 'Summons a blizzard'},
+    {'name': 'Earthquake', 'mp': 40, 'dmg': 30, 'col': (139, 69, 19), 'desc': 'Causes the ground to shake'},
+    {'name': 'Meteor Shower', 'mp': 50, 'dmg': 40, 'col': (255, 69, 0), 'desc': 'Summons a shower of meteors'}
 ]
 
 MATERIALS = [
     'Iron Ore',
     'Steel Ingot',
-    'Shadow Crystal',
-    'Oak Wood',
-    'Flame Essence',
-    'Frost Shard',
-    'Silver Bar',
-    'Wolf Fang',
-    'Star Dust',
-    'Dark Soul'
+    'Leather Hide',
+    'Magic Crystal',
+    'Wood Plank',
+    'Stone Brick',
+    'Gold Bar',
+    'Silver Coin',
+    'Herb Bundle',
+    'Potion Vial'
 ]
 
 QUESTS = [
-    {'id': 1, 'name': 'Goblin Hunt', 'desc': 'Defeat 5 goblins in the forest.', 'target': 'goblin', 'need': 5, 'prog': 0, 'done': False, 'reward_gold': 50, 'reward_xp': 20},
-    {'id': 2, 'name': 'Collect Iron Ore', 'desc': 'Gather 10 iron ore from the mines.', 'target': 'mat:Iron Ore', 'need': 10, 'prog': 0, 'done': False, 'reward_gold': 30, 'reward_xp': 15},
-    {'id': 3, 'name': 'Shadow Crystal Quest', 'desc': 'Find a shadow crystal in the dark forest.', 'target': 'mat:Shadow Crystal', 'need': 1, 'prog': 0, 'done': False, 'reward_gold': 70, 'reward_xp': 25},
-    {'id': 4, 'name': 'Bandit Ambush', 'desc': 'Defeat the bandits at the ambush point.', 'target': 'bandit', 'need': 3, 'prog': 0, 'done': False, 'reward_gold': 60, 'reward_xp': 20},
-    {'id': 5, 'name': 'Heal the Village', 'desc': 'Use healing spells to restore health to all villagers.', 'target': 'mat:Dark Soul', 'need': 3, 'prog': 0, 'done': False, 'reward_gold': 40, 'reward_xp': 18}
+    {'id': 1, 'name': 'Goblin Hunt', 'desc': 'Defeat 5 goblins in the forest', 'target': 'goblin', 'need': 5, 'prog': 0, 'done': False, 'reward_gold': 50, 'reward_xp': 20},
+    {'id': 2, 'name': 'Bandit Raid', 'desc': 'Defeat 3 bandits in the mountains', 'target': 'bandit', 'need': 3, 'prog': 0, 'done': False, 'reward_gold': 75, 'reward_xp': 30},
+    {'id': 3, 'name': 'Collect Herbs', 'desc': 'Gather 10 herb bundles from the forest', 'target': 'mat:Herb Bundle', 'need': 10, 'prog': 0, 'done': False, 'reward_gold': 25, 'reward_xp': 10},
+    {'id': 4, 'name': 'Mine Iron Ore', 'desc': 'Collect 8 iron ores from the mine', 'target': 'mat:Iron Ore', 'need': 8, 'prog': 0, 'done': False, 'reward_gold': 60, 'reward_xp': 25},
+    {'id': 5, 'name': 'Craft Armor', 'desc': 'Create a set of leather armor', 'target': 'mat:Leather Hide', 'need': 3, 'prog': 0, 'done': False, 'reward_gold': 100, 'reward_xp': 40}
 ]
 
 FACTIONS = {
-    'kingdom': {'rep': 0, 'name': 'Kingdom of Eldoria'},
-    'bandit': {'rep': 0, 'name': 'Bandit Clan'},
-    'goblin': {'rep': 0, 'name': 'Goblin Tribe'}
+    'kingdom': {'rep': 0, 'name': 'Kingdom'},
+    'bandit': {'rep': 0, 'name': 'Bandits'},
+    'goblin': {'rep': 0, 'name': 'Goblins'}
 }
 
 DIALOGUE_TREES = {
-    'Merchant': [{'text': 'Welcome to my shop!', 'opts': ['Buy', 'Sell', 'Leave']}],
-    'Guard': [{'text': 'Stay alert, stranger.', 'opts': ['Report Bandit Activity', 'Ask for News', 'Leave']}],
-    'Blacksmith': [{'text': 'Need a weapon or armor?', 'opts': ['Craft Weapon', 'Craft Armor', 'Leave']}],
-    'Farmer': [{'text': 'How can I help you today?', 'opts': ['Buy Produce', 'Sell Seeds', 'Leave']}],
-    'default': [{'text': 'Hello there.', 'opts': ['Talk', 'Leave']}]
+    'Merchant': [{'text': 'Hello! What can I sell you?', 'opts': ['Buy', 'Sell', 'Leave']}],
+    'Guard': [{'text': 'Greetings traveler. How may I assist you?', 'opts': ['Report Bandit Activity', 'Ask About Quests', 'Leave']}],
+    'Blacksmith': [{'text': 'Welcome to my forge! What do you need?', 'opts': ['Buy Armor', 'Sell Materials', 'Leave']}],
+    'Farmer': [{'text': 'Good day! How can I help you today?', 'opts': ['Buy Produce', 'Trade Seeds', 'Leave']}],
+    'default': [{'text': 'Hello there. Not much to do here.', 'opts': ['Leave']}]
 }
 
 NPC_NAMES = [
@@ -74,7 +74,7 @@ NPC_NAMES = [
     'Daria',
     'Eldrin',
     'Fiona',
-    'Galen',
+    'Garrick',
     'Hannah',
     'Igor',
     'Jenna',
@@ -83,5 +83,5 @@ NPC_NAMES = [
     'Morgan',
     'Nora',
     'Oscar',
-    'Piper'
+    'Penny'
 ]
