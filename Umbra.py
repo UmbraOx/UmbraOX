@@ -2968,20 +2968,20 @@ def _process_command(runtime, user_input):
                         game_path = fe["path"]
                         break
         if not game_path:
-            ws_base = os.path.join(_UMBRA_ROOT, "workspaces")
+            # Only look in agent_builds for *_game.py files
+            ws_base = os.path.join(_UMBRA_ROOT, "workspaces", "agent_builds")
             candidates = []
-            for root, dirs, files in os.walk(ws_base):
-                dirs[:] = [d for d in dirs if d not in ("__pycache__",".git")]
-                for fname in files:
-                    if not fname.endswith(".py"): continue
-                    full = os.path.join(root, fname)
-                    try: mtime = os.path.getmtime(full)
-                    except: continue
-                    score = mtime
-                    if any(g in fname.lower() for g in ["game","optiopia","demiworld","myworld","rpg"]): score += 1e12
-                    if project_name and project_name.lower() in full.lower(): score += 2e12
-                    if fname in ("main.py","__init__.py") and "game" not in fname.lower(): score -= 1e10
-                    candidates.append((score, full))
+            if os.path.isdir(ws_base):
+                for root, dirs, files in os.walk(ws_base):
+                    dirs[:] = [d for d in dirs if d not in ("__pycache__",".git")]
+                    for fname in files:
+                        if not fname.endswith("_game.py"): continue
+                        full = os.path.join(root, fname)
+                        try: mtime = os.path.getmtime(full)
+                        except: continue
+                        score = mtime
+                        if project_name and project_name.lower() in full.lower(): score += 2e12
+                        candidates.append((score, full))
             if candidates:
                 candidates.sort(reverse=True)
                 game_path = candidates[0][1]
