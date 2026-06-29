@@ -710,22 +710,61 @@ if 'draw_hud' not in dir():
             txt(surf, lbl, rx+rw//2, by2+10, 16, (220,220,255), center=True)
             btns[lbl.lower().replace(" ","_")] = r
         return xbtn, btns
-    def draw_main_menu(surf):
-        W,H = surf.get_size()
-        surf.fill((10,10,20))
-        for i in range(20):
-            pygame.draw.circle(surf,(20,20,60),(random.randint(0,W),random.randint(0,H)),random.randint(1,3))
-        txt(surf, "__PROJECT_NAME__", W//2, H//5, 48, (180,120,255), center=True)
-        txt(surf, "An Umbra-Generated RPG", W//2, H//5+55, 18, (120,100,180), center=True)
-        lbls = ["New Game","Continue","Quit"]
+    _menu_stars = [(random.randint(0,1280), random.randint(0,720), random.randint(1,3), random.random()*0.5+0.3) for _ in range(120)]
+    def draw_main_menu(surf, project_name="__PROJECT_NAME__"):
+        W, H = surf.get_size()
+        # Gradient sky
+        for y in range(H):
+            t = y / H
+            r2 = int(5  + t * 15)
+            g2 = int(5  + t * 8)
+            b2 = int(15 + t * 35)
+            pygame.draw.line(surf, (r2, g2, b2), (0, y), (W, y))
+        # Twinkling stars
+        tick = pygame.time.get_ticks()
+        for sx, sy, sr, spd in _menu_stars:
+            bright = int(120 + 100 * abs(math.sin(tick * 0.001 * spd)))
+            pygame.draw.circle(surf, (bright, bright, min(255, bright + 60)), (sx, sy), sr)
+        # Moon
+        moon_x, moon_y = W - 160, 110
+        pygame.draw.circle(surf, (220, 220, 180), (moon_x, moon_y), 52)
+        pygame.draw.circle(surf, (200, 200, 155), (moon_x, moon_y), 50)
+        pygame.draw.circle(surf, (15, 12, 35),    (moon_x - 16, moon_y - 10), 42)
+        # Silhouette hills
+        hill_pts = [(0,H),(0,H-120),(80,H-180),(180,H-140),(280,H-210),(400,H-170),
+                    (520,H-230),(640,H-190),(760,H-220),(900,H-160),(1050,H-200),
+                    (1180,H-145),(1280,H-175),(1280,H)]
+        pygame.draw.polygon(surf, (8, 12, 22), hill_pts)
+        # Title glow
+        title = project_name if project_name else "__PROJECT_NAME__"
+        for blur in range(4, 0, -1):
+            gs = font(50 + blur).render(title, True, (80, 30, 120))
+            surf.blit(gs, (W//2 - gs.get_width()//2, H//5 - blur))
+        txt(surf, title, W//2, H//5, 50, (210, 160, 255), center=True)
+        txt(surf, "An Umbra Game", W//2, H//5 + 60, 16, (140, 110, 190), center=True)
+        # Buttons
         btns = {}
-        for i,lbl in enumerate(lbls):
-            by = H//2+i*70
-            r = pygame.Rect(W//2-120, by, 240, 50)
-            pygame.draw.rect(surf,(40,30,60),r)
-            pygame.draw.rect(surf,(130,80,200),r,2)
-            txt(surf, lbl, W//2, by+14, 20, (220,200,255), center=True)
-            btns[lbl.lower().replace(" ","_")] = r
+        btn_defs = [("New Game", (100,60,160), (180,100,255)),
+                    ("Continue", (40,60,100),  (100,160,255)),
+                    ("Quit",     (80,30,30),   (200,80,80))]
+        for i, (lbl, bg, border) in enumerate(btn_defs):
+            by = H//2 + 10 + i * 68
+            bx = W//2 - 130
+            r = pygame.Rect(bx, by, 260, 52)
+            # Shadow
+            pygame.draw.rect(surf, (0, 0, 0), r.move(3, 3))
+            # Button body with gradient feel
+            for dy in range(52):
+                tt = dy / 52
+                br = int(bg[0] + tt * 20)
+                bg2 = int(bg[1] + tt * 20)
+                bb  = int(bg[2] + tt * 20)
+                pygame.draw.line(surf, (br, bg2, bb), (bx, by+dy), (bx+260, by+dy))
+            pygame.draw.rect(surf, border, r, 2)
+            txt(surf, lbl, W//2, by + 15, 20, (230, 210, 255), center=True)
+            btns[lbl.lower().replace(" ", "_")] = r
+        # Version tag
+        txt(surf, "Powered by Umbra AI", W - 10, H - 18, 11, (60, 50, 90))
         return btns
     def draw_class_select(surf):
         W,H = surf.get_size()
@@ -848,6 +887,7 @@ ST_GAMEOVER    = "GAME_OVER"
 
 pygame.init()
 screen = pygame.display.set_mode((SCREEN_W, SCREEN_H))
+GAME_TITLE = GAME_TITLE if "GAME_TITLE" in dir() else "__PROJECT_NAME__"
 pygame.display.set_caption(GAME_TITLE)
 clock  = pygame.time.Clock()
 

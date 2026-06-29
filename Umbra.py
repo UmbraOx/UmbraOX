@@ -2446,7 +2446,9 @@ def build_runtime():
     _init_resource_manager()
 
     # Auto-install required packages if missing
-    for _pkg_import, _pkg_name in [("PIL", "Pillow"), ("pygame", "pygame")]:
+    _boot_deps = [("PIL","Pillow"),("pygame","pygame"),("requests","requests"),
+                  ("numpy","numpy"),("pyttsx3","pyttsx3")]
+    for _pkg_import, _pkg_name in _boot_deps:
         try:
             __import__(_pkg_import)
         except ImportError:
@@ -2896,9 +2898,28 @@ def _process_command(runtime, user_input):
         try:
             _gs3 = open(_gp3, "r", encoding="utf-8").read()
             ast.parse(_gs3)
-            _umbra_print("[FIX] No syntax errors. Type: play last")
+            _umbra_print("[FIX] Syntax OK. Checking for runtime issues...")
+            # Scan for common runtime error patterns and patch them
+            _gs3_fixed = _gs3
+            _rt_patches = 0
+            # NameError: GAME_TITLE not defined
+            if "GAME_TITLE" not in _gs3_fixed and "pygame.display.set_caption" in _gs3_fixed:
+                _gs3_fixed = 'GAME_TITLE = "Umbra Game"\n' + _gs3_fixed
+                _rt_patches += 1
+            # Missing project_name in draw_main_menu calls
+            import re as _re3
+            _gs3_fixed = _re3.sub(
+                r'draw_main_menu\(\s*(\w+)\s*\)',
+                r'draw_main_menu(\1, GAME_TITLE if "GAME_TITLE" in dir() else "Umbra")',
+                _gs3_fixed
+            )
+            if _gs3_fixed != _gs3:
+                open(_gp3, "w", encoding="utf-8").write(_gs3_fixed)
+                _umbra_print("[FIX] Applied " + str(_rt_patches) + " runtime patch(es). Type: play last")
+            else:
+                _umbra_print("[FIX] No issues found. Type: play last")
         except SyntaxError as _ge3:
-            _umbra_print("[FIX] Line " + str(_ge3.lineno) + ": " + str(_ge3.msg) + " — repairing...")
+            _umbra_print("[FIX] Syntax error line " + str(_ge3.lineno) + ": " + str(_ge3.msg) + " — repairing...")
             _gs3 = open(_gp3, "r", encoding="utf-8").read()
             _gf3 = _syntax_repair(_gs3, _get_agent_model())
             try:
@@ -2906,7 +2927,7 @@ def _process_command(runtime, user_input):
                 open(_gp3, "w", encoding="utf-8").write(_gf3)
                 _umbra_print("[FIX] Repaired. Type: play last")
             except SyntaxError:
-                _umbra_print("[FIX] Could not repair. Try: build " + os.path.basename(_gp3).replace("_game.py",""))
+                _umbra_print("[FIX] Could not auto-repair. Try: build " + os.path.basename(_gp3).replace("_game.py",""))
         return
 
     if re.search(r"fix.{1,30}(gui|window|gif|video|tts|voice|search|converter)", cmd):
