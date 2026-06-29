@@ -1,16 +1,16 @@
-# Game Data Constants for MyGame
+# Game Data Constants
 
 WEAPONS = [
     {'name': 'Sword', 'atk': 10, 'type': 'melee', 'val': 50, 'col': (255, 69, 0)},
     {'name': 'Bow', 'atk': 8, 'type': 'ranged', 'val': 40, 'col': (139, 69, 19)},
-    {'name': 'Staff', 'atk': 7, 'type': 'magic', 'val': 35, 'col': (255, 218, 185)},
-    {'name': 'Dagger', 'atk': 5, 'type': 'melee', 'val': 20, 'col': (169, 169, 169)},
-    {'name': 'Crossbow', 'atk': 12, 'type': 'ranged', 'val': 70, 'col': (139, 0, 0)},
-    {'name': 'Wand', 'atk': 9, 'type': 'magic', 'val': 60, 'col': (255, 20, 147)},
-    {'name': 'Mace', 'atk': 11, 'type': 'melee', 'val': 80, 'col': (139, 0, 139)},
-    {'name': 'Spear', 'atk': 6, 'type': 'ranged', 'val': 25, 'col': (0, 100, 0)},
-    {'name': 'Tome', 'atk': 8, 'type': 'magic', 'val': 45, 'col': (75, 0, 130)},
-    {'name': 'Hammer', 'atk': 9, 'type': 'melee', 'val': 65, 'col': (255, 140, 0)}
+    {'name': 'Staff', 'atk': 7, 'type': 'magic', 'val': 35, 'col': (255, 215, 0)},
+    {'name': 'Axe', 'atk': 12, 'type': 'melee', 'val': 60, 'col': (165, 42, 42)},
+    {'name': 'Crossbow', 'atk': 9, 'type': 'ranged', 'val': 45, 'col': (139, 76, 57)},
+    {'name': 'Wand', 'atk': 6, 'type': 'magic', 'val': 30, 'col': (255, 182, 193)},
+    {'name': 'Dagger', 'atk': 5, 'type': 'melee', 'val': 20, 'col': (255, 69, 0)},
+    {'name': 'Spear', 'atk': 11, 'type': 'ranged', 'val': 55, 'col': (139, 69, 19)},
+    {'name': 'Orb', 'atk': 8, 'type': 'magic', 'val': 40, 'col': (255, 215, 0)},
+    {'name': 'Hammer', 'atk': 13, 'type': 'melee', 'val': 70, 'col': (165, 42, 42)}
 ]
 
 ARMOR_SETS = [
@@ -20,16 +20,16 @@ ARMOR_SETS = [
 ]
 
 SPELLS = [
-    {'name': 'Fireball', 'mp': 20, 'dmg': 15, 'col': (255, 69, 0), 'desc': 'A basic fire spell'},
-    {'name': 'Ice Shard', 'mp': 18, 'dmg': 14, 'col': (173, 216, 230), 'desc': 'Throws a shard of ice'},
-    {'name': 'Lightning Bolt', 'mp': 25, 'dmg': 20, 'col': (255, 255, 0), 'desc': 'Unleashes a bolt of lightning'},
-    {'name': 'Heal', 'mp': 15, 'dmg': -10, 'col': (34, 139, 34), 'desc': 'Restores health to the target'},
-    {'name': 'Shield', 'mp': 20, 'dmg': 0, 'col': (165, 42, 42), 'desc': 'Creates a protective shield'},
-    {'name': 'Poison Arrow', 'mp': 10, 'dmg': 8, 'col': (34, 139, 34), 'desc': 'Fires an arrow coated in poison'},
-    {'name': 'Thunderclap', 'mp': 25, 'dmg': 18, 'col': (255, 69, 0), 'desc': 'A powerful clap of thunder'},
-    {'name': 'Blizzard', 'mp': 30, 'dmg': 25, 'col': (173, 216, 230), 'desc': 'Summons a blizzard'},
-    {'name': 'Earthquake', 'mp': 40, 'dmg': 30, 'col': (139, 69, 19), 'desc': 'Causes the ground to shake'},
-    {'name': 'Meteor Shower', 'mp': 50, 'dmg': 40, 'col': (255, 69, 0), 'desc': 'Summons a shower of meteors'}
+    {'name': 'Fireball', 'mp': 20, 'dmg': 15, 'col': (255, 69, 0), 'desc': 'A fiery projectile'},
+    {'name': 'Ice Shard', 'mp': 18, 'dmg': 14, 'col': (135, 206, 250), 'desc': 'A shard of ice'},
+    {'name': 'Lightning Bolt', 'mp': 22, 'dmg': 17, 'col': (255, 215, 0), 'desc': 'A bolt of lightning'},
+    {'name': 'Heal', 'mp': 15, 'dmg': -10, 'col': (34, 139, 34), 'desc': 'Restores health'},
+    {'name': 'Shield', 'mp': 25, 'dmg': 0, 'col': (165, 42, 42), 'desc': 'Increases defense temporarily'},
+    {'name': 'Blizzard', 'mp': 30, 'dmg': 20, 'col': (173, 216, 230), 'desc': 'A wave of ice'},
+    {'name': 'Meteor Shower', 'mp': 40, 'dmg': 25, 'col': (255, 69, 0), 'desc': 'Shower of meteors'},
+    {'name': 'Thunderstorm', 'mp': 35, 'dmg': 22, 'col': (255, 215, 0), 'desc': 'A storm of lightning'},
+    {'name': 'Earthquake', 'mp': 45, 'dmg': 30, 'col': (165, 42, 42), 'desc': 'Shakes the ground'},
+    {'name': 'Resurrection', 'mp': 50, 'dmg': -50, 'col': (34, 139, 34), 'desc': 'Brings a fallen ally back to life'}
 ]
 
 MATERIALS = [
@@ -38,33 +38,33 @@ MATERIALS = [
     'Leather Hide',
     'Magic Crystal',
     'Wood Plank',
-    'Stone Brick',
     'Gold Bar',
     'Silver Coin',
-    'Herb Bundle',
-    'Potion Vial'
+    'Mana Stone',
+    'Dragon Scale',
+    'Phoenix Feather'
 ]
 
 QUESTS = [
-    {'id': 1, 'name': 'Goblin Hunt', 'desc': 'Defeat 5 goblins in the forest', 'target': 'goblin', 'need': 5, 'prog': 0, 'done': False, 'reward_gold': 50, 'reward_xp': 20},
-    {'id': 2, 'name': 'Bandit Raid', 'desc': 'Defeat 3 bandits in the mountains', 'target': 'bandit', 'need': 3, 'prog': 0, 'done': False, 'reward_gold': 75, 'reward_xp': 30},
-    {'id': 3, 'name': 'Collect Herbs', 'desc': 'Gather 10 herb bundles from the forest', 'target': 'mat:Herb Bundle', 'need': 10, 'prog': 0, 'done': False, 'reward_gold': 25, 'reward_xp': 10},
-    {'id': 4, 'name': 'Mine Iron Ore', 'desc': 'Collect 8 iron ores from the mine', 'target': 'mat:Iron Ore', 'need': 8, 'prog': 0, 'done': False, 'reward_gold': 60, 'reward_xp': 25},
-    {'id': 5, 'name': 'Craft Armor', 'desc': 'Create a set of leather armor', 'target': 'mat:Leather Hide', 'need': 3, 'prog': 0, 'done': False, 'reward_gold': 100, 'reward_xp': 40}
+    {'id': 1, 'name': 'Goblin Hunt', 'desc': 'Kill 5 goblins in the forest.', 'target': 'goblin', 'need': 5, 'prog': 0, 'done': False, 'reward_gold': 100, 'reward_xp': 50},
+    {'id': 2, 'name': 'Collect Iron Ore', 'desc': 'Collect 10 iron ore from the mines.', 'target': 'mat:Iron Ore', 'need': 10, 'prog': 0, 'done': False, 'reward_gold': 80, 'reward_xp': 40},
+    {'id': 3, 'name': 'Defend Village', 'desc': 'Protect the village from bandits.', 'target': 'bandit', 'need': 3, 'prog': 0, 'done': False, 'reward_gold': 120, 'reward_xp': 60},
+    {'id': 4, 'name': 'Craft Steel Armor', 'desc': 'Craft a set of steel armor.', 'target': 'Steel Armor', 'need': 1, 'prog': 0, 'done': False, 'reward_gold': 200, 'reward_xp': 80},
+    {'id': 5, 'name': 'Find the Lost Artifact', 'desc': 'Retrieve the lost artifact from the ruins.', 'target': 'Artifact', 'need': 1, 'prog': 0, 'done': False, 'reward_gold': 300, 'reward_xp': 100}
 ]
 
 FACTIONS = {
-    'kingdom': {'rep': 0, 'name': 'Kingdom'},
-    'bandit': {'rep': 0, 'name': 'Bandits'},
-    'goblin': {'rep': 0, 'name': 'Goblins'}
+    'kingdom': {'rep': 0, 'name': 'Kingdom of Eldoria'},
+    'bandit': {'rep': 0, 'name': 'Bandit Clan'},
+    'goblin': {'rep': 0, 'name': 'Goblin Tribe'}
 }
 
 DIALOGUE_TREES = {
-    'Merchant': [{'text': 'Hello! What can I sell you?', 'opts': ['Buy', 'Sell', 'Leave']}],
-    'Guard': [{'text': 'Greetings traveler. How may I assist you?', 'opts': ['Report Bandit Activity', 'Ask About Quests', 'Leave']}],
-    'Blacksmith': [{'text': 'Welcome to my forge! What do you need?', 'opts': ['Buy Armor', 'Sell Materials', 'Leave']}],
-    'Farmer': [{'text': 'Good day! How can I help you today?', 'opts': ['Buy Produce', 'Trade Seeds', 'Leave']}],
-    'default': [{'text': 'Hello there. Not much to do here.', 'opts': ['Leave']}]
+    'Merchant': [{'text': 'Welcome to my shop!', 'opts': ['Buy', 'Sell', 'Leave']}],
+    'Guard': [{'text': 'Stay alert, stranger.', 'opts': ['Report a crime', 'Ask for news', 'Leave']}],
+    'Blacksmith': [{'text': 'Need weapons or armor?', 'opts': ['Forge weapon', 'Craft armor', 'Leave']}],
+    'Farmer': [{'text': 'Howdy! Need anything?', 'opts': ['Buy produce', 'Sell crops', 'Leave']}],
+    'default': [{'text': 'Hello there.', 'opts': ['Talk', 'Leave']}]
 }
 
 NPC_NAMES = [
@@ -74,14 +74,14 @@ NPC_NAMES = [
     'Daria',
     'Eldrin',
     'Fiona',
-    'Garrick',
+    'Galen',
     'Hannah',
     'Igor',
-    'Jenna',
+    'Jasmine',
     'Kael',
     'Lila',
     'Morgan',
-    'Nora',
+    'Natalie',
     'Oscar',
-    'Penny'
+    'Piper'
 ]

@@ -981,7 +981,7 @@ def _stitch_game(project_name, brief, components):
             # that would override the skeleton's main()
             # Strip agent redefinitions of skeleton helpers (txt, draw_main_menu variants, etc.)
             _SKELETON_FUNS = {"main","run_game","game_loop","game_main","start_game","run",
-                              "txt","draw_text","render_text"}
+                              "txt","draw_text","render_text","draw_main_menu","draw_menu"}
             if s.startswith("def ") and any(s.startswith("def "+n+"(") for n in _SKELETON_FUNS):
                 # Skip entire function body
                 i += 1

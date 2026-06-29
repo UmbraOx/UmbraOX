@@ -456,7 +456,7 @@ def draw_main_menu(surf, project_name):
     start_btn = btn(surf, surf.get_width() // 3, surf.get_height() // 2, 200, 50, 'Start', (100, 100, 100), (255, 255, 255), 36)
     load_btn = btn(surf, surf.get_width() // 3, surf.get_height() // 2 + 70, 200, 50, 'Load', (100, 100, 100), (255, 255, 255), 36)
     quit_btn = btn(surf, surf.get_width() // 3, surf.get_height() // 2 + 140, 200, 50, 'Quit', (100, 100, 100), (255, 255, 255), 36)
-    return [start_btn, load_btn, quit_btn]
+    return {"new_game": start_btn, "continue": load_btn, "load_game": quit_btn}
 
 def draw_class_select(surf):
     class_cards = [
@@ -2041,3 +2041,27 @@ def main():
 
 if __name__ == '__main__':
     main()
+# UMBRA_MENU_DICT_PATCH
+try:
+    _omm2 = draw_main_menu
+    def draw_main_menu(surf, project_name=''):
+        import pygame as _pg
+        result = _omm2(surf, project_name) if _omm2.__code__.co_varcount > 1 else _omm2(surf)
+        if isinstance(result, dict): return result
+        W, H = surf.get_size()
+        KEYS = ['new_game','continue','quit','settings','load_game','credits']
+        if isinstance(result, (list, tuple)):
+            out = {}
+            for i, item in enumerate(result):
+                k = KEYS[i] if i < len(KEYS) else 'btn_' + str(i)
+                if isinstance(item, _pg.Rect):
+                    out[k] = item
+                elif isinstance(item, (list, tuple)) and item:
+                    r = next((x for x in item if isinstance(x, _pg.Rect)), None)
+                    if r: out[k] = r
+            if out: return out
+        return {'new_game': _pg.Rect(W//2-120, H//2, 240, 50),
+                'continue': _pg.Rect(W//2-120, H//2+70, 240, 50),
+                'quit':     _pg.Rect(W//2-120, H//2+140, 240, 50)}
+except Exception:
+    pass
