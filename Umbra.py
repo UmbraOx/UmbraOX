@@ -2447,7 +2447,7 @@ def build_runtime():
 
     # Auto-install required packages if missing
     _boot_deps = [("PIL","Pillow"),("pygame","pygame"),("requests","requests"),
-                  ("numpy","numpy"),("pyttsx3","pyttsx3")]
+                  ("numpy","numpy"),("pyttsx3","pyttsx3"),("speech_recognition","SpeechRecognition")]
     for _pkg_import, _pkg_name in _boot_deps:
         try:
             __import__(_pkg_import)
@@ -3037,6 +3037,8 @@ def _process_command(runtime, user_input):
         project_name = None
         if cmd.startswith("play ") and len(cmd) > 5:
             project_name = cmd[5:].strip().lower().replace(" ", "_")
+        elif cmd.startswith("run game ") and len(cmd) > 9:
+            project_name = cmd[9:].strip().lower().replace(" ", "_")
         game_path = None
         try:
             last_mem = _umbra_mem(runtime).retrieve("last_game_file")
@@ -3074,7 +3076,16 @@ def _process_command(runtime, user_input):
                         try: mtime = os.path.getmtime(full)
                         except: continue
                         score = mtime
-                        if project_name and project_name.lower() in full.lower(): score += 2e12
+                        if project_name:
+                            pn = project_name.lower()
+                            fl = full.lower()
+                            fn = os.path.basename(full).lower()
+                            # Exact match in filename
+                            if pn in fn: score += 4e12
+                            # Partial fuzzy: all chars of project_name appear in filename
+                            elif all(c in fn for c in pn if c.isalpha()): score += 2e12
+                            # Any word of project_name in path
+                            elif any(w in fl for w in pn.split("_") if len(w) > 2): score += 1e12
                         candidates.append((score, full))
             if candidates:
                 candidates.sort(reverse=True)
@@ -3485,6 +3496,28 @@ def run_prompt(runtime, prompt, project_override=None):
     if lower_direct in ("voice off","disable voice","turn off voice","tts off","speak off"):
         runtime["_tts_enabled"] = False
         _umbra_print("[UMBRA] Voice disabled.")
+        return None
+
+    # List built games
+    if lower_direct in ("list games","show games","my games","list all games","games"):
+        ws_base = os.path.join(_UMBRA_ROOT, "workspaces", "agent_builds")
+        _found = []
+        if os.path.isdir(ws_base):
+            for _r4, _d4, _f4 in os.walk(ws_base):
+                for _fn4 in _f4:
+                    if _fn4.endswith("_game.py"):
+                        _fp4 = os.path.join(_r4, _fn4)
+                        _mt4 = os.path.getmtime(_fp4)
+                        import datetime as _dt4
+                        _ts4 = _dt4.datetime.fromtimestamp(_mt4).strftime("%Y-%m-%d %H:%M")
+                        _found.append((_mt4, _fn4.replace("_game.py",""), _ts4))
+        if _found:
+            _found.sort(reverse=True)
+            _umbra_print("\n[UMBRA] Built games (" + str(len(_found)) + "):")
+            for _, _gname, _gts in _found:
+                _umbra_print("  - " + _gname + "  (" + _gts + ")  -> play " + _gname)
+        else:
+            _umbra_print("[UMBRA] No games built yet. Try: make a game called MyGame")
         return None
 
     _gif_words = ["make a gif","create a gif","generate a gif","make gif","make an animated"]
