@@ -856,46 +856,68 @@ def _syntax_repair(code, model):
 
 def _run_agent(agent_name, prompt, model, proj_dir, proj_slug):
     """
-    Run a single named agent:
-      1. Stream from Ollama
-      2. Clean the output (strip prose/markdown)
-      3. Syntax-check, attempt repair if needed
-      4. Save to proj_dir/agent_name_proj_slug.py
+    Run a single named agent with up to 3 full LLM retries on syntax failure.
     Returns (code_str, file_path) or ("", None) on failure.
     """
-    _umbra_print("\n  ╔══ [" + agent_name.upper() + " AGENT] Starting...")
-    raw = _ollama_stream(prompt, model=model)
-    if not raw or len(raw.strip()) < 30:
-        _umbra_print("  ╚══ [" + agent_name.upper() + " AGENT] ✗ Returned empty")
-        return "", None
+    MAX_AGENT_RETRIES = 3
+    label = agent_name.upper()
 
-    code = _clean_agent_output(raw)
-    if not code or len(code.strip()) < 30:
-        _umbra_print("  ╚══ [" + agent_name.upper() + " AGENT] ✗ Nothing left after cleaning")
-        return "", None
+    for attempt in range(1, MAX_AGENT_RETRIES + 1):
+        _umbra_print("\n  ╔══ [" + label + " AGENT] Attempt " + str(attempt) + "/" + str(MAX_AGENT_RETRIES) + "...")
+        raw = _ollama_stream(prompt, model=model)
+        if not raw or len(raw.strip()) < 30:
+            _umbra_print("  ║   [" + label + " AGENT] Empty response — retrying..." if attempt < MAX_AGENT_RETRIES else "  ╚══ [" + label + " AGENT] ✗ All retries returned empty")
+            continue
 
-    # Syntax check
-    try:
-        ast.parse(code)
-        _umbra_print("  ╚══ [" + agent_name.upper() + " AGENT] ✓ " + str(len(code.splitlines())) + " lines, syntax OK")
-    except SyntaxError as e:
-        _umbra_print("  ║   [" + agent_name.upper() + " AGENT] Syntax error at line " + str(e.lineno) + " — repairing...")
-        code = _syntax_repair(code, model)
+        code = _clean_agent_output(raw)
+        if not code or len(code.strip()) < 30:
+            _umbra_print("  ║   [" + label + " AGENT] Nothing after clean — retrying..." if attempt < MAX_AGENT_RETRIES else "  ╚══ [" + label + " AGENT] ✗ Clean failed all retries")
+            continue
+
+        # Syntax check
         try:
             ast.parse(code)
-            _umbra_print("  ╚══ [" + agent_name.upper() + " AGENT] ✓ Repaired — " + str(len(code.splitlines())) + " lines")
-        except SyntaxError:
-            _umbra_print("  ╚══ [" + agent_name.upper() + " AGENT] ⚠ Saved with known issues")
+            _umbra_print("  ╚══ [" + label + " AGENT] ✓ " + str(len(code.splitlines())) + " lines, syntax OK (attempt " + str(attempt) + ")")
+            # Save and return
+            path = os.path.join(proj_dir, agent_name + "_" + proj_slug + ".py")
+            try:
+                with open(path, "w", encoding="utf-8") as f:
+                    f.write(code)
+            except Exception as ex:
+                _umbra_print("  ╚══ [" + label + " AGENT] ✗ Save failed: " + str(ex))
+                return "", None
+            return code, path
 
-    path = os.path.join(proj_dir, agent_name + "_" + proj_slug + ".py")
-    try:
-        with open(path, "w", encoding="utf-8") as f:
-            f.write(code)
-    except Exception as ex:
-        _umbra_print("  ╚══ [" + agent_name.upper() + " AGENT] ✗ Save failed: " + str(ex))
-        return "", None
+        except SyntaxError as e:
+            _umbra_print("  ║   [" + label + " AGENT] Syntax error line " + str(e.lineno) + " — attempting repair...")
+            repaired = _syntax_repair(code, model)
+            try:
+                ast.parse(repaired)
+                code = repaired
+                _umbra_print("  ╚══ [" + label + " AGENT] ✓ Repaired OK (attempt " + str(attempt) + ")")
+                path = os.path.join(proj_dir, agent_name + "_" + proj_slug + ".py")
+                try:
+                    with open(path, "w", encoding="utf-8") as f:
+                        f.write(code)
+                except Exception as ex:
+                    _umbra_print("  ╚══ [" + label + " AGENT] ✗ Save failed: " + str(ex))
+                    return "", None
+                return code, path
+            except SyntaxError:
+                if attempt < MAX_AGENT_RETRIES:
+                    _umbra_print("  ║   [" + label + " AGENT] Repair failed — retrying full LLM call...")
+                    continue
+                # Last attempt: save best-effort so build can continue
+                _umbra_print("  ╚══ [" + label + " AGENT] ⚠ Saving best-effort (syntax issues remain)")
+                path = os.path.join(proj_dir, agent_name + "_" + proj_slug + ".py")
+                try:
+                    with open(path, "w", encoding="utf-8") as f:
+                        f.write(repaired or code)
+                except Exception:
+                    pass
+                return repaired or code, path
 
-    return code, path
+    return "", None
 
 
 def _build_agent_prompt(agent_name, project_name, description):
@@ -2313,6 +2335,32 @@ def _classify_with_user_model(runtime, text):
 #  TTS
 # ============================================================
 
+def _ensure_pyttsx3():
+    """Auto-install pyttsx3 if missing. Returns True if available."""
+    try:
+        import pyttsx3
+        return True
+    except ImportError:
+        pass
+    try:
+        import subprocess
+        _umbra_print("[TTS] pyttsx3 not found — installing...")
+        result = subprocess.run(
+            [sys.executable, "-m", "pip", "install", "pyttsx3", "-q"],
+            capture_output=True, text=True, timeout=120
+        )
+        if result.returncode == 0:
+            _umbra_print("[TTS] pyttsx3 installed OK")
+            import pyttsx3
+            return True
+        else:
+            _umbra_print("[TTS] Install failed: " + result.stderr[:200])
+            return False
+    except Exception as ex:
+        _umbra_print("[TTS] Auto-install error: " + str(ex))
+        return False
+
+
 def _maybe_tts(runtime, text):
     if not runtime.get("_tts_enabled"):
         return
@@ -2320,6 +2368,8 @@ def _maybe_tts(runtime, text):
         tts_mod = runtime.get("tts_engine")
         if tts_mod and hasattr(tts_mod, "run"):
             tts_mod.run(text)
+            return
+        if not _ensure_pyttsx3():
             return
         import pyttsx3
         engine = pyttsx3.init()
@@ -3366,7 +3416,14 @@ def run_prompt(runtime, prompt, project_override=None):
                    "make an rpg","build an rpg","make a pygame","build a pygame",
                    "make a small","test version of","test game","make optiopia","build optiopia",
                    "make demiworld","build demiworld","make a platformer","make a shooter",
-                   "make a dungeon","make a survival","make a version of my game"]
+                   "make a dungeon","make a survival","make a version of my game",
+                   "make a snake","build a snake","make snake","build snake",
+                   "make a puzzle","build a puzzle","make a racing","build a racing",
+                   "make a tower","build a tower","make a strategy","build a strategy",
+                   "make a horror","build a horror","make a sci-fi","build a sci-fi",
+                   "make a space","build a space","make a fighting","build a fighting",
+                   "make a clicker","build a clicker","make a roguelike","build a roguelike",
+                   "make overquest","build overquest","make a card","build a card"]
     if any(kw in lower_direct for kw in _game_words):
         _pn_m = re.search(r"(?:called|named)\s+([A-Za-z][A-Za-z0-9 ]+?)(?:[ ]|$|,|[.])", prompt, re.IGNORECASE)
         _pname = _pn_m.group(1).strip() if _pn_m else "MyGame"
@@ -3394,6 +3451,19 @@ def run_prompt(runtime, prompt, project_override=None):
             _fp2 = getattr(_res,"file_path",None)
             if _fp2: _umbra_mem(runtime) and _umbra_mem(runtime).store("last_game_file",_fp2,tags=["game"])
             _umbra_print("[UMBRA] Done! Type: play last")
+        return None
+
+    # Voice on/off
+    if lower_direct in ("voice on","enable voice","turn on voice","tts on","speak on"):
+        if _ensure_pyttsx3():
+            runtime["_tts_enabled"] = True
+            _umbra_print("[UMBRA] Voice enabled.")
+        else:
+            _umbra_print("[UMBRA] Could not enable voice — pyttsx3 install failed.")
+        return None
+    if lower_direct in ("voice off","disable voice","turn off voice","tts off","speak off"):
+        runtime["_tts_enabled"] = False
+        _umbra_print("[UMBRA] Voice disabled.")
         return None
 
     _gif_words = ["make a gif","create a gif","generate a gif","make gif","make an animated"]
