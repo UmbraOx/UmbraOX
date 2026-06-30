@@ -551,121 +551,75 @@ def txt(surf, text, x, y, size=16, col=(255,255,255), center=False):
 
 # --- Fallback: UI ---
 if 'draw_hud' not in dir():
-    def draw_bar(surf, x, y, w, h, val, mx, col, bg=(20,20,28), label="", label_col=(220,220,220)):
-        # Shadow
-        pygame.draw.rect(surf, (0,0,0), (x+2, y+2, w, h))
-        # Background
+    def draw_bar(surf, x, y, w, h, val, mx, col, bg=(40,40,40)):
         pygame.draw.rect(surf, bg, (x, y, w, h))
         if mx > 0:
-            ratio = max(0.0, min(1.0, val / max(1, mx)))
-            fill_w = int(w * ratio)
-            if fill_w > 0:
-                # Gradient: bright centre strip
-                pygame.draw.rect(surf, col, (x, y, fill_w, h))
-                hi = tuple(min(255, c + 60) for c in col)
-                pygame.draw.rect(surf, hi, (x, y, fill_w, max(1, h//3)))
-        # Border
-        pygame.draw.rect(surf, (80,80,100), (x, y, w, h), 1)
-        # Inline label
-        if label:
-            lbl_s = font(10).render(label, True, label_col)
-            surf.blit(lbl_s, (x + 4, y + (h - lbl_s.get_height())//2))
+            ratio = max(0, min(1, val/mx))
+            pygame.draw.rect(surf, col, (x, y, int(w*ratio), h))
+        pygame.draw.rect(surf, (100,100,100), (x, y, w, h), 1)
     def draw_x_button(surf, rx, ry, rw, rh):
         bx = rx + rw - 24; by = ry + 4
         r = pygame.Rect(bx, by, 20, 20)
         pygame.draw.rect(surf, (160,40,40), r)
         pygame.draw.rect(surf, (220,80,80), r, 2)
-        xs = font(14).render("X", True, (255,255,255))
+        f = font(14)
+        xs = f.render("X", True, (255,255,255))
         surf.blit(xs, (bx+6, by+3))
         return r
     def draw_panel(surf, rx, ry, rw, rh, title=""):
-        # Drop shadow
-        pygame.draw.rect(surf, (0,0,0), (rx+4, ry+4, rw, rh))
-        pygame.draw.rect(surf, (22,22,38), (rx, ry, rw, rh))
-        pygame.draw.rect(surf, (70,70,140), (rx, ry, rw, 2))
-        pygame.draw.rect(surf, (70,70,120), (rx, ry, rw, rh), 1)
+        pygame.draw.rect(surf, (30,30,45), (rx, ry, rw, rh))
+        pygame.draw.rect(surf, (80,80,130), (rx, ry, rw, rh), 2)
         if title:
-            txt(surf, title, rx+10, ry+8, 16, (180,180,255))
+            txt(surf, title, rx+10, ry+8, 18, (200,200,255))
         return draw_x_button(surf, rx, ry, rw, rh)
     def draw_hud(surf, player):
         sw, sh = surf.get_size()
-        PAD = 12
-        BW, BH = 210, 14
-        bx = PAD
-        # Semi-transparent HUD backing
-        hud_surf = pygame.Surface((BW + 230, 80), pygame.SRCALPHA)
-        hud_surf.fill((0, 0, 0, 140))
-        surf.blit(hud_surf, (0, sh - 90))
-        # Stat bars with inline labels
-        draw_bar(surf, bx, sh-84, BW, BH, player.hp,  player.max_hp,  (190,35,35),  label="HP  "+str(player.hp)+"/"+str(player.max_hp),  label_col=(255,200,200))
-        draw_bar(surf, bx, sh-65, BW, BH, player.mp,  player.max_mp,  (35,70,200),  label="MP  "+str(player.mp)+"/"+str(player.max_mp),  label_col=(180,210,255))
-        draw_bar(surf, bx, sh-46, BW, BH, player.sta, player.max_sta, (35,160,55),  label="STA "+str(player.sta)+"/"+str(player.max_sta), label_col=(180,255,180))
-        xp_ratio = player.xp / max(1, player.xp_next)
-        draw_bar(surf, bx, sh-27, BW, 8,  player.xp,  player.xp_next, (160,100,220), label="", label_col=(200,180,255))
-        # Right-side info block
-        ix = bx + BW + 12
-        txt(surf, "Lv " + str(player.level) + " " + getattr(player,"cls","Hero"), ix, sh-86, 13, (220,210,160))
-        txt(surf, "XP " + str(int(xp_ratio*100)) + "%", ix, sh-70, 11, (180,150,220))
-        txt(surf, str(player.gold) + "g", ix, sh-54, 13, (255,210,0))
-        weap  = player.equipped.get("weapon", None)
-        armr  = player.equipped.get("armor",  None)
-        if weap:  txt(surf, "[W] " + str(weap)[:14],  ix, sh-38, 11, (220,195,150))
-        if armr:  txt(surf, "[A] " + str(armr)[:14],  ix, sh-24, 11, (170,170,220))
-        # Spell hotbar (bottom-right)
-        spells = getattr(player, "spells", []) or []
-        for si, sp in enumerate(spells[:6]):
-            sx2 = sw - 380 + si * 58
-            sy2 = sh - 64
-            active = (si == getattr(player, "current_spell", 0))
-            bg_col = (70,70,120) if active else (30,30,50)
-            border_col = (160,130,255) if active else (80,80,120)
-            pygame.draw.rect(surf, bg_col, (sx2, sy2, 50, 50))
-            pygame.draw.rect(surf, border_col, (sx2, sy2, 50, 50), 2)
-            sdata = next((x for x in SPELLS if x.get("name") == sp), None)
-            scol = sdata["col"] if sdata else (180,180,200)
-            pygame.draw.circle(surf, scol, (sx2+25, sy2+20), 13)
-            if active:
-                pygame.draw.circle(surf, (255,255,200), (sx2+25, sy2+20), 13, 2)
-            txt(surf, sp[:7], sx2+2, sy2+36, 9, (210,210,210))
-            txt(surf, str(si+1), sx2+38, sy2+2, 9, (120,120,150))
+        # Bars
+        draw_bar(surf, 10, sh-90, 200, 16, player.hp,  player.max_hp,  (200,40,40))
+        draw_bar(surf, 10, sh-68, 200, 16, player.mp,  player.max_mp,  (40,80,200))
+        draw_bar(surf, 10, sh-46, 200, 16, player.sta, player.max_sta, (40,180,60))
+        txt(surf, "HP " + str(player.hp)+"/"+str(player.max_hp), 10, sh-92, 12, (255,180,180))
+        txt(surf, "MP " + str(player.mp)+"/"+str(player.max_mp), 10, sh-70, 12, (160,200,255))
+        txt(surf, "STA "+str(player.sta)+"/"+str(player.max_sta),10, sh-48, 12, (160,255,160))
+        txt(surf, "Gold: " + str(player.gold),  10, sh-26, 14, (255,220,0))
+        txt(surf, "Lv " + str(player.level) + "  " + player.cls, 220, sh-90, 14, (200,200,200))
+        xp_pct = int(100 * player.xp / max(1, player.xp_next))
+        txt(surf, "XP: " + str(player.xp)+"/"+str(player.xp_next)+" ("+str(xp_pct)+"%)",220, sh-72, 12, (180,220,180))
+        weap = player.equipped.get("weapon","---")
+        armor = player.equipped.get("armor","---")
+        txt(surf, "W: " + (weap or "---"), 220, sh-52, 12, (220,200,160))
+        txt(surf, "A: " + (armor or "---"), 220, sh-36, 12, (180,180,220))
+        # Spell bar
+        spells = player.spells or []
+        for si, sp in enumerate(spells[:5]):
+            sx2 = sw - 280 + si*56
+            sy2 = sh - 60
+            col = (60,60,80) if si != player.current_spell else (80,80,150)
+            pygame.draw.rect(surf, col, (sx2, sy2, 48, 48))
+            pygame.draw.rect(surf, (120,120,200), (sx2, sy2, 48, 48), 2)
+            sdata = next((x for x in SPELLS if x["name"]==sp), None)
+            scol = sdata["col"] if sdata else (200,200,200)
+            pygame.draw.circle(surf, scol, (sx2+24, sy2+20), 12)
+            txt(surf, sp[:6], sx2+2, sy2+34, 10, (200,200,200))
     def draw_minimap(surf, player, enemies):
         sw, sh = surf.get_size()
-        MS = 140
-        mx = sw - MS - 10
-        my = 10
-        # Dark backing with border glow
-        pygame.draw.rect(surf, (0,0,0),    (mx-2, my-2, MS+4, MS+4))
-        pygame.draw.rect(surf, (12,12,25), (mx, my, MS, MS))
-        pygame.draw.rect(surf, (60,60,110),(mx, my, MS, MS), 1)
-        # Render world tiles (sampled)
-        if "WORLD_MAP" in dir() and "BIOME_COL" in dir():
-            wm = WORLD_MAP
-            rows = len(wm); cols = len(wm[0]) if rows else 1
-            cell = MS / max(rows, cols)
-            for ty in range(rows):
-                for tx in range(cols):
-                    col = BIOME_COL.get(wm[ty][tx], (40,40,40))
-                    dark = tuple(max(0, c//3) for c in col)
-                    px3 = int(mx + tx * cell)
-                    py3 = int(my + ty * cell)
-                    cw = max(1, int(cell))
-                    pygame.draw.rect(surf, dark, (px3, py3, cw, cw))
-        # Enemies
+        ms = 120
+        mx = sw - ms - 10; my = 10
+        pygame.draw.rect(surf, (20,20,30), (mx, my, ms, ms))
+        pygame.draw.rect(surf, (80,80,120), (mx, my, ms, ms), 2)
         T = 32
-        scale = MS / max(1, 200 * T)
+        scale = ms / (200*T)
         for e in enemies:
-            if not getattr(e, "alive", True): continue
+            if not e.alive: continue
             ex2 = int(e.x * scale) + mx
             ey2 = int(e.y * scale) + my
-            if mx <= ex2 < mx+MS and my <= ey2 < my+MS:
-                pygame.draw.circle(surf, (220,50,50), (ex2, ey2), 2)
-        # Player dot with glow
-        px2 = max(mx+3, min(mx+MS-4, int(player.x * scale) + mx))
-        py2 = max(my+3, min(my+MS-4, int(player.y * scale) + my))
-        pygame.draw.circle(surf, (60,180,255),  (px2, py2), 5)
-        pygame.draw.circle(surf, (200,240,255), (px2, py2), 3)
-        # Label
-        txt(surf, "MAP", mx+4, my+MS-16, 9, (80,80,130))
+            if mx<=ex2<mx+ms and my<=ey2<my+ms:
+                pygame.draw.circle(surf, (200,40,40), (ex2, ey2), 2)
+        px2 = int(player.x * scale) + mx
+        py2 = int(player.y * scale) + my
+        px2 = max(mx, min(mx+ms-3, px2))
+        py2 = max(my, min(my+ms-3, py2))
+        pygame.draw.circle(surf, (100,200,255), (px2, py2), 4)
     def draw_inventory(surf, player, selected=0):
         W,H = surf.get_size()
         rx,ry,rw,rh = W//4, H//8, W//2, H*3//4

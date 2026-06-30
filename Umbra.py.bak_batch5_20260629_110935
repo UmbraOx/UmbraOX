@@ -1,8 +1,8 @@
 """
-UMBRA -- Autonomous AI Runtime OS  v3.0.0
+UMBRA -- Autonomous AI Runtime OS  v2.3.0
 Complete drop-in replacement.
 
-Fixes & Upgrades in v3.0.0:
+Fixes & Upgrades in v2.3.0:
   - Deep Agent System: sprite, character, item, mechanic, world, quest, dialogue,
     faction, economy, music, lore, cutscene, ui, ai_personality agents
   - GUI fully wired to run_prompt via thread-safe queue (no stdout capture hack)
@@ -686,14 +686,13 @@ def _get_agent_model():
 
 def _ollama_stream(prompt, model=None, timeout=1800, num_predict=-1, token_cb=None):
     """
-    Stream tokens from Ollama HTTP API.
-    Retries up to 3x on HTTP 500 / empty response (Ollama overload).
+    Stream tokens directly from Ollama HTTP API.
+    num_predict=-1 means unlimited (model stops when it finishes).
+    token_cb: optional callable(token_str) called for each streamed token (for GUI live output).
     Returns full response string, or "" on failure.
     """
     import urllib.request as _ur
-    import urllib.error as _ue
     import json as _j
-    import time as _time
 
     if model is None:
         model = _get_agent_model()
@@ -710,19 +709,15 @@ def _ollama_stream(prompt, model=None, timeout=1800, num_predict=-1, token_cb=No
         }
     }).encode("utf-8")
 
-    MAX_RETRIES = 3
-    RETRY_DELAYS = [5, 15, 30]
+    req = _ur.Request(
+        "http://localhost:11434/api/generate",
+        data=payload,
+        headers={"Content-Type": "application/json"},
+        method="POST",
+    )
 
-    for attempt in range(MAX_RETRIES + 1):
-        req = _ur.Request(
-            "http://localhost:11434/api/generate",
-            data=payload,
-            headers={"Content-Type": "application/json"},
-            method="POST",
-        )
-        parts = []
-        try:
-            pass
+    parts = []
+    try:
         with _ur.urlopen(req, timeout=timeout) as resp:
             while True:
                 line = resp.readline()
@@ -2689,7 +2684,7 @@ def build_runtime():
 
 def print_banner():
     _umbra_print("\n" + "=" * 64)
-    _umbra_print("  UMBRA v3.0.0 — Autonomous AI Runtime OS")
+    _umbra_print("  UMBRA v2.4.0 — Autonomous AI Runtime OS")
     _umbra_print("  type 'help' for commands | 'exit' to quit")
     _umbra_print("=" * 64 + "\n")
 
@@ -2761,7 +2756,7 @@ def print_status(runtime):
 
 def print_config():
     _umbra_print("""
-[UMBRA CONFIG v3.0.0 — CONFIG & COMMANDS — LLM: Ollama]
+[UMBRA CONFIG v2.3.0 — CONFIG & COMMANDS — LLM: Ollama]
 
 START
   python umbra.py               interactive mode
@@ -3223,7 +3218,7 @@ def _launch_gui(runtime):
 
                 def run(self, title="Umbra"):
                     self._root = tk.Tk()
-                    self._root.title(title + " v3.0.0")
+                    self._root.title(title + " v2.3.0")
                     self._root.configure(bg="#1a1a2e")
                     self._root.geometry("900x650")
 

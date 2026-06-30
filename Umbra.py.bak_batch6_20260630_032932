@@ -722,7 +722,6 @@ def _ollama_stream(prompt, model=None, timeout=1800, num_predict=-1, token_cb=No
         )
         parts = []
         try:
-            pass
         with _ur.urlopen(req, timeout=timeout) as resp:
             while True:
                 line = resp.readline()
