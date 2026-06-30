@@ -238,5 +238,4 @@ if FAIL_:
     for n,e in FAIL_: print("    x "+n+"\n      "+e[:100])
 print("="*56)
 if not FAIL_: print("\n  ALL PASS — run: python Umbra.py")
-if __name__ == "__main__":
-    sys.exit(0 if not FAIL_ else 1)
+sys.exit(0 if not FAIL_ else 1)
