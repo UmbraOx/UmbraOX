@@ -1,12 +1,8 @@
 """
-UMBRA -- Autonomous AI Runtime OS  v3.1.0
+UMBRA -- Autonomous AI Runtime OS  v3.0.0
 Complete drop-in replacement.
 
-Fixes & Upgrades in v3.1.0:
-  - Fixed _ollama_stream retry loop (proper backoff, success-return)
-  - Added headless gameplay crash test (test_gameplay_crash.py)
-  - Cleaned up stale/orphaned test scaffolding
-
+Fixes & Upgrades in v3.0.0:
   - Deep Agent System: sprite, character, item, mechanic, world, quest, dialogue,
     faction, economy, music, lore, cutscene, ui, ai_personality agents
   - GUI fully wired to run_prompt via thread-safe queue (no stdout capture hack)
@@ -2704,7 +2700,7 @@ def build_runtime():
 
 def print_banner():
     _umbra_print("\n" + "=" * 64)
-    _umbra_print("  UMBRA v3.1.0 — Autonomous AI Runtime OS")
+    _umbra_print("  UMBRA v3.0.0 — Autonomous AI Runtime OS")
     _umbra_print("  type 'help' for commands | 'exit' to quit")
     _umbra_print("=" * 64 + "\n")
 
@@ -2776,7 +2772,7 @@ def print_status(runtime):
 
 def print_config():
     _umbra_print("""
-[UMBRA CONFIG v3.1.0 — CONFIG & COMMANDS — LLM: Ollama]
+[UMBRA CONFIG v3.0.0 — CONFIG & COMMANDS — LLM: Ollama]
 
 START
   python umbra.py               interactive mode
@@ -3238,7 +3234,7 @@ def _launch_gui(runtime):
 
                 def run(self, title="Umbra"):
                     self._root = tk.Tk()
-                    self._root.title(title + " v3.1.0")
+                    self._root.title(title + " v3.0.0")
                     self._root.configure(bg="#1a1a2e")
                     self._root.geometry("900x650")
 
