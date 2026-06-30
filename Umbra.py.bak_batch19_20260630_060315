@@ -2490,8 +2490,8 @@ def build_runtime():
         launcher.ensure_services(verbose=True)
         if hasattr(launcher, "_comfyui_proc") and launcher._comfyui_proc:
             _comfyui_proc = launcher._comfyui_proc
-    except Exception as _launch_err:
-        print("  [LAUNCHER] Service auto-launch failed: " + str(_launch_err))
+    except Exception:
+        pass
 
     # Auto-start Ollama if not running
     try:
@@ -3570,10 +3570,11 @@ def run_prompt(runtime, prompt, project_override=None):
             _umbra_print("[GIF] Not available. Run: install a gif generator into umbra")
         return None
 
-    _img_pattern = re.compile(
-        r"\b(make|create|generate|draw)\b.{0,15}\b(an?|\d+)?\s*(image|images|picture|pictures|art|artwork)\b"
-    )
-    if _img_pattern.search(lower_direct):
+    _img_words = ["make an image","make image","create an image","generate an image",
+                  "make a picture","draw an image","make 1 image","make 2 image",
+                  "make 3 image","make 4 image","make 5 image","make 6 image",
+                  "make 7 image","make 8 image","make 9 image","make 10 image"]
+    if any(kw in lower_direct for kw in _img_words) or re.search(r"make \d+ image", lower_direct):
         _count_m = re.search(r"(\d+)\s+image", lower_direct)
         _count = int(_count_m.group(1)) if _count_m else 1
         _count = min(_count, 10)

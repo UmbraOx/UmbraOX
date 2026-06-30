@@ -70,31 +70,16 @@ class RuntimeLauncher:
         except Exception:
             return False
 
-    def ensure_services(self, verbose=False):
+    def ensure_services(self):
         status = {
             "ollama": self.check_ollama(),
             "comfyui": self.check_comfyui(),
         }
-        if verbose:
-            print("  [LAUNCHER] Ollama running: " + str(status["ollama"]))
-            print("  [LAUNCHER] ComfyUI running: " + str(status["comfyui"]))
 
         if not status["ollama"]:
-            if verbose:
-                print("  [LAUNCHER] Starting Ollama...")
             status["ollama"] = self.launch_ollama()
-            if verbose:
-                print("  [LAUNCHER] Ollama started: " + str(status["ollama"]))
 
         if not status["comfyui"] and self.auto_launch_comfyui:
-            script = self._find_comfyui_launch_script()
-            if verbose:
-                if script:
-                    print("  [LAUNCHER] Starting ComfyUI via " + script + " (this can take 30-60s)...")
-                else:
-                    print("  [LAUNCHER] No ComfyUI launch script found in " + self.comfyui_dir)
             status["comfyui"] = self.launch_comfyui()
-            if verbose:
-                print("  [LAUNCHER] ComfyUI started: " + str(status["comfyui"]))
 
         return status
