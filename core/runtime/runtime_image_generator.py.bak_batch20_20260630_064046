@@ -31,8 +31,8 @@ class ImageResult:
 
 class RuntimeImageGenerator:
     def __init__(self,output_dir=None,comfyui_url="http://127.0.0.1:8188",
-                 default_width=512,default_height=512,default_steps=30,
-                 default_cfg=7.0,checkpoint="dreamshaper_8.safetensors"):
+                 default_width=512,default_height=512,default_steps=25,
+                 default_cfg=7.0,checkpoint="v1-5-pruned-emaonly.ckpt"):
         self.output_dir=output_dir or os.path.join(_ROOT,"workspaces","images")
         self.comfyui_url=comfyui_url.rstrip("/")
         self.width=default_width; self.height=default_height
