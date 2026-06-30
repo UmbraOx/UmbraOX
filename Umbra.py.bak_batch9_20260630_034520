@@ -741,9 +741,9 @@ def _ollama_stream(prompt, model=None, timeout=1800, num_predict=-1, token_cb=No
                             break
                     except Exception:
                         continue
-        except Exception as ex:
-            _umbra_print("  [STREAM ERROR] " + str(ex))
-            return ""
+    except Exception as ex:
+        _umbra_print("  [STREAM ERROR] " + str(ex))
+        return ""
     return "".join(parts)
 
 
