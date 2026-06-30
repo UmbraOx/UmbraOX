@@ -713,6 +713,7 @@ def _ollama_stream(prompt, model=None, timeout=1800, num_predict=-1, token_cb=No
     MAX_RETRIES = 3
     RETRY_DELAYS = [5, 15, 30]
 
+    last_error = None
     for attempt in range(MAX_RETRIES + 1):
         req = _ur.Request(
             "http://localhost:11434/api/generate",
@@ -741,10 +742,21 @@ def _ollama_stream(prompt, model=None, timeout=1800, num_predict=-1, token_cb=No
                             break
                     except Exception:
                         continue
+
+            result = "".join(parts)
+            if result:
+                return result
+
+            last_error = "empty response"
         except Exception as ex:
-            _umbra_print("  [STREAM ERROR] " + str(ex))
-            return ""
-    return "".join(parts)
+            last_error = str(ex)
+            _umbra_print(f"  [STREAM ERROR] attempt {attempt+1}/{MAX_RETRIES+1}: {last_error}")
+
+        if attempt < MAX_RETRIES:
+            _time.sleep(RETRY_DELAYS[attempt])
+
+    _umbra_print(f"  [STREAM FAILED] giving up after {MAX_RETRIES+1} attempts: {last_error}")
+    return ""
 
 
 def _clean_agent_output(raw):
