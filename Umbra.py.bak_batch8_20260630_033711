@@ -722,25 +722,25 @@ def _ollama_stream(prompt, model=None, timeout=1800, num_predict=-1, token_cb=No
         )
         parts = []
         try:
-            with _ur.urlopen(req, timeout=timeout) as resp:
-                while True:
-                    line = resp.readline()
-                    if not line:
+        with _ur.urlopen(req, timeout=timeout) as resp:
+            while True:
+                line = resp.readline()
+                if not line:
+                    break
+                try:
+                    chunk = _j.loads(line.decode("utf-8", errors="replace"))
+                    tok = chunk.get("response", "")
+                    if tok:
+                        parts.append(tok)
+                        if token_cb:
+                            try:
+                                token_cb(tok)
+                            except Exception:
+                                pass
+                    if chunk.get("done", False):
                         break
-                    try:
-                        chunk = _j.loads(line.decode("utf-8", errors="replace"))
-                        tok = chunk.get("response", "")
-                        if tok:
-                            parts.append(tok)
-                            if token_cb:
-                                try:
-                                    token_cb(tok)
-                                except Exception:
-                                    pass
-                        if chunk.get("done", False):
-                            break
-                    except Exception:
-                        continue
+                except Exception:
+                    continue
     except Exception as ex:
         _umbra_print("  [STREAM ERROR] " + str(ex))
         return ""
