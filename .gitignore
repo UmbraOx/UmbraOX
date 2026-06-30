@@ -72,4 +72,4 @@ Desktop.ini
 # Testing
 .pytest_cache/
 .coverage
-htmlcov/
+htmlcov/_deleted_tests_backup_*/
