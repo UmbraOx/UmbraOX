@@ -11,12 +11,9 @@ class RuntimeLauncher:
 
     OLLAMA_URL = "http://localhost:11434"
     COMFYUI_URL = "http://localhost:8188"
-    COMFYUI_DIR = r"C:\ComfyUI"
-    COMFYUI_LAUNCH_CANDIDATES = ["run_directml.bat", "run_amd.bat", "run_nvidia_gpu.bat", "run_cpu.bat"]
 
-    def __init__(self, auto_launch_comfyui=True, comfyui_dir=None):
+    def __init__(self, auto_launch_comfyui=True):
         self.auto_launch_comfyui = auto_launch_comfyui
-        self.comfyui_dir = comfyui_dir or self.COMFYUI_DIR
 
     def check_ollama(self):
         try:
@@ -42,30 +39,10 @@ class RuntimeLauncher:
         except Exception:
             return False
 
-    def _find_comfyui_launch_script(self):
-        if not os.path.isdir(self.comfyui_dir):
-            return None
-        for candidate in self.COMFYUI_LAUNCH_CANDIDATES:
-            full = os.path.join(self.comfyui_dir, candidate)
-            if os.path.exists(full):
-                return full
-        return None
-
     def launch_comfyui(self):
-        script = self._find_comfyui_launch_script()
-        if not script:
-            return False
         try:
-            subprocess.Popen(
-                ["cmd", "/c", "start", "", os.path.basename(script)],
-                cwd=self.comfyui_dir,
-                shell=True,
-            )
-            # ComfyUI can take a while to load models on first start
-            for _ in range(30):
-                time.sleep(2)
-                if self.check_comfyui():
-                    return True
+            subprocess.Popen(["cmd", "/c", "start", "run_cpu.bat"], shell=True)
+            time.sleep(5)
             return self.check_comfyui()
         except Exception:
             return False

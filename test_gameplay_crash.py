@@ -15,7 +15,16 @@ import time
 
 ROOT = os.path.dirname(os.path.abspath(__file__))
 BUILDS_DIR = os.path.join(ROOT, "workspaces", "agent_builds")
-RUN_SECONDS = float(sys.argv[1]) if len(sys.argv) > 1 else 6.0
+def _get_run_seconds():
+    if len(sys.argv) > 1:
+        try:
+            return float(sys.argv[1])
+        except ValueError:
+            pass
+    return 6.0
+
+
+RUN_SECONDS = _get_run_seconds()
 
 PY310_CANDIDATES = [
     r"C:\Python310\python.exe",
