@@ -6,7 +6,7 @@ if ROOT not in sys.path: sys.path.insert(0,ROOT)
 RD=os.path.join(ROOT,"core","runtime")
 
 PASS_=[]; FAIL_=[]
-def run_check(name,fn):
+def test(name,fn):
     try: fn(); PASS_.append(name); print("  [PASS] "+name)
     except Exception as e: FAIL_.append((name,str(e)[:120])); print("  [FAIL] "+name+"\n         "+str(e)[:120])
 
@@ -34,19 +34,19 @@ def gui_path():
 
 # ── GROUP 1 ──
 print("\n[GROUP 1] Umbra.py core file")
-run_check("Umbra.py exists",               lambda: umbra_path())
-run_check("Umbra.py syntax clean",         lambda: ast.parse(rd(umbra_path())))
-run_check("Umbra.py has build_runtime()",  lambda: (_ for _ in [rd(umbra_path())] if "def build_runtime" in _).__next__())
-run_check("build_runtime uses safe imports",lambda: (_ for _ in [rd(umbra_path())] if "_si(" in _ or ("try:" in _ and "import" in _)).__next__())
-run_check("No crash-causing bare imports", lambda: None)
-run_check("_safe_input() present",         lambda: (_ for _ in [rd(umbra_path())] if "_safe_input" in _).__next__())
-run_check("print_banner() is crash-safe",  lambda: None)
-run_check("_shutdown() safe with missing keys", lambda: None)
-run_check("_launch_gui() has fallback window", lambda: (_ for _ in [rd(umbra_path())] if "_MinimalGUI" in _ or "launch_in_thread" in _).__next__())
+test("Umbra.py exists",               lambda: umbra_path())
+test("Umbra.py syntax clean",         lambda: ast.parse(rd(umbra_path())))
+test("Umbra.py has build_runtime()",  lambda: (_ for _ in [rd(umbra_path())] if "def build_runtime" in _).__next__())
+test("build_runtime uses safe imports",lambda: (_ for _ in [rd(umbra_path())] if "_si(" in _ or ("try:" in _ and "import" in _)).__next__())
+test("No crash-causing bare imports", lambda: None)
+test("_safe_input() present",         lambda: (_ for _ in [rd(umbra_path())] if "_safe_input" in _).__next__())
+test("print_banner() is crash-safe",  lambda: None)
+test("_shutdown() safe with missing keys", lambda: None)
+test("_launch_gui() has fallback window", lambda: (_ for _ in [rd(umbra_path())] if "_MinimalGUI" in _ or "launch_in_thread" in _).__next__())
 
 # ── GROUP 2 ──
 print("\n[GROUP 2] Core runtime file syntax")
-run_check("core/runtime/ exists",          lambda: (_ for _ in [True] if os.path.isdir(RD)).__next__())
+test("core/runtime/ exists",          lambda: (_ for _ in [True] if os.path.isdir(RD)).__next__())
 def t_all_syn():
     broken=[]
     for fn in sorted(os.listdir(RD)):
@@ -54,83 +54,83 @@ def t_all_syn():
             try: ast.parse(rd(os.path.join(RD,fn)))
             except SyntaxError as e: broken.append(fn+":"+str(e))
     assert not broken, str(broken[:3])
-run_check("All core/runtime/*.py syntax clean",t_all_syn)
+test("All core/runtime/*.py syntax clean",t_all_syn)
 for fn in ["umbra_runtime_spine.py","umbra_task_engine.py","umbra_generation_engine.py",
            "umbra_runtime_kernel.py","runtime_image_generator.py"]:
     def _mk(f):
         def _t(): p=rf(f); assert os.path.exists(p),f+" not found"; ast.parse(rd(p))
         return _t
-    run_check(fn+" exists and parses",_mk(fn))
+    test(fn+" exists and parses",_mk(fn))
 
 # ── GROUP 3 ──
 print("\n[GROUP 3] Game skeleton")
 SKEL=os.path.join(ROOT,"core","assets","game_skeleton.py")
-run_check("game_skeleton.py exists",       lambda: (_ for _ in [True] if os.path.exists(SKEL)).__next__())
+test("game_skeleton.py exists",       lambda: (_ for _ in [True] if os.path.exists(SKEL)).__next__())
 def t_ph():
     s=rd(SKEL)
     for ph in ["__WORLD_CODE__","__CHAR_CODE__","__ITEM_CODE__","__PROJECT_NAME__"]: assert ph in s,"Missing: "+ph
-run_check("game_skeleton.py has all placeholders",t_ph)
+test("game_skeleton.py has all placeholders",t_ph)
 def t_stitch_skel():
     s=rd(SKEL)
     for ph in ["__WORLD_CODE__","__CHAR_CODE__","__ITEM_CODE__","__MECH_CODE__","__UI_CODE__","__QUEST_CODE__","__ECON_CODE__"]:
         s=s.replace(ph,"# stub")
     ast.parse(s.replace("__PROJECT_NAME__","T").replace("__PROJ_SLUG__","t"))
-run_check("game_skeleton.py stitches and parses",t_stitch_skel)
+test("game_skeleton.py stitches and parses",t_stitch_skel)
 def t_skel_sys():
     s=rd(SKEL)
     for kw in ["Player","Enemy","NPC","Camera","WEAPONS","SPELLS","QUESTS","draw_hud","draw_minimap","K_w","K_ESCAPE","K_i","json.dump","json.load"]:
         assert kw in s,"Missing: "+kw
-run_check("game_skeleton.py has all required systems",t_skel_sys)
+test("game_skeleton.py has all required systems",t_skel_sys)
 def t_xbtn(): s=rd(SKEL); assert "draw_x_button" in s or "xbtn" in s or "_xbtn" in s
-run_check("game_skeleton.py has X close buttons",t_xbtn)
+test("game_skeleton.py has X close buttons",t_xbtn)
 def t_no_inp(): s=rd(SKEL); bad=[l for l in s.split("\n") if "input(" in l and not l.strip().startswith("#")]; assert not bad
-run_check("game_skeleton.py has no input() calls",t_no_inp)
+test("game_skeleton.py has no input() calls",t_no_inp)
 
 # ── GROUP 4 ──
 print("\n[GROUP 4] GUI control center")
-run_check("GUI control_center.py exists",  lambda: gui_path())
-run_check("GUI file syntax clean",         lambda: ast.parse(rd(gui_path())))
+test("GUI control_center.py exists",  lambda: gui_path())
+test("GUI file syntax clean",         lambda: ast.parse(rd(gui_path())))
 def t_gui_log(): s=rd(gui_path()); assert ("def log(" in s or "def _log(" in s) and "def post_message(" in s
-run_check("GUI has log() and post_message()",t_gui_log)
+test("GUI has log() and post_message()",t_gui_log)
 def t_gui_thread(): assert "def launch_in_thread" in rd(gui_path())
-run_check("GUI has launch_in_thread()",t_gui_thread)
+test("GUI has launch_in_thread()",t_gui_thread)
 def t_gui_impl():
     s=rd(gui_path()); idx=s.find("def _log("); idx=s.find("def log(") if idx<0 else idx
     assert "pass" not in s[idx:idx+100] or "queue" in s or "_out_queue" in s
-run_check("GUI log() method is implemented",t_gui_impl)
+test("GUI log() method is implemented",t_gui_impl)
 
 # ── GROUP 5 ──
 print("\n[GROUP 5] Image generator")
 IMGP=rf("runtime_image_generator.py")
-run_check("runtime_image_generator.py exists",lambda: (_ for _ in [True] if os.path.exists(IMGP)).__next__())
+test("runtime_image_generator.py exists",lambda: (_ for _ in [True] if os.path.exists(IMGP)).__next__())
 def t_neg(): s=rd(IMGP); assert any(k in s for k in ["bad hands","bad anatomy","_NEGATIVE_PROMPT"])
-run_check("Image generator has professional negative prompts",t_neg)
+test("Image generator has professional negative prompts",t_neg)
 def t_pil(): s=rd(IMGP); assert "PIL" in s or "Image" in s
-run_check("Image generator has PIL fallback",t_pil)
+test("Image generator has PIL fallback",t_pil)
 
 # ── GROUP 6 ──
 print("\n[GROUP 6] Generation engine routing")
 GENP=rf("umbra_generation_engine.py")
 def t_g(kw): return lambda: (_ for _ in [rd(GENP)] if kw in _.lower()).__next__()
-run_check("Generation engine routes image -> ComfyUI",t_g("comfyui"))
-run_check("Generation engine routes game -> code gen", lambda: (_ for _ in [rd(GENP)] if "_gen_game" in _ or "game_prompt" in _).__next__())
-run_check("Generation engine routes sprite -> PIL",    t_g("sprite"))
-run_check("Generation engine has per-type routing",    lambda: (_ for _ in [rd(GENP)] if rd(GENP).count("task_type")>=3).__next__())
+test("Generation engine routes image -> ComfyUI",t_g("comfyui"))
+test("Generation engine routes game -> code gen", lambda: (_ for _ in [rd(GENP)] if "_gen_game" in _ or "game_prompt" in _).__next__())
+test("Generation engine routes sprite -> PIL",    t_g("sprite"))
+test("Generation engine has per-type routing",    lambda: (_ for _ in [rd(GENP)] if rd(GENP).count("task_type")>=3).__next__())
 
 # ── GROUP 7 ──
 print("\n[GROUP 7] Runtime spine")
 SPINEP=rf("umbra_runtime_spine.py")
 def t_no_bridge(): s=rd(SPINEP); assert ".analyze(" not in s or "# no bridge" in s.lower(),"spine still calls bridge analyze"
-run_check("Runtime spine: bridge.analyze() removed",t_no_bridge)
-run_check("Runtime spine has run_task()",  lambda: (_ for _ in [rd(SPINEP)] if "def run_task" in _).__next__())
-run_check("Runtime spine has fallback stubs", lambda: (_ for _ in [rd(SPINEP)] if "Stub" in _).__next__())
+test("Runtime spine: bridge.analyze() removed",t_no_bridge)
+test("Runtime spine has run_task()",  lambda: (_ for _ in [rd(SPINEP)] if "def run_task" in _).__next__())
+test("Runtime spine has fallback stubs", lambda: (_ for _ in [rd(SPINEP)] if "Stub" in _).__next__())
 
 # ── GROUP 8 ──
 print("\n[GROUP 8] Task engine")
 TASKP=rf("umbra_task_engine.py")
 def t_task_goal(): s=rd(TASKP); assert "task_id_or_goal" in s or "not in self.tasks" in s or "create_task" in s
-run_check("Task engine run_task() accepts goal strings",t_task_goal)
-run_check("Task engine has create_task()",lambda: (_ for _ in [rd(TASKP)] if "def create_task" in _).__next__())
+test("Task engine run_task() accepts goal strings",t_task_goal)
+test("Task engine has create_task()",lambda: (_ for _ in [rd(TASKP)] if "def create_task" in _).__next__())
 
 # ── GROUP 9 ──
 print("\n[GROUP 9] Runtime kernel")
@@ -138,47 +138,47 @@ KERNP=rf("umbra_runtime_kernel.py")
 def t_reg():
     s=rd(KERNP)
     for m in ["register_module","def get","def exists","def list","unregister"]: assert m in s,"Missing: "+m
-run_check("Runtime kernel has full module registry",t_reg)
-run_check("Runtime kernel has safe_execute()",lambda: (_ for _ in [rd(KERNP)] if "def safe_execute" in _).__next__())
-run_check("Runtime kernel has event bus",     lambda: (_ for _ in [rd(KERNP)] if "subscribe" in _ and "emit" in _).__next__())
+test("Runtime kernel has full module registry",t_reg)
+test("Runtime kernel has safe_execute()",lambda: (_ for _ in [rd(KERNP)] if "def safe_execute" in _).__next__())
+test("Runtime kernel has event bus",     lambda: (_ for _ in [rd(KERNP)] if "subscribe" in _ and "emit" in _).__next__())
 
 # ── GROUP 10 ──
 print("\n[GROUP 10] Workspaces")
 WS=os.path.join(ROOT,"workspaces")
-run_check("workspaces/ directory exists",lambda: os.makedirs(WS,exist_ok=True))
+test("workspaces/ directory exists",lambda: os.makedirs(WS,exist_ok=True))
 for sub in ["images","videos","sprites","agent_builds","code","apps","text","projects"]:
     def _mks(s): return lambda: os.makedirs(os.path.join(WS,s),exist_ok=True)
-    run_check("workspaces/"+sub+"/ exists",_mks(sub))
+    test("workspaces/"+sub+"/ exists",_mks(sub))
 
 # ── GROUP 11 ──
 print("\n[GROUP 11] Game stitching")
 def t_stitch_fn(): assert "def _stitch_game" in rd(umbra_path())
-run_check("_stitch_game() function present",t_stitch_fn)
+test("_stitch_game() function present",t_stitch_fn)
 def t_skel_load():
     s=rd(umbra_path()); idx=s.find("def _stitch_game"); chunk=s[idx:idx+3000]
     assert "game_skeleton.py" in chunk or "skeleton_path" in chunk
-run_check("_stitch_game() loads game_skeleton.py",t_skel_load)
+test("_stitch_game() loads game_skeleton.py",t_skel_load)
 def t_inline(): assert "_INLINE_SKELETON" in rd(umbra_path())
-run_check("_stitch_game() has inline skeleton fallback",t_inline)
+test("_stitch_game() has inline skeleton fallback",t_inline)
 
 # ── GROUP 12 ──
 print("\n[GROUP 12] Game requirements validation")
 def t_valreq(): assert "_validate_requirements" in rd(umbra_path())
-run_check("_validate_requirements() present",t_valreq)
+test("_validate_requirements() present",t_valreq)
 def t_wasd(): s=rd(umbra_path()); assert "K_w" in s and "wasd" in s.lower()
-run_check("Requirements check includes WASD",t_wasd)
+test("Requirements check includes WASD",t_wasd)
 
 # ── GROUP 13 ──
 print("\n[GROUP 13] Agent system")
 def t_roles(): s=rd(umbra_path()); assert "_AGENT_ROLES" in s or "_build_agent_prompt" in s
-run_check("Agent role definitions present",t_roles)
+test("Agent role definitions present",t_roles)
 def t_7ag():
     s=rd(umbra_path())
     for a in ["world","character","item","mechanic","ui","quest","economy"]:
         assert ('"'+a+'"' in s or "'"+a+"'" in s),"Missing agent: "+a
-run_check("All 7 specialist agents defined",t_7ag)
+test("All 7 specialist agents defined",t_7ag)
 def t_deep(): assert "def _run_deep_build" in rd(umbra_path())
-run_check("_run_deep_build() present",t_deep)
+test("_run_deep_build() present",t_deep)
 
 # ── GROUP 14 ──
 print("\n[GROUP 14] Self-repair and self-install")
@@ -186,21 +186,21 @@ def t_fix():     assert "def handle_self_fix" in rd(umbra_path())
 def t_install(): assert "def handle_self_install" in rd(umbra_path())
 def t_integ():   assert "def handle_integrate" in rd(umbra_path())
 def t_appr():    assert "def _approval_prompt" in rd(umbra_path())
-run_check("handle_self_fix() present",t_fix)
-run_check("handle_self_install() present",t_install)
-run_check("handle_integrate() present",t_integ)
-run_check("Approval system present",t_appr)
+test("handle_self_fix() present",t_fix)
+test("handle_self_install() present",t_install)
+test("handle_integrate() present",t_integ)
+test("Approval system present",t_appr)
 
 # ── GROUP 15 ──
 print("\n[GROUP 15] Quick functional smoke tests")
 def t_stitch_runs():
     m=load_umbra(); r=m._stitch_game("TestGame","RPG",{"world":"# w","character":"# c"})
     assert "TestGame" in r and "pygame" in r; ast.parse(r)
-run_check("_stitch_game() produces valid Python",t_stitch_runs)
+test("_stitch_game() produces valid Python",t_stitch_runs)
 def t_broken(): m=load_umbra(); assert isinstance(m._find_broken_modules(),list)
-run_check("_find_broken_modules() runs without error",t_broken)
+test("_find_broken_modules() runs without error",t_broken)
 def t_synself(): m=load_umbra(); assert m._syntax_check(umbra_path()) is None
-run_check("_syntax_check(Umbra.py) returns None (clean)",t_synself)
+test("_syntax_check(Umbra.py) returns None (clean)",t_synself)
 def t_val():
     m=load_umbra()
     sample=(
@@ -227,7 +227,7 @@ def t_val():
     passed, failed = m._validate_requirements(sample)
     assert len(passed)>=6,"Only "+str(len(passed))+" reqs passed, failed="+str(failed)
 
-run_check("_validate_requirements() checks game code correctly",t_val)
+test("_validate_requirements() checks game code correctly",t_val)
 
 # ── RESULT ──
 total=len(PASS_)+len(FAIL_)
