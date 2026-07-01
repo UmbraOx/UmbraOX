@@ -12,22 +12,19 @@ _NEGATIVE_PROMPT = (
     "extra arms, extra legs, disfigured, gross proportions, malformed limbs, missing arms, "
     "missing legs, extra feet, multiple feet, fused fingers, too many fingers, "
     "cloned face, watermark, signature, text, username, worst quality, low quality, "
-    "jpeg artifacts, ugly, duplicate, morbid, mutilated, out of frame, flicker, flickering, "
+    "jpeg artifacts, ugly, duplicate, morbid, mutilated, out of frame, flicker, "
     "inconsistent, poorly drawn hands, bad proportions, error, out of focus, "
     "wrong subject, incorrect object, missing subject, extra objects, cluttered background, "
-    "off-topic, unrelated scene, neon, neon colors, neon lights, glowing, glow, "
-    "flashing lights, strobe, strobing, oversaturated, over-saturated, garish colors, "
-    "psychedelic, psychedelic colors, rainbow colors, blacklight, uv colors, "
-    "harsh lighting, overexposed, color banding"
+    "off-topic, unrelated scene"
 )
-_QUALITY_SUFFIX = ", masterpiece, best quality, highly detailed, smooth animation, consistent character, accurate to description, clear subject, coherent scene, natural lighting, natural colors, realistic color palette"
+_QUALITY_SUFFIX = ", masterpiece, best quality, highly detailed, smooth animation, consistent character, accurate to description, clear subject, coherent scene"
 
 
 class RuntimeAnimatedGifGenerator:
     def __init__(self, output_dir=None, comfyui_url="http://127.0.0.1:8188",
                  checkpoint="dreamshaper_8.safetensors",
                  motion_module="mm_sd_v15_v2.ckpt",
-                 frame_count=8, width=384, height=384, steps=20, cfg=7.0, **kwargs):
+                 frame_count=8, width=384, height=384, steps=20, cfg=8.5, **kwargs):
         self.output_dir = output_dir or os.path.join(_ROOT, "workspaces", "videos")
         os.makedirs(self.output_dir, exist_ok=True)
         self.comfyui_url = comfyui_url.rstrip("/")
