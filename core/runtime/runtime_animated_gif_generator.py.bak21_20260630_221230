@@ -22,7 +22,7 @@ class RuntimeAnimatedGifGenerator:
     def __init__(self, output_dir=None, comfyui_url="http://127.0.0.1:8188",
                  checkpoint="dreamshaper_8.safetensors",
                  motion_module="mm_sd_v15_v2.ckpt",
-                 frame_count=8, width=384, height=384, steps=16, cfg=7.0, **kwargs):
+                 frame_count=16, width=512, height=512, steps=20, cfg=7.0, **kwargs):
         self.output_dir = output_dir or os.path.join(_ROOT, "workspaces", "videos")
         os.makedirs(self.output_dir, exist_ok=True)
         self.comfyui_url = comfyui_url.rstrip("/")
@@ -90,9 +90,9 @@ class RuntimeAnimatedGifGenerator:
                   }},
             "3": {"class_type": "ADE_AnimateDiffUniformContextOptions",
                   "inputs": {
-                      "context_length": self.frame_count,
+                      "context_length": 16,
                       "context_stride": 1,
-                      "context_overlap": 2,
+                      "context_overlap": 4,
                       "context_schedule": "uniform",
                       "closed_loop": False,
                       "fuse_method": "flat",
