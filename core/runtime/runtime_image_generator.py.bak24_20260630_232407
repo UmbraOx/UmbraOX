@@ -15,9 +15,7 @@ _NEGATIVE_PROMPT=(
     "jpeg artifacts, ugly, duplicate, morbid, mutilated, out of frame, "
     "poorly drawn hands, bad proportions, error, out of focus, deformed iris, deformed pupils, "
     "extra limb, missing body parts, malformed hands, long body, conjoined, "
-    "signature watermark username, artist name, bad composition, cropped, low contrast, "
-    "bad teeth, deformed teeth, crooked teeth, missing teeth, extra teeth, unnatural teeth, "
-    "bad mouth, deformed mouth, ugly smile"
+    "signature watermark username, artist name, bad composition, cropped, low contrast"
 )
 _QUALITY_SUFFIX=(
     ", masterpiece, best quality, ultra detailed, professional photography, "
