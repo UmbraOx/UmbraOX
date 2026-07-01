@@ -2485,28 +2485,6 @@ def build_runtime():
             except Exception as _pe:
                 print("  [UMBRA] Could not auto-install " + _pkg_name + ": " + str(_pe))
 
-    # PyAudio: plain pip often lacks a Windows wheel match -> fallback to pipwin
-    try:
-        import pyaudio  # noqa
-    except ImportError:
-        import subprocess as _sp3
-        print("  [UMBRA] PyAudio not found — installing automatically...")
-        _r3 = _sp3.run([sys.executable, "-m", "pip", "install", "pyaudio", "--quiet"],
-                        capture_output=True, text=True)
-        _ok3 = _r3.returncode == 0
-        if not _ok3:
-            print("  [UMBRA] Direct PyAudio install failed — trying pipwin fallback...")
-            _sp3.run([sys.executable, "-m", "pip", "install", "pipwin", "--quiet"],
-                      capture_output=True, text=True)
-            _r4 = _sp3.run([sys.executable, "-m", "pipwin", "install", "pyaudio"],
-                            capture_output=True, text=True)
-            _ok3 = _r4.returncode == 0
-        try:
-            import pyaudio  # noqa
-            print("  [UMBRA] PyAudio installed OK." if _ok3 else "  [UMBRA] PyAudio import still failing after install attempts.")
-        except ImportError:
-            print("  [UMBRA] PyAudio install failed. Mic input unavailable — voice commands via text still work.")
-
     try:
         from core.runtime.runtime_launcher import RuntimeLauncher
         launcher = RuntimeLauncher(auto_launch_comfyui=True)
