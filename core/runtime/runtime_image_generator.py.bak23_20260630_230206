@@ -4,24 +4,15 @@ log=logging.getLogger("umbra.imggen")
 _ROOT=os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 _NEGATIVE_PROMPT=(
-    "lowres, bad anatomy, bad hands, extra fingers, missing fingers, extra limbs, fewer fingers, "
+    "lowres, bad anatomy, bad hands, extra fingers, missing fingers, extra limbs, "
     "missing limbs, deformed, blurry, bad face, poorly drawn face, mutation, mutated, "
     "extra arms, extra legs, disfigured, gross proportions, malformed limbs, missing arms, "
     "missing legs, extra feet, multiple feet, long neck, fused fingers, too many fingers, "
-    "cloned face, distorted face, asymmetric face, asymmetric eyes, crossed eyes, "
-    "malformed eyes, extra eyes, deformed eyes, unnatural eyes, lazy eye, uneven eyes, "
-    "bad eyes, ugly eyes, blurry eyes, mutated hands and fingers, poorly drawn eyes, "
-    "watermark, signature, text, username, worst quality, low quality, normal quality, "
+    "cloned face, watermark, signature, text, username, worst quality, low quality, "
     "jpeg artifacts, ugly, duplicate, morbid, mutilated, out of frame, "
-    "poorly drawn hands, bad proportions, error, out of focus, deformed iris, deformed pupils, "
-    "extra limb, missing body parts, malformed hands, long body, conjoined, "
-    "signature watermark username, artist name, bad composition, cropped, low contrast"
+    "poorly drawn hands, bad proportions, error, out of focus, deformed iris, deformed pupils"
 )
-_QUALITY_SUFFIX=(
-    ", masterpiece, best quality, ultra detailed, professional photography, "
-    "sharp focus, symmetrical face, detailed eyes, realistic eyes, natural skin texture, "
-    "correct anatomy, 8k uhd, high resolution"
-)
+_QUALITY_SUFFIX=", masterpiece, best quality, highly detailed, sharp focus, 8k uhd"
 _STYLE_MAP={
     "pixel_art":"pixel art, 16-bit style, ",
     "dark_fantasy":"dark fantasy art, gothic, dramatic lighting, ",
@@ -40,8 +31,8 @@ class ImageResult:
 
 class RuntimeImageGenerator:
     def __init__(self,output_dir=None,comfyui_url="http://127.0.0.1:8188",
-                 default_width=512,default_height=512,default_steps=36,
-                 default_cfg=7.5,checkpoint="dreamshaper_8.safetensors"):
+                 default_width=512,default_height=512,default_steps=30,
+                 default_cfg=7.0,checkpoint="dreamshaper_8.safetensors"):
         self.output_dir=output_dir or os.path.join(_ROOT,"workspaces","images")
         self.comfyui_url=comfyui_url.rstrip("/")
         self.width=default_width; self.height=default_height
@@ -80,7 +71,7 @@ class RuntimeImageGenerator:
         import requests as _r
         wf={
             "3":{"class_type":"KSampler","inputs":{"seed":seed,"steps":steps,"cfg":cfg,
-                 "sampler_name":"dpmpp_2m","scheduler":"karras","denoise":1.0,
+                 "sampler_name":"euler_ancestral","scheduler":"karras","denoise":1.0,
                  "model":["4",0],"positive":["6",0],"negative":["7",0],"latent_image":["5",0]}},
             "4":{"class_type":"CheckpointLoaderSimple","inputs":{"ckpt_name":self.checkpoint}},
             "5":{"class_type":"EmptyLatentImage","inputs":{"width":w,"height":h,"batch_size":1}},
