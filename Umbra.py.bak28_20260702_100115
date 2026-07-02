@@ -2401,40 +2401,6 @@ def _maybe_tts(runtime, text):
 
 
 # ============================================================
-#  GAME NAME FALLBACK EXTRACTION
-# ============================================================
-
-_GAME_NAME_STOPWORDS = {
-    "a","an","the","me","full","game","pygame","rpg","platformer","shooter",
-    "puzzle","survival","strategy","horror","sci-fi","space","fighting",
-    "clicker","roguelike","card","snake","racing","tower","dungeon",
-    "version","test","small","of","my","like","with","called","named",
-    "build","make","create","generate"
-}
-
-def _fallback_game_name(prompt):
-    """Best-effort project name when no 'called X' / 'named X' phrase is present
-    and no interactive stdin is available (e.g. GUI mode) to ask for one."""
-    if not prompt:
-        return None
-    words = re.findall(r"[A-Za-z][A-Za-z0-9]*", prompt)
-    verb_seen = False
-    for w in words:
-        lw = w.lower()
-        if lw in ("build", "make", "create", "generate"):
-            verb_seen = True
-            continue
-        if not verb_seen:
-            continue
-        if lw in _GAME_NAME_STOPWORDS:
-            continue
-        if len(w) < 3:
-            continue
-        return w[0].upper() + w[1:]
-    return None
-
-
-# ============================================================
 #  GAME CLARIFICATION QUESTIONS
 # ============================================================
 
@@ -3572,7 +3538,7 @@ def run_prompt(runtime, prompt, project_override=None):
                    "make overquest","build overquest","make a card","build a card"]
     if any(kw in lower_direct for kw in _game_words):
         _pn_m = re.search(r"(?:called|named)\s+([A-Za-z][A-Za-z0-9 ]+?)(?:[ ]|$|,|[.])", prompt, re.IGNORECASE)
-        _pname = _pn_m.group(1).strip() if _pn_m else (_fallback_game_name(prompt) or "MyGame")
+        _pname = _pn_m.group(1).strip() if _pn_m else "MyGame"
         # Ask clarifying questions before building
         _clarify_qs = [
             "1. What genre/style? (RPG/platformer/shooter/puzzle/survival/strategy)",
@@ -3888,8 +3854,6 @@ def run_prompt(runtime, prompt, project_override=None):
                         except (EOFError, KeyboardInterrupt):
                             break
                 enriched = raw + (". " + ". ".join(answers) if answers else "")
-                if not project_name:
-                    project_name = _fallback_game_name(raw) or _fallback_game_name(prompt)
                 if not project_name:
                     try:
                         project_name = _safe_input("  Project name: ", "").strip() or "MyGame"
@@ -4282,8 +4246,6 @@ def interactive_mode(runtime):
                 user_input, re.IGNORECASE
             )
             project_name = name_match.group(1).strip() if name_match else None
-            if not project_name:
-                project_name = _fallback_game_name(user_input)
             if not project_name:
                 try:
                     project_name = _safe_input("  Project name: ", "").strip() or "MyGame"
