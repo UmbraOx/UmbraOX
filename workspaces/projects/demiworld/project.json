@@ -1,0 +1,19 @@
+{
+  "name": "Demiworld",
+  "slug": "demiworld",
+  "project_type": "general",
+  "description": "build a full game called Demiworld. Details: Genre: rpg, survival, sandbox; Setting: fantasy, medevil; Enemies: 3; Features: crafting, building, npc managment; Art style: pixel/ top down",
+  "created_at": "2026-07-02T13:48:26.494527",
+  "updated_at": "2026-07-02T13:48:26.497527",
+  "status": "active",
+  "files": [
+    {
+      "path": "C:\\Umbra\\workspaces\\agent_builds\\demiworld\\demiworld_game.py",
+      "type": "game",
+      "added_at": "2026-07-02T13:48:26.497527"
+    }
+  ],
+  "conversation": [],
+  "metadata": {},
+  "tags": []
+}
