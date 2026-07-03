@@ -20,15 +20,15 @@ import time
 
 WORLD_MAP = [['plains' for _ in range(200)] for _ in range(200)]
 BIOME_COL = {
-    'plains': (154, 205, 50),
+    'plains': (139, 69, 19),
     'forest': (34, 139, 34),
-    'mountain': (165, 42, 42),
-    'desert': (248, 248, 255),
-    'water': (0, 191, 255),
-    'snow': (255, 250, 250),
+    'mountain': (139, 137, 137),
+    'desert': (250, 235, 181),
+    'water': (65, 105, 225),
+    'snow': (255, 250, 240),
     'swamp': (32, 178, 170),
-    'town': (255, 165, 0),
-    'camp': (255, 69, 0),
+    'town': (255, 215, 0),
+    'camp': (220, 20, 60),
     'mine': (128, 128, 128),
     'wood_area': (34, 139, 34),
     'road': (128, 128, 128)
@@ -37,27 +37,28 @@ TOWNS = []
 CITIES = [(50, 50, 'Capital'), (150, 150, 'Metropolis')]
 BANDIT_CAMPS = [(20, 30), (70, 90), (140, 160)]
 GOBLIN_CAMPS = [(30, 20), (90, 70), (160, 140)]
-MINES = [(40, 40), (80, 80), (120, 120)]
-WOODCUTS = [(60, 60), (100, 100), (140, 140)]
+MINES = [(40, 50), (80, 100), (130, 150)]
+WOODCUTS = [(60, 40), (110, 90), (170, 140)]
 
 def gen_world():
     random.seed(42)
-    for i in range(200):
-        for j in range(200):
+    for x in range(200):
+        for y in range(200):
             biome_choice = random.choices(
                 ['plains', 'forest', 'mountain', 'desert', 'water', 'snow', 'swamp'],
                 weights=[15, 30, 10, 10, 5, 5, 5], k=1
             )[0]
-            WORLD_MAP[i][j] = biome_choice
+            WORLD_MAP[x][y] = biome_choice
 
 def draw_world(surf, cam_x, cam_y):
-    for i in range(20):
-        for j in range(20):
-            tx, ty = cam_x + i, cam_y + j
+    tile_size = 8
+    for x in range(25):
+        for y in range(25):
+            tx, ty = cam_x + x, cam_y + y
             if 0 <= tx < 200 and 0 <= ty < 200:
                 biome = WORLD_MAP[tx][ty]
-                col = BIOME_COL.get(biome, (0, 0, 0))
-                pygame.draw.rect(surf, col, (i * 32, j * 32, 32, 32))
+                color = BIOME_COL.get(biome, (0, 0, 0))
+                pygame.draw.rect(surf, color, (x * tile_size, y * tile_size, tile_size, tile_size))
 
 def get_biome(tx, ty) -> str:
     if 0 <= tx < 200 and 0 <= ty < 200:
@@ -67,9 +68,9 @@ def get_biome(tx, ty) -> str:
 # ── CHARACTER MODULE ─────────────────────────────────────────────────────────
 
 ENEMY_DEFS = [
-    {'name': 'Goblin', 'hp': 20, 'atk': 5, 'def': 3, 'xp': 10, 'col': (0, 255, 0), 'spd': 1.5, 'faction': 'Enemy'},
-    {'name': 'Orc', 'hp': 40, 'atk': 8, 'def': 6, 'xp': 20, 'col': (255, 0, 0), 'spd': 1.0, 'faction': 'Enemy'},
-    {'name': 'Troll', 'hp': 60, 'atk': 12, 'def': 9, 'xp': 30, 'col': (0, 0, 255), 'spd': 0.8, 'faction': 'Enemy'}
+    {'name': 'Goblin', 'hp': 20, 'atk': 5, 'def': 3, 'xp': 10, 'col': (0, 255, 0), 'spd': 1.5, 'faction': 'Hostile'},
+    {'name': 'Orc', 'hp': 40, 'atk': 8, 'def': 6, 'xp': 20, 'col': (255, 0, 0), 'spd': 1.0, 'faction': 'Hostile'},
+    {'name': 'Troll', 'hp': 60, 'atk': 12, 'def': 9, 'xp': 30, 'col': (0, 0, 255), 'spd': 0.8, 'faction': 'Hostile'}
 ]
 
 class Player:
@@ -77,21 +78,21 @@ class Player:
         self.x = 0
         self.y = 0
         self.cls = cls
-        self.max_hp = 100 if cls == 'Warrior' else 75 if cls == 'Mage' else 80
+        self.max_hp = 100 if cls == 'Warrior' else (80 if cls == 'Mage' else 90)
         self.hp = self.max_hp
-        self.max_mp = 100 if cls == 'Mage' else 50 if cls == 'Warrior' else 60
+        self.max_mp = 50 if cls == 'Mage' else (30 if cls == 'Warrior' else 40)
         self.mp = self.max_mp
         self.max_sta = 100
         self.sta = self.max_sta
-        self.str_ = 10 if cls == 'Warrior' else 5 if cls == 'Mage' else 7
-        self.dex = 8 if cls == 'Rogue' else 6 if cls == 'Warrior' else 4
-        self.int_ = 12 if cls == 'Mage' else 7 if cls == 'Rogue' else 5
+        self.str_ = 10 if cls == 'Warrior' else (6 if cls == 'Mage' else 8)
+        self.dex = 8 if cls == 'Rogue' else (7 if cls == 'Warrior' else 5)
+        self.int_ = 12 if cls == 'Mage' else (4 if cls == 'Warrior' else 6)
         self.luck = random.randint(1, 10)
         self.level = 1
         self.xp = 0
         self.xp_next = 100
-        self.gold = 100
-        self.speed = 2.0 if cls == 'Rogue' else 1.5 if cls == 'Warrior' else 1.0
+        self.gold = 50
+        self.speed = 2.0 if cls == 'Rogue' else (1.5 if cls == 'Warrior' else 1.0)
         self.inventory = {}
         self.equipped = {'weapon': None, 'armor': None}
         self.spells = ['Fireball'] if cls == 'Mage' else []
@@ -99,10 +100,10 @@ class Player:
         self.crouching = False
 
     def atk_power(self):
-        return (self.str_ + self.dex) / 2 * (1 + len(self.equipped['weapon']) / 10 if self.equipped['weapon'] else 1)
+        return self.str_ + (self.dex // 2) + (5 if self.equipped['weapon'] else 0)
 
     def def_power(self):
-        return self.dex + (self.equipped['armor'].get('defense', 0) if self.equipped['armor'] else 0)
+        return self.dex + (self.str_ // 2) + (10 if self.equipped['armor'] else 0)
 
     def add_item(self, name, qty):
         if name in self.inventory:
@@ -116,15 +117,15 @@ class Player:
             self.level_up()
 
     def level_up(self):
-        self.xp -= self.xp_next
-        self.xp_next *= 1.5
-        self.max_hp += 10
+        self.level += 1
+        self.max_hp += random.randint(5, 10)
         self.hp = self.max_hp
-        self.max_mp += 10 if self.cls == 'Mage' else 5
+        self.max_mp += random.randint(3, 6) if self.cls == 'Mage' else random.randint(2, 4)
         self.mp = self.max_mp
-        self.str_ += 2 if self.cls == 'Warrior' else 1
-        self.dex += 2 if self.cls == 'Rogue' else 1
-        self.int_ += 2 if self.cls == 'Mage' else 1
+        self.str_ += random.randint(1, 2)
+        self.dex += random.randint(1, 2)
+        self.int_ += random.randint(1, 2) if self.cls == 'Mage' else 0
+        self.xp_next *= 1.5
 
     def regen(self, dt):
         self.hp = min(self.max_hp, self.hp + (self.str_ / 10) * dt)
@@ -166,13 +167,15 @@ class NPC:
 
         if job == 'Blacksmith':
             self.dialogue.append("Welcome to my forge!")
-            self.shop_stock = {'Sword': 100, 'Shield': 150}
+            self.shop_stock['Sword'] = {'price': 100, 'qty': 5}
+            self.shop_stock['Shield'] = {'price': 80, 'qty': 3}
         elif job == 'Merchant':
             self.dialogue.append("Greetings, traveler!")
-            self.shop_stock = {'Potion': 30, 'Scroll': 50}
+            self.shop_stock['Potion'] = {'price': 20, 'qty': 10}
+            self.shop_stock['Scroll'] = {'price': 50, 'qty': 5}
         elif job == 'Healer':
             self.dialogue.append("May I heal your wounds?")
-            self.shop_stock = {'Health Potion': 40}
+            self.shop_stock['Health Potion'] = {'price': 30, 'qty': 7}
 
 # ── ITEM / DATA MODULE ───────────────────────────────────────────────────────
 # Game Data Constants
@@ -180,68 +183,68 @@ class NPC:
 WEAPONS = [
     {'name': 'Iron Sword', 'atk': 10, 'type': 'melee', 'val': 50, 'col': (200, 190, 140)},
     {'name': 'Bow', 'atk': 8, 'type': 'ranged', 'val': 30, 'col': (160, 82, 45)},
-    {'name': 'Fireball Staff', 'atk': 12, 'type': 'magic', 'val': 70, 'col': (255, 69, 0)},
-    {'name': 'Dagger', 'atk': 5, 'type': 'melee', 'val': 20, 'col': (139, 0, 0)},
-    {'name': 'Crossbow', 'atk': 10, 'type': 'ranged', 'val': 40, 'col': (85, 65, 148)},
-    {'name': 'Ice Lance', 'atk': 9, 'type': 'magic', 'val': 60, 'col': (0, 255, 255)},
-    {'name': 'Greatsword', 'atk': 15, 'type': 'melee', 'val': 80, 'col': (194, 178, 128)},
-    {'name': 'Longbow', 'atk': 11, 'type': 'ranged', 'val': 50, 'col': (205, 133, 63)},
-    {'name': 'Lightning Bolt Staff', 'atk': 14, 'type': 'magic', 'val': 90, 'col': (255, 215, 0)},
-    {'name': 'Shortsword', 'atk': 7, 'type': 'melee', 'val': 35, 'col': (220, 20, 60)}
+    {'name': 'Fire Staff', 'atk': 12, 'type': 'magic', 'val': 70, 'col': (255, 69, 0)},
+    {'name': 'Dagger', 'atk': 6, 'type': 'melee', 'val': 20, 'col': (138, 43, 226)},
+    {'name': 'Crossbow', 'atk': 10, 'type': 'ranged', 'val': 50, 'col': (165, 42, 42)},
+    {'name': 'Ice Wand', 'atk': 9, 'type': 'magic', 'val': 60, 'col': (0, 255, 255)},
+    {'name': 'Great Axe', 'atk': 15, 'type': 'melee', 'val': 80, 'col': (139, 69, 19)},
+    {'name': 'Longbow', 'atk': 11, 'type': 'ranged', 'val': 40, 'col': (255, 140, 0)},
+    {'name': 'Lightning Rod', 'atk': 13, 'type': 'magic', 'val': 75, 'col': (255, 215, 0)},
+    {'name': 'Spear', 'atk': 9, 'type': 'melee', 'val': 45, 'col': (165, 42, 42)}
 ]
 
 ARMOR_SETS = [
-    {'name': 'Leather Armor', 'parts': ['Leather Helm', 'Leather Chestplate', 'Leather Greaves'], 'def': 5, 'val': 40},
-    {'name': 'Chainmail Armor', 'parts': ['Chainmail Helm', 'Chainmail Chestplate', 'Chainmail Greaves'], 'def': 10, 'val': 80},
-    {'name': 'Plate Armor', 'parts': ['Plate Helm', 'Plate Chestplate', 'Plate Greaves'], 'def': 15, 'val': 120}
+    {'name': 'Leather Armor', 'parts': ['Leather Helm', 'Leather Chestplate', 'Leather Greaves'], 'def': 8, 'val': 30},
+    {'name': 'Iron Armor', 'parts': ['Iron Helm', 'Iron Chestplate', 'Iron Greaves'], 'def': 15, 'val': 70},
+    {'name': 'Dragon Scale Mail', 'parts': ['Dragon Helm', 'Dragon Chestplate', 'Dragon Greaves'], 'def': 25, 'val': 150}
 ]
 
 SPELLS = [
-    {'name': 'Fireball', 'mp': 20, 'dmg': 15, 'col': (255, 69, 0), 'desc': 'A fiery projectile that burns enemies.'},
-    {'name': 'Heal', 'mp': 30, 'dmg': -10, 'col': (0, 255, 0), 'desc': 'Restores health to an ally.'},
-    {'name': 'Lightning Bolt', 'mp': 25, 'dmg': 20, 'col': (255, 215, 0), 'desc': 'A bolt of lightning that shocks enemies.'},
-    {'name': 'Shield', 'mp': 15, 'dmg': -5, 'col': (173, 216, 230), 'desc': 'Increases defense for a short time.'},
-    {'name': 'Ice Shard', 'mp': 18, 'dmg': 12, 'col': (0, 255, 255), 'desc': 'Fires shards of ice at enemies.'},
-    {'name': 'Fire Shield', 'mp': 35, 'dmg': -15, 'col': (255, 69, 0), 'desc': 'Creates a shield that burns attackers.'},
-    {'name': 'Thunderclap', 'mp': 40, 'dmg': 25, 'col': (255, 215, 0), 'desc': 'A powerful clap of thunder that stuns enemies.'},
-    {'name': 'Regenerate', 'mp': 30, 'dmg': -20, 'col': (0, 255, 0), 'desc': 'Rapidly restores health to an ally.'},
-    {'name': 'Frost Nova', 'mp': 45, 'dmg': 18, 'col': (0, 255, 255), 'desc': 'Freezes enemies in a nova of frost.'},
-    {'name': 'Magnetize', 'mp': 20, 'dmg': -10, 'col': (173, 216, 230), 'desc': 'Pulls nearby items to the caster.'}
+    {'name': 'Fireball', 'mp': 15, 'dmg': 20, 'col': (255, 69, 0), 'desc': 'A fiery projectile that burns enemies.'},
+    {'name': 'Heal', 'mp': 10, 'dmg': -15, 'col': (0, 255, 0), 'desc': 'Restores health to an ally.'},
+    {'name': 'Lightning Bolt', 'mp': 20, 'dmg': 30, 'col': (255, 215, 0), 'desc': 'A bolt of lightning that shocks enemies.'},
+    {'name': 'Shield', 'mp': 10, 'dmg': 0, 'col': (173, 216, 230), 'desc': 'Raises a shield to block incoming damage.'},
+    {'name': 'Ice Shard', 'mp': 15, 'dmg': 18, 'col': (0, 255, 255), 'desc': 'Fires shards of ice that freeze enemies.'},
+    {'name': 'Mana Shield', 'mp': 25, 'dmg': 0, 'col': (138, 43, 226), 'desc': 'Creates a shield that absorbs magic damage.'},
+    {'name': 'Earthquake', 'mp': 30, 'dmg': 25, 'col': (139, 69, 19), 'desc': 'Causes the ground to shake and damage enemies.'},
+    {'name': 'Blizzard', 'mp': 20, 'dmg': 22, 'col': (173, 216, 230), 'desc': 'Summons a blizzard that damages all enemies.'},
+    {'name': 'Meteor Shower', 'mp': 40, 'dmg': 35, 'col': (255, 69, 0), 'desc': 'Calls down meteors to rain fire upon enemies.'},
+    {'name': 'Resurrection', 'mp': 50, 'dmg': -100, 'col': (0, 255, 0), 'desc': 'Brings a fallen ally back to life with full health.'}
 ]
 
 MATERIALS = [
     'Iron Ore',
-    'Wood',
+    'Leather Hide',
+    'Dragon Scale',
     'Mana Crystal',
-    'Leather',
-    'Chainmail',
-    'Steel Plate',
+    'Wood',
+    'Coal',
     'Herbs',
     'Gems',
-    'Cloth',
-    'Feathers'
+    'Silk',
+    'Steel'
 ]
 
 QUESTS = [
-    {'id': 1, 'name': 'Goblin Hunt', 'desc': 'Defeat 5 goblins in the forest.', 'target': 'goblin', 'need': 5, 'prog': 0, 'done': False, 'reward_gold': 50, 'reward_xp': 25},
-    {'id': 2, 'name': 'Collect Herbs', 'desc': 'Gather 10 herbs from the forest.', 'target': 'mat:Herbs', 'need': 10, 'prog': 0, 'done': False, 'reward_gold': 30, 'reward_xp': 15},
-    {'id': 3, 'name': 'Bandit Ambush', 'desc': 'Defeat the bandits at the ambush point.', 'target': 'bandit', 'need': 3, 'prog': 0, 'done': False, 'reward_gold': 70, 'reward_xp': 40},
-    {'id': 4, 'name': 'Craft Armor', 'desc': 'Create a set of leather armor.', 'target': 'mat:Leather', 'need': 3, 'prog': 0, 'done': False, 'reward_gold': 60, 'reward_xp': 35},
-    {'id': 5, 'name': 'Deliver Goods', 'desc': 'Deliver the goods to the merchant.', 'target': 'Merchant', 'need': 1, 'prog': 0, 'done': False, 'reward_gold': 40, 'reward_xp': 20}
+    {'id': 1, 'name': 'Kill Goblins', 'desc': 'Eliminate 10 goblins in the forest.', 'target': 'goblin', 'need': 10, 'prog': 0, 'done': False, 'reward_gold': 50, 'reward_xp': 20},
+    {'id': 2, 'name': 'Collect Herbs', 'desc': 'Gather 5 herbs from the forest.', 'target': 'mat:Herbs', 'need': 5, 'prog': 0, 'done': False, 'reward_gold': 30, 'reward_xp': 10},
+    {'id': 3, 'name': 'Defend Village', 'desc': 'Protect the village from bandit attacks.', 'target': 'bandit', 'need': 5, 'prog': 0, 'done': False, 'reward_gold': 70, 'reward_xp': 30},
+    {'id': 4, 'name': 'Craft Armor', 'desc': 'Create a set of Iron Armor.', 'target': 'Iron Armor', 'need': 1, 'prog': 0, 'done': False, 'reward_gold': 80, 'reward_xp': 25},
+    {'id': 5, 'name': 'Discover Ancient Ruins', 'desc': 'Find the ancient ruins hidden in the mountains.', 'target': 'mat:Gems', 'need': 3, 'prog': 0, 'done': False, 'reward_gold': 100, 'reward_xp': 40}
 ]
 
 FACTIONS = {
-    'kingdom': {'rep': 0, 'name': 'Kingdom'},
-    'bandit': {'rep': 0, 'name': 'Bandits'},
-    'goblin': {'rep': 0, 'name': 'Goblins'}
+    'kingdom': {'rep': 0, 'name': 'Kingdom of Eldoria'},
+    'bandit': {'rep': 0, 'name': 'Bandit Clan'},
+    'goblin': {'rep': 0, 'name': 'Goblin Tribe'}
 }
 
 DIALOGUE_TREES = {
-    'Merchant': [{'text': 'Hello, traveler! What can I offer you?', 'opts': ['Buy', 'Sell', 'Leave']}],
-    'Guard': [{'text': 'Greetings! Are you here to report something?', 'opts': ['Report', 'Talk', 'Leave']}],
-    'Blacksmith': [{'text': 'Welcome! Need a weapon or armor fixed?', 'opts': ['Repair', 'Craft', 'Leave']}],
-    'Farmer': [{'text': 'Good day! How can I assist you?', 'opts': ['Buy Produce', 'Chat', 'Leave']}],
-    'default': [{'text': 'Hello there!', 'opts': ['Talk', 'Leave']}]
+    'Merchant': [{'text': 'Welcome to my shop!', 'opts': ['Buy', 'Sell', 'Leave']}],
+    'Guard': [{'text': 'Stay alert, stranger.', 'opts': ['Report Bandit Activity', 'Ask About Village News', 'Leave']}],
+    'Blacksmith': [{'text': 'Need a weapon or armor?', 'opts': ['Craft Weapon', 'Craft Armor', 'Leave']}],
+    'Farmer': [{'text': 'Hello! How can I help you?', 'opts': ['Buy Produce', 'Sell Materials', 'Leave']}],
+    'default': [{'text': 'Greetings!', 'opts': ['Talk', 'Leave']}]
 }
 
 NPC_NAMES = [
@@ -258,12 +261,15 @@ NPC_NAMES = [
     'Kael',
     'Lila',
     'Morgan',
-    'Natalie',
+    'Natalia',
     'Oscar',
     'Piper'
 ]
 
+NPC_JOBS = ['Blacksmith', 'Merchant', 'Healer']
+
 # ── MECHANIC MODULE ──────────────────────────────────────────────────────────
+from collections import defaultdict
 
 class Camera:
     def __init__(self, x=0, y=0):
@@ -285,13 +291,12 @@ class FloatText:
 
     def update(self):
         self.y -= 1
-        self.alpha -= 4
-        if self.alpha < 0:
-            self.alpha = 0
+        self.alpha -= 5
 
     def draw(self, surf, cx, cy):
-        txt_surf = self.font.render(self.text, True, (self.col[0], self.col[1], self.col[2], self.alpha))
-        surf.blit(txt_surf, (int(self.x - cx), int(self.y - cy)))
+        if self.alpha > 0:
+            txt_surf = self.font.render(self.text, True, (*self.col[:3], self.alpha))
+            surf.blit(txt_surf, (int(self.x - cx), int(self.y - cy)))
 
 class Projectile:
     def __init__(self, x, y, tx, ty, dmg, col, spd=9):
@@ -315,12 +320,12 @@ class Projectile:
 
 class Building:
     TYPES = {
-        'House': {'col': (139, 69, 19), 'w': 2, 'h': 2, 'cost': {'wood': 40, 'stone': 20}},
-        'Shop': {'col': (255, 215, 0), 'w': 3, 'h': 2, 'cost': {'wood': 60, 'stone': 30}},
-        'Barracks': {'col': (192, 192, 192), 'w': 4, 'h': 3, 'cost': {'wood': 80, 'stone': 50}},
-        'Farm': {'col': (34, 139, 34), 'w': 3, 'h': 3, 'cost': {'wood': 70, 'stone': 25}},
-        'Tower': {'col': (165, 42, 42), 'w': 2, 'h': 4, 'cost': {'wood': 90, 'stone': 60}},
-        'Warehouse': {'col': (218, 165, 32), 'w': 3, 'h': 3, 'cost': {'wood': 75, 'stone': 40}}
+        'House': {'col': (200, 160, 120), 'w': 3, 'h': 3, 'cost': {'wood': 10, 'stone': 5}},
+        'Shop': {'col': (255, 215, 0), 'w': 4, 'h': 3, 'cost': {'wood': 15, 'stone': 7}},
+        'Barracks': {'col': (165, 42, 42), 'w': 5, 'h': 4, 'cost': {'wood': 20, 'stone': 10}},
+        'Farm': {'col': (34, 139, 34), 'w': 4, 'h': 4, 'cost': {'wood': 8, 'stone': 3}},
+        'Tower': {'col': (255, 69, 0), 'w': 3, 'h': 5, 'cost': {'wood': 12, 'stone': 15}},
+        'Warehouse': {'col': (210, 180, 140), 'w': 4, 'h': 4, 'cost': {'wood': 18, 'stone': 9}}
     }
 
     def __init__(self, btype, tx, ty):
@@ -335,16 +340,16 @@ class Building:
         x = (self.tx * 32) - cx
         y = (self.ty * 32) - cy
         pygame.draw.rect(surf, self.col, (x, y, self.w * 32, self.h * 32))
-        pygame.draw.polygon(surf, (165, 42, 42), [(x + self.w * 16, y), (x, y - 16), (x + self.w * 32, y - 16)])
-        pygame.draw.rect(surf, (0, 0, 0), (x + 8, y + self.h * 32 - 16, 16, 16))
-        pygame.draw.rect(surf, (255, 255, 255), (x + 12, y + self.h * 32 - 12, 8, 8))
+        pygame.draw.polygon(surf, (160, 82, 45), [(x + self.w * 16, y), (x, y - 16), (x + self.w * 32, y - 16)])
+        pygame.draw.rect(surf, (0, 0, 0), (x + 10, y + self.h * 32 - 20, 12, 20))
+        pygame.draw.rect(surf, (255, 255, 255), (x + self.w * 16 - 8, y + 10, 16, 16))
 
 def save_game(player, buildings, filepath):
+    data = {
+        'player': player.__dict__,
+        'buildings': [{'btype': b.btype, 'tx': b.tx, 'ty': b.ty} for b in buildings]
+    }
     try:
-        data = {
-            'player': player.__dict__,
-            'buildings': [{'btype': b.btype, 'tx': b.tx, 'ty': b.ty} for b in buildings]
-        }
         with open(filepath, 'w') as f:
             json.dump(data, f)
         return True
@@ -381,181 +386,599 @@ def panel(surf, rx, ry, rw, rh, title):
     pygame.draw.rect(surf, (50, 50, 50), (rx, ry, rw, rh), 0)
     pygame.draw.rect(surf, (100, 100, 100), (rx, ry, rw, rh), 2)
     txt(surf, title, rx + 10, ry + 5, 24, (255, 255, 255))
-    xbtn_rect = pygame.Rect(rx + rw - 30, ry + 5, 20, 20)
-    txt(surf, 'X', rx + rw - 27, ry + 8, 16, (255, 0, 0), True)
+    xbtn_rect = pygame.draw.rect(surf, (200, 0, 0), (rx + rw - 30, ry + 5, 20, 20), 0)
+    txt(surf, 'X', rx + rw - 25, ry + 10, 24, (255, 255, 255), center=True)
     return xbtn_rect
 
 def btn(surf, x, y, w, h, label, col, tcol, sz):
     pygame.draw.rect(surf, col, (x, y, w, h), 0)
-    pygame.draw.rect(surf, (255, 255, 255), (x, y, w, h), 2)
-    txt(surf, label, x + w // 2, y + h // 2, sz, tcol, True)
+    pygame.draw.rect(surf, (0, 0, 0), (x, y, w, h), 2)
+    txt(surf, label, x + w // 2, y + h // 2, sz, tcol, center=True)
     return pygame.Rect(x, y, w, h)
 
 def draw_hud(surf, player):
     bar(surf, 10, 10, 200, 20, player.hp, player.max_hp, (255, 0, 0), (50, 50, 50))
     bar(surf, 10, 40, 200, 20, player.mp, player.max_mp, (0, 0, 255), (50, 50, 50))
     bar(surf, 10, 70, 200, 20, player.sta, player.max_sta, (0, 255, 0), (50, 50, 50))
-    txt(surf, f'Gold: {player.gold}', 10, 100, 24, (255, 255, 0))
-    txt(surf, f'Level: {player.level}', 10, 130, 24, (255, 255, 255))
-    txt(surf, f'XP: {player.xp}/{player.next_level_xp}', 10, 160, 24, (255, 255, 255))
-    txt(surf, f'Equipped: {player.equipped}', 10, 190, 24, (255, 255, 255))
-    txt(surf, f'Biome: {player.biome}', 10, 220, 24, (255, 255, 255))
+    txt(surf, f'Gold: {player.gold}', 10, 100, 24, (255, 255, 255))
+    txt(surf, f'Level: {player.level} XP: {player.xp}/{player.next_level_xp}', 10, 130, 24, (255, 255, 255))
+    txt(surf, f'Equipped: {player.equipped}', 10, 160, 24, (255, 255, 255))
+    txt(surf, f'Biome: {player.biome}', 10, 190, 24, (255, 255, 255))
 
 def draw_minimap(surf, player, enemies, WORLD_MAP, BIOME_COL):
-    mini_surf = pygame.Surface((126, 126))
-    for y in range(len(WORLD_MAP)):
-        for x in range(len(WORLD_MAP[y])):
-            pygame.draw.rect(mini_surf, BIOME_COL[WORLD_MAP[y][x]], (x * 4, y * 4, 4, 4), 0)
+    min_x, min_y = max(0, player.x - 63), max(0, player.y - 63)
+    for y in range(min_y, min_y + 126):
+        for x in range(min_x, min_x + 126):
+            if 0 <= y < WORLD_MAP.height and 0 <= x < WORLD_MAP.width:
+                biome = WORLD_MAP.get_at((x, y))
+                pygame.draw.rect(surf, BIOME_COL[biome], (x - min_x + surf.get_width() - 126, y - min_y, 1, 1), 0)
     for enemy in enemies:
-        ex, ey = int(enemy.x / 16), int(enemy.y / 16)
-        pygame.draw.circle(mini_surf, (255, 0, 0), (ex * 4 + 2, ey * 4 + 2), 2)
-    px, py = int(player.x / 16), int(player.y / 16)
-    pygame.draw.circle(mini_surf, (0, 255, 0), (px * 4 + 2, py * 4 + 2), 3)
-    surf.blit(mini_surf, (surf.get_width() - 136, 10))
+        ex, ey = enemy.x - min_x + surf.get_width() - 126, enemy.y - min_y
+        if 0 <= ex < 126 and 0 <= ey < 126:
+            pygame.draw.rect(surf, (255, 0, 0), (ex, ey, 2, 2), 0)
+    px, py = player.x - min_x + surf.get_width() - 126, player.y - min_y
+    if 0 <= px < 126 and 0 <= py < 126:
+        pygame.draw.rect(surf, (0, 255, 0), (px, py, 3, 3), 0)
 
 def draw_class_select(surf):
     surf.fill((0, 0, 0))
-    btns = []
-    btns.append(btn(surf, 100, 100, 200, 300, 'Warrior', (50, 50, 50), (255, 255, 255), 24))
-    btns.append(btn(surf, 400, 100, 200, 300, 'Mage', (50, 50, 50), (255, 255, 255), 24))
-    btns.append(btn(surf, 700, 100, 200, 300, 'Rogue', (50, 50, 50), (255, 255, 255), 24))
-    return btns
+    txt(surf, 'Select Class', surf.get_width() // 2, surf.get_height() // 4, 64, (255, 255, 255), center=True)
+    btn_warrior = btn(surf, surf.get_width() // 3 - 100, surf.get_height() // 2, 200, 100, 'Warrior', (192, 64, 0), (255, 255, 255), 36)
+    btn_mage = btn(surf, surf.get_width() // 2 - 100, surf.get_height() // 2, 200, 100, 'Mage', (64, 64, 192), (255, 255, 255), 36)
+    btn_rogue = btn(surf, 2 * surf.get_width() // 3 - 100, surf.get_height() // 2, 200, 100, 'Rogue', (0, 192, 64), (255, 255, 255), 36)
+    return [btn_warrior, btn_mage, btn_rogue]
 
 def draw_inventory(surf, player, selected):
-    xbtn_rect = panel(surf, 10, 10, 300, 600, 'Inventory')
+    xbtn_rect = panel(surf, 10, 10, 400, 580, 'Inventory')
     slots = []
-    eq_btn = btn(surf, 10, 520, 140, 80, 'Equip', (50, 50, 50), (255, 255, 255), 24)
-    drop_btn = btn(surf, 160, 520, 140, 80, 'Drop', (50, 50, 50), (255, 255, 255), 24)
-    for i in range(len(player.inventory)):
-        rect = pygame.Rect(10 + (i % 6) * 45, 40 + (i // 6) * 45, 40, 40)
+    eq_btn = btn(surf, 10, 600, 200, 30, 'Equip', (0, 128, 0), (255, 255, 255), 24)
+    drop_btn = btn(surf, 220, 600, 200, 30, 'Drop', (192, 0, 0), (255, 255, 255), 24)
+    for i in range(10):
+        rect = pygame.draw.rect(surf, (100, 100, 100), (20 + (i % 5) * 76, 50 + (i // 5) * 76, 70, 70), 0)
         slots.append(rect)
-        if selected == i:
-            pygame.draw.rect(surf, (255, 255, 0), rect, 3)
     return xbtn_rect, slots, eq_btn, drop_btn
 
 def draw_quest_log(surf, player):
-    xbtn_rect = panel(surf, 10, 10, 400, 600, 'Quest Log')
+    xbtn_rect = panel(surf, 10, 10, 400, 580, 'Quest Log')
     for i, quest in enumerate(player.quests):
-        txt(surf, f'{quest.name}: {quest.description}', 20, 50 + i * 30, 24, (255, 255, 255))
+        txt(surf, quest.description, 20, 50 + i * 30, 24, (255, 255, 255))
     return xbtn_rect
 
 def draw_shop(surf, npc, player, selected):
-    xbtn_rect = panel(surf, 10, 10, 600, 600, 'Shop')
+    xbtn_rect = panel(surf, 10, 10, 600, 580, 'Shop')
     buy_btns = []
     items = []
     for i, item in enumerate(npc.inventory):
-        rect = pygame.Rect(20 + (i % 3) * 180, 50 + (i // 3) * 40, 170, 30)
-        txt(surf, f'{item.name} - {item.price}g', rect.x, rect.y, 24, (255, 255, 255))
+        rect = pygame.draw.rect(surf, (100, 100, 100), (20 + (i % 3) * 196, 50 + (i // 3) * 76, 190, 70), 0)
         items.append(rect)
-        buy_btn = btn(surf, rect.x, rect.y + 30, 170, 30, 'Buy', (50, 50, 50), (255, 255, 255), 24)
+        buy_btn = btn(surf, 20 + (i % 3) * 196, 130 + (i // 3) * 76, 50, 20, 'Buy', (0, 128, 0), (255, 255, 255), 18)
         buy_btns.append(buy_btn)
     return xbtn_rect, buy_btns, items
 
 def draw_crafting(surf, player, tab, selected, recipes):
-    xbtn_rect = panel(surf, 10, 10, 600, 600, 'Crafting')
+    xbtn_rect = panel(surf, 10, 10, 600, 580, 'Crafting')
     tab_btns = []
     craft_btns = []
-    for i, t in enumerate(['Weapons', 'Armor', 'Potions']):
-        btn_rect = btn(surf, 20 + i * 180, 50, 170, 30, t, (50, 50, 50), (255, 255, 255), 24)
+    for i in range(3):
+        btn_rect = btn(surf, 20 + i * 196, 50, 190, 40, f'Tab {i+1}', (128, 128, 128), (255, 255, 255), 24)
         tab_btns.append(btn_rect)
     for i, recipe in enumerate(recipes[tab]):
-        rect = pygame.Rect(20 + (i % 3) * 180, 90 + (i // 3) * 60, 170, 50)
-        txt(surf, f'{recipe.name}', rect.x, rect.y, 24, (255, 255, 255))
-        craft_btn = btn(surf, rect.x, rect.y + 30, 170, 30, 'Craft', (50, 50, 50), (255, 255, 255), 24)
+        rect = pygame.draw.rect(surf, (100, 100, 100), (20 + (i % 3) * 196, 100 + (i // 3) * 76, 190, 70), 0)
+        craft_btn = btn(surf, 20 + (i % 3) * 196, 180 + (i // 3) * 76, 50, 20, 'Craft', (0, 128, 0), (255, 255, 255), 18)
         craft_btns.append(craft_btn)
     return xbtn_rect, tab_btns, craft_btns
 
 def draw_dialogue(surf, npc, dial_idx):
-    xbtn_rect = panel(surf, 10, 10, 600, 300, 'Dialogue')
-    txt(surf, f'{npc.name}: {npc.dialogues[dial_idx]}', 20, 50, 24, (255, 255, 255))
+    xbtn_rect = panel(surf, 10, 10, 600, 400, 'Dialogue')
+    txt(surf, npc.dialogues[dial_idx], 20, 50, 24, (255, 255, 255))
     opt_btns = []
     for i, option in enumerate(npc.options[dial_idx]):
-        btn_rect = btn(surf, 20 + i * 180, 90 + i * 30, 170, 30, option['text'], (50, 50, 50), (255, 255, 255), 24)
+        btn_rect = btn(surf, 20 + i * 196, 350, 190, 40, option.text, (128, 128, 128), (255, 255, 255), 24)
         opt_btns.append(btn_rect)
     return xbtn_rect, opt_btns
 
 def draw_pause(surf):
-    surf.fill((0, 0, 0, 128), None, pygame.BLEND_RGBA_MULT)
-    panel(surf, surf.get_width() // 2 - 150, surf.get_height() // 2 - 100, 300, 200, 'Paused')
-    pause_btns = []
-    pause_btns.append(btn(surf, surf.get_width() // 2 - 140, surf.get_height() // 2 - 50, 280, 40, 'Resume', (50, 50, 50), (255, 255, 255), 24))
-    pause_btns.append(btn(surf, surf.get_width() // 2 - 140, surf.get_height() // 2 + 0, 280, 40, 'Save Game', (50, 50, 50), (255, 255, 255), 24))
-    pause_btns.append(btn(surf, surf.get_width() // 2 - 140, surf.get_height() // 2 + 50, 280, 40, 'Exit', (50, 50, 50), (255, 255, 255), 24))
-    return pause_btns
+    surf.fill((0, 0, 0, 128), special_flags=pygame.BLEND_RGBA_MULT)
+    panel_rect = pygame.draw.rect(surf, (50, 50, 50), (surf.get_width() // 4, surf.get_height() // 3, surf.get_width() // 2, surf.get_height() // 3), 0)
+    txt(surf, 'Paused', surf.get_width() // 2, surf.get_height() // 3 + 10, 64, (255, 255, 255), center=True)
+    btn_resume = btn(surf, surf.get_width() // 2 - 100, surf.get_height() // 2 + 50, 200, 50, 'Resume', (0, 128, 0), (255, 255, 255), 36)
+    btn_options = btn(surf, surf.get_width() // 2 - 100, surf.get_height() // 2 + 120, 200, 50, 'Options', (0, 128, 128), (255, 255, 255), 36)
+    btn_exit = btn(surf, surf.get_width() // 2 - 100, surf.get_height() // 2 + 190, 200, 50, 'Exit', (128, 0, 0), (255, 255, 255), 36)
+    return panel_rect, [btn_resume, btn_options, btn_exit]
 
 def draw_city_panel(surf, place_type, BUILDING_TYPES):
-    xbtn_rect = panel(surf, 10, 10, 600, 300, f'{place_type} Panel')
+    xbtn_rect = panel(surf, 10, 10, 400, 580, f'{place_type} Panel')
     type_btns = []
     for i, building in enumerate(BUILDING_TYPES):
-        btn_rect = btn(surf, 20 + (i % 3) * 180, 50 + (i // 3) * 60, 170, 50, building['name'], (50, 50, 50), (255, 255, 255), 24)
+        btn_rect = btn(surf, 20 + (i % 3) * 126, 50 + (i // 3) * 76, 120, 70, building.name, (128, 128, 128), (255, 255, 255), 24)
         type_btns.append(btn_rect)
     return xbtn_rect, type_btns
 
-def draw_world_map(surf, player, TOWNS, CITIES, WORLD_MAP, BIOME_COL):
-    xbtn_rect = panel(surf, surf.get_width() // 2 - 300, surf.get_height() // 2 - 300, 600, 600, 'World Map')
-    mini_surf = pygame.Surface((128, 128))
-    for y in range(len(WORLD_MAP)):
-        for x in range(len(WORLD_MAP[y])):
-            pygame.draw.rect(mini_surf, BIOME_COL[WORLD_MAP[y][x]], (x * 1, y * 1, 1, 1), 0)
-    surf.blit(pygame.transform.scale(mini_surf, (600, 600)), (surf.get_width() // 2 - 300 + 5, surf.get_height() // 2 - 300 + 5))
-    for town in TOWNS:
-        pygame.draw.circle(surf, (255, 140, 0), (int(town['x'] / 8) + surf.get_width() // 2 - 300 + 5, int(town['y'] / 8) + surf.get_height() // 2 - 300 + 5), 3)
-    for city in CITIES:
-        pygame.draw.circle(surf, (173, 216, 230), (int(city['x'] / 8) + surf.get_width() // 2 - 300 + 5, int(city['y'] / 8) + surf.get_height() // 2 - 300 + 5), 4)
-    return xbtn_rect
+def draw_world_map(surf):
+    surf.fill((0, 0, 0))
+    txt(surf, 'World Map', surf.get_width() // 2, 10, 64, (255, 255, 255), center=True)
+    # Placeholder for world map drawing logic
+    pass
 
 def draw_game_over(surf):
     surf.fill((0, 0, 0))
-    panel(surf, surf.get_width() // 2 - 150, surf.get_height() // 2 - 100, 300, 200, 'Game Over')
-    btn_rect = btn(surf, surf.get_width() // 2 - 140, surf.get_height() // 2 - 50, 280, 40, 'Restart', (50, 50, 50), (255, 255, 255), 24)
-    return btn_rect
-
-def draw_game_win(surf):
-    surf.fill((0, 0, 0))
-    panel(surf, surf.get_width() // 2 - 150, surf.get_height() // 2 - 100, 300, 200, 'You Win!')
-    btn_rect = btn(surf, surf.get_width() // 2 - 140, surf.get_height() // 2 - 50, 280, 40, 'Restart', (50, 50, 50), (255, 255, 255), 24)
-    return btn_rect
+    txt(surf, 'Game Over', surf.get_width() // 2, surf.get_height() // 2 - 30, 64, (255, 255, 255), center=True)
+    btn_retry = btn(surf, surf.get_width() // 2 - 100, surf.get_height() // 2 + 20, 200, 50, 'Retry', (0, 128, 0), (255, 255, 255), 36)
+    btn_exit = btn(surf, surf.get_width() // 2 - 100, surf.get_height() // 2 + 90, 200, 50, 'Exit', (128, 0, 0), (255, 255, 255), 36)
+    return [btn_retry, btn_exit]
 
 def draw_player_stats(surf, player):
-    panel(surf, 10, 10, 300, 150, 'Player Stats')
-    txt(surf, f'Health: {player.health}/{player.max_health}', 20, 40, 24, (255, 255, 255))
-    txt(surf, f'Mana: {player.mana}/{player.max_mana}', 20, 70, 24, (255, 255, 255))
-    txt(surf, f'Level: {player.level}', 20, 100, 24, (255, 255, 255))
+    panel_rect = pygame.draw.rect(surf, (50, 50, 50), (10, 10, 200, 200), 0)
+    txt(surf, f'HP: {player.hp}/{player.max_hp}', 20, 30, 24, (255, 255, 255))
+    txt(surf, f'MP: {player.mp}/{player.max_mp}', 20, 60, 24, (255, 255, 255))
+    txt(surf, f'Level: {player.level}', 20, 90, 24, (255, 255, 255))
+    txt(surf, f'XP: {player.xp}/{player.next_level_xp}', 20, 120, 24, (255, 255, 255))
+    return panel_rect
 
-def draw_minimap(surf, player, WORLD_MAP, BIOME_COL):
-    mini_surf = pygame.Surface((128, 128))
-    for y in range(len(WORLD_MAP)):
-        for x in range(len(WORLD_MAP[y])):
-            pygame.draw.rect(mini_surf, BIOME_COL[WORLD_MAP[y][x]], (x * 1, y * 1, 1, 1), 0)
-    surf.blit(pygame.transform.scale(mini_surf, (256, 256)), (surf.get_width() - 270, 10))
-    pygame.draw.circle(surf, (255, 0, 0), (int(player.x / 8) + surf.get_width() - 270, int(player.y / 8) + 10), 3)
+def draw_minimap(surf, player, world_map):
+    minimap_rect = pygame.draw.rect(surf, (50, 50, 50), (surf.get_width() - 110, surf.get_height() - 110, 100, 100), 0)
+    # Placeholder for minimap drawing logic
+    pass
 
-def draw_health_bar(surf, player):
-    bar_length = 200
-    bar_height = 20
-    fill = (player.health / player.max_health) * bar_length
-    outline_rect = pygame.Rect(10, surf.get_height() - 40, bar_length, bar_height)
-    fill_rect = pygame.Rect(10, surf.get_height() - 40, fill, bar_height)
-    pygame.draw.rect(surf, (255, 0, 0), fill_rect)
-    pygame.draw.rect(surf, (255, 255, 255), outline_rect, 2)
+def draw_player_inventory(surf, player):
+    xbtn_rect = panel(surf, surf.get_width() - 420, surf.get_height() - 320, 400, 300, 'Inventory')
+    slots = []
+    for i in range(10):
+        rect = pygame.draw.rect(surf, (100, 100, 100), (surf.get_width() - 400 + (i % 5) * 76, surf.get_height() - 300 + (i // 5) * 76, 70, 70), 0)
+        slots.append(rect)
+    return xbtn_rect, slots
 
-def draw_mana_bar(surf, player):
-    bar_length = 200
-    bar_height = 20
-    fill = (player.mana / player.max_mana) * bar_length
-    outline_rect = pygame.Rect(10, surf.get_height() - 70, bar_length, bar_height)
-    fill_rect = pygame.Rect(10, surf.get_height() - 70, fill, bar_height)
-    pygame.draw.rect(surf, (0, 0, 255), fill_rect)
-    pygame.draw.rect(surf, (255, 255, 255), outline_rect, 2)
+def draw_player_equipment(surf, player):
+    xbtn_rect = panel(surf, surf.get_width() - 420, surf.get_height() - 320, 400, 300, 'Equipment')
+    # Placeholder for equipment drawing logic
+    return xbtn_rect
 
-def draw_experience_bar(surf, player):
-    bar_length = 200
-    bar_height = 20
-    fill = (player.experience / player.next_level_exp) * bar_length
-    outline_rect = pygame.Rect(10, surf.get_height() - 100, bar_length, bar_height)
-    fill_rect = pygame.Rect(10, surf.get_height() - 100, fill, bar_height)
-    pygame.draw.rect(surf, (255, 215, 0), fill_rect)
-    pygame.draw.rect(surf, (255, 255, 255), outline_rect, 2)
+def draw_player_quests(surf, player):
+    xbtn_rect = panel(surf, surf.get_width() - 420, surf.get_height() - 320, 400, 300, 'Quest Log')
+    for i, quest in enumerate(player.quests):
+        txt(surf, quest.description, surf.get_width() - 400, surf.get_height() - 300 + i * 30, 24, (255, 255, 255))
+    return xbtn_rect
+
+def draw_player_skills(surf, player):
+    xbtn_rect = panel(surf, surf.get_width() - 420, surf.get_height() - 320, 400, 300, 'Skills')
+    # Placeholder for skills drawing logic
+    return xbtn_rect
+
+def draw_player_spells(surf, player):
+    xbtn_rect = panel(surf, surf.get_width() - 420, surf.get_height() - 320, 400, 300, 'Spells')
+    # Placeholder for spells drawing logic
+    return xbtn_rect
+
+def draw_player_status_effects(surf, player):
+    xbtn_rect = panel(surf, surf.get_width() - 420, surf.get_height() - 320, 400, 300, 'Status Effects')
+    # Placeholder for status effects drawing logic
+    return xbtn_rect
+
+def draw_player_attributes(surf, player):
+    xbtn_rect = panel(surf, surf.get_width() - 420, surf.get_height() - 320, 400, 300, 'Attributes')
+    # Placeholder for attributes drawing logic
+    return xbtn_rect
+
+def draw_player_inventory_details(surf, player, selected_item):
+    if selected_item is not None:
+        panel_rect = pygame.draw.rect(surf, (50, 50, 50), (surf.get_width() - 420, surf.get_height() - 320, 400, 300), 0)
+        txt(surf, selected_item.name, surf.get_width() - 400, surf.get_height() - 300, 24, (255, 255, 255))
+        txt(surf, f'Description: {selected_item.description}', surf.get_width() - 400, surf.get_height() - 270, 18, (255, 255, 255))
+        txt(surf, f'Type: {selected_item.type}', surf.get_width() - 400, surf.get_height() - 240, 18, (255, 255, 255))
+        txt(surf, f'Value: {selected_item.value}', surf.get_width() - 400, surf.get_height() - 210, 18, (255, 255, 255))
+    return panel_rect
+
+def draw_player_equipment_details(surf, player, selected_slot):
+    if selected_slot is not None:
+        panel_rect = pygame.draw.rect(surf, (50, 50, 50), (surf.get_width() - 420, surf.get_height() - 320, 400, 300), 0)
+        item = player.equipment[selected_slot]
+        if item is not None:
+            txt(surf, item.name, surf.get_width() - 400, surf.get_height() - 300, 24, (255, 255, 255))
+            txt(surf, f'Description: {item.description}', surf.get_width() - 400, surf.get_height() - 270, 18, (255, 255, 255))
+            txt(surf, f'Type: {item.type}', surf.get_width() - 400, surf.get_height() - 240, 18, (255, 255, 255))
+            txt(surf, f'Value: {item.value}', surf.get_width() - 400, surf.get_height() - 210, 18, (255, 255, 255))
+    return panel_rect
+
+def draw_player_quest_details(surf, player, selected_quest):
+    if selected_quest is not None:
+        panel_rect = pygame.draw.rect(surf, (50, 50, 50), (surf.get_width() - 420, surf.get_height() - 320, 400, 300), 0)
+        txt(surf, selected_quest.description, surf.get_width() - 400, surf.get_height() - 300, 24, (255, 255, 255))
+        txt(surf, f'Objective: {selected_quest.objective}', surf.get_width() - 400, surf.get_height() - 270, 18, (255, 255, 255))
+        txt(surf, f'Reward: {selected_quest.reward}', surf.get_width() - 400, surf.get_height() - 240, 18, (255, 255, 255))
+    return panel_rect
+
+def draw_player_skill_details(surf, player, selected_skill):
+    if selected_skill is not None:
+        panel_rect = pygame.draw.rect(surf, (50, 50, 50), (surf.get_width() - 420, surf.get_height() - 320, 400, 300), 0)
+        txt(surf, selected_skill.name, surf.get_width() - 400, surf.get_height() - 300, 24, (255, 255, 255))
+        txt(surf, f'Description: {selected_skill.description}', surf.get_width() - 400, surf.get_height() - 270, 18, (255, 255, 255))
+        txt(surf, f'Cost: {selected_skill.cost} MP', surf.get_width() - 400, surf.get_height() - 240, 18, (255, 255, 255))
+    return panel_rect
+
+def draw_player_spell_details(surf, player, selected_spell):
+    if selected_spell is not None:
+        panel_rect = pygame.draw.rect(surf, (50, 50, 50), (surf.get_width() - 420, surf.get_height() - 320, 400, 300), 0)
+        txt(surf, selected_spell.name, surf.get_width() - 400, surf.get_height() - 300, 24, (255, 255, 255))
+        txt(surf, f'Description: {selected_spell.description}', surf.get_width() - 400, surf.get_height() - 270, 18, (255, 255, 255))
+        txt(surf, f'Cost: {selected_spell.cost} MP', surf.get_width() - 400, surf.get_height() - 240, 18, (255, 255, 255))
+    return panel_rect
+
+def draw_player_status_effect_details(surf, player, selected_effect):
+    if selected_effect is not None:
+        panel_rect = pygame.draw.rect(surf, (50, 50, 50), (surf.get_width() - 420, surf.get_height() - 320, 400, 300), 0)
+        txt(surf, selected_effect.name, surf.get_width() - 400, surf.get_height() - 300, 24, (255, 255, 255))
+        txt(surf, f'Description: {selected_effect.description}', surf.get_width() - 400, surf.get_height() - 270, 18, (255, 255, 255))
+        txt(surf, f'Duration: {selected_effect.duration} turns', surf.get_width() - 400, surf.get_height() - 240, 18, (255, 255, 255))
+    return panel_rect
+
+def draw_player_attribute_details(surf, player, selected_attribute):
+    if selected_attribute is not None:
+        panel_rect = pygame.draw.rect(surf, (50, 50, 50), (surf.get_width() - 420, surf.get_height() - 320, 400, 300), 0)
+        txt(surf, selected_attribute.name, surf.get_width() - 400, surf.get_height() - 300, 24, (255, 255, 255))
+        txt(surf, f'Description: {selected_attribute.description}', surf.get_width() - 400, surf.get_height() - 270, 18, (255, 255, 255))
+        txt(surf, f'Value: {getattr(player, selected_attribute.name)}', surf.get_width() - 400, surf.get_height() - 240, 18, (255, 255, 255))
+    return panel_rect
+
+def draw_player_inventory_actions(surf, player, selected_item):
+    if selected_item is not None:
+        panel_rect = pygame.draw.rect(surf, (50, 50, 50), (surf.get_width() - 420, surf.get_height() - 160, 400, 150), 0)
+        btn_use = btn(surf, 'Use', surf.get_width() - 380, surf.get_height() - 140, 120, 40, (0, 128, 0), (0, 255, 0))
+        btn_drop = btn(surf, 'Drop', surf.get_width() - 250, surf.get_height() - 140, 120, 40, (128, 0, 0), (255, 0, 0))
+        btn_equip = btn(surf, 'Equip', surf.get_width() - 380, surf.get_height() - 90, 120, 40, (0, 0, 128), (0, 0, 255))
+        return panel_rect, btn_use, btn_drop, btn_equip
+    return None
+
+def draw_player_equipment_actions(surf, player, selected_slot):
+    if selected_slot is not None:
+        item = player.equipment[selected_slot]
+        if item is not None:
+            panel_rect = pygame.draw.rect(surf, (50, 50, 50), (surf.get_width() - 420, surf.get_height() - 160, 400, 150), 0)
+            btn_unequip = btn(surf, 'Unequip', surf.get_width() - 380, surf.get_height() - 140, 120, 40, (128, 0, 0), (255, 0, 0))
+            return panel_rect, btn_unequip
+    return None
+
+def draw_player_quest_actions(surf, player, selected_quest):
+    if selected_quest is not None:
+        panel_rect = pygame.draw.rect(surf, (50, 50, 50), (surf.get_width() - 420, surf.get_height() - 160, 400, 150), 0)
+        btn_complete = btn(surf, 'Complete', surf.get_width() - 380, surf.get_height() - 140, 120, 40, (0, 128, 0), (0, 255, 0))
+        return panel_rect, btn_complete
+    return None
+
+def draw_player_skill_actions(surf, player, selected_skill):
+    if selected_skill is not None:
+        panel_rect = pygame.draw.rect(surf, (50, 50, 50), (surf.get_width() - 420, surf.get_height() - 160, 400, 150), 0)
+        btn_cast = btn(surf, 'Cast', surf.get_width() - 380, surf.get_height() - 140, 120, 40, (0, 128, 0), (0, 255, 0))
+        return panel_rect, btn_cast
+    return None
+
+def draw_player_spell_actions(surf, player, selected_spell):
+    if selected_spell is not None:
+        panel_rect = pygame.draw.rect(surf, (50, 50, 50), (surf.get_width() - 420, surf.get_height() - 160, 400, 150), 0)
+        btn_cast = btn(surf, 'Cast', surf.get_width() - 380, surf.get_height() - 140, 120, 40, (0, 128, 0), (0, 255, 0))
+        return panel_rect, btn_cast
+    return None
+
+def draw_player_status_effect_actions(surf, player, selected_effect):
+    if selected_effect is not None:
+        panel_rect = pygame.draw.rect(surf, (50, 50, 50), (surf.get_width() - 420, surf.get_height() - 160, 400, 150), 0)
+        btn_remove = btn(surf, 'Remove', surf.get_width() - 380, surf.get_height() - 140, 120, 40, (128, 0, 0), (255, 0, 0))
+        return panel_rect, btn_remove
+    return None
+
+def draw_player_attribute_actions(surf, player, selected_attribute):
+    if selected_attribute is not None:
+        panel_rect = pygame.draw.rect(surf, (50, 50, 50), (surf.get_width() - 420, surf.get_height() - 160, 400, 150), 0)
+        btn_increase = btn(surf, 'Increase', surf.get_width() - 380, surf.get_height() - 140, 120, 40, (0, 128, 0), (0, 255, 0))
+        return panel_rect, btn_increase
+    return None
+
+def draw_player_inventory_list(surf, player):
+    panel_rect = pygame.draw.rect(surf, (50, 50, 50), (surf.get_width() - 420, surf.get_height() - 360, 400, 300), 0)
+    font = pygame.font.Font(None, 24)
+    for i, item in enumerate(player.inventory):
+        text = font.render(item.name, True, (255, 255, 255))
+        surf.blit(text, (surf.get_width() - 410, surf.get_height() - 350 + i * 30))
+    return panel_rect
+
+def draw_player_equipment_list(surf, player):
+    panel_rect = pygame.draw.rect(surf, (50, 50, 50), (surf.get_width() - 420, surf.get_height() - 360, 400, 300), 0)
+    font = pygame.font.Font(None, 24)
+    for i, item in enumerate(player.equipment):
+        if item is not None:
+            text = font.render(item.name, True, (255, 255, 255))
+        else:
+            text = font.render('Empty', True, (255, 255, 255))
+        surf.blit(text, (surf.get_width() - 410, surf.get_height() - 350 + i * 30))
+    return panel_rect
+
+def draw_player_quest_list(surf, player):
+    panel_rect = pygame.draw.rect(surf, (50, 50, 50), (surf.get_width() - 420, surf.get_height() - 360, 400, 300), 0)
+    font = pygame.font.Font(None, 24)
+    for i, quest in enumerate(player.quests):
+        text = font.render(quest.name, True, (255, 255, 255))
+        surf.blit(text, (surf.get_width() - 410, surf.get_height() - 350 + i * 30))
+    return panel_rect
+
+def draw_player_skill_list(surf, player):
+    panel_rect = pygame.draw.rect(surf, (50, 50, 50), (surf.get_width() - 420, surf.get_height() - 360, 400, 300), 0)
+    font = pygame.font.Font(None, 24)
+    for i, skill in enumerate(player.skills):
+        text = font.render(skill.name, True, (255, 255, 255))
+        surf.blit(text, (surf.get_width() - 410, surf.get_height() - 350 + i * 30))
+    return panel_rect
+
+def draw_player_spell_list(surf, player):
+    panel_rect = pygame.draw.rect(surf, (50, 50, 50), (surf.get_width() - 420, surf.get_height() - 360, 400, 300), 0)
+    font = pygame.font.Font(None, 24)
+    for i, spell in enumerate(player.spells):
+        text = font.render(spell.name, True, (255, 255, 255))
+        surf.blit(text, (surf.get_width() - 410, surf.get_height() - 350 + i * 30))
+    return panel_rect
+
+def draw_player_status_effect_list(surf, player):
+    panel_rect = pygame.draw.rect(surf, (50, 50, 50), (surf.get_width() - 420, surf.get_height() - 360, 400, 300), 0)
+    font = pygame.font.Font(None, 24)
+    for i, effect in enumerate(player.status_effects):
+        text = font.render(effect.name, True, (255, 255, 255))
+        surf.blit(text, (surf.get_width() - 410, surf.get_height() - 350 + i * 30))
+    return panel_rect
+
+def draw_player_attribute_list(surf, player):
+    panel_rect = pygame.draw.rect(surf, (50, 50, 50), (surf.get_width() - 420, surf.get_height() - 360, 400, 300), 0)
+    font = pygame.font.Font(None, 24)
+    for i, attribute in enumerate(player.attributes):
+        text = font.render(attribute.name, True, (255, 255, 255))
+        surf.blit(text, (surf.get_width() - 410, surf.get_height() - 350 + i * 30))
+    return panel_rect
+
+def draw_player_inventory_selection(surf, player):
+    panel_rect = draw_player_inventory_list(surf, player)
+    selected_item = None
+    for event in pygame.event.get():
+        if event.type == pygame.MOUSEBUTTONDOWN:
+            mouse_pos = pygame.mouse.get_pos()
+            for i, item in enumerate(player.inventory):
+                if surf.get_width() - 410 <= mouse_pos[0] <= surf.get_width() - 310 and surf.get_height() - 350 + i * 30 <= mouse_pos[1] <= surf.get_height() - 320 + i * 30:
+                    selected_item = item
+    return panel_rect, selected_item
+
+def draw_player_equipment_selection(surf, player):
+    panel_rect = draw_player_equipment_list(surf, player)
+    selected_slot = None
+    for event in pygame.event.get():
+        if event.type == pygame.MOUSEBUTTONDOWN:
+            mouse_pos = pygame.mouse.get_pos()
+            for i in range(len(player.equipment)):
+                if surf.get_width() - 410 <= mouse_pos[0] <= surf.get_width() - 310 and surf.get_height() - 350 + i * 30 <= mouse_pos[1] <= surf.get_height() - 320 + i * 30:
+                    selected_slot = i
+    return panel_rect, selected_slot
+
+def draw_player_quest_selection(surf, player):
+    panel_rect = draw_player_quest_list(surf, player)
+    selected_quest = None
+    for event in pygame.event.get():
+        if event.type == pygame.MOUSEBUTTONDOWN:
+            mouse_pos = pygame.mouse.get_pos()
+            for i, quest in enumerate(player.quests):
+                if surf.get_width() - 410 <= mouse_pos[0] <= surf.get_width() - 310 and surf.get_height() - 350 + i * 30 <= mouse_pos[1] <= surf.get_height() - 320 + i * 30:
+                    selected_quest = quest
+    return panel_rect, selected_quest
+
+def draw_player_skill_selection(surf, player):
+    panel_rect = draw_player_skill_list(surf, player)
+    selected_skill = None
+    for event in pygame.event.get():
+        if event.type == pygame.MOUSEBUTTONDOWN:
+            mouse_pos = pygame.mouse.get_pos()
+            for i, skill in enumerate(player.skills):
+                if surf.get_width() - 410 <= mouse_pos[0] <= surf.get_width() - 310 and surf.get_height() - 350 + i * 30 <= mouse_pos[1] <= surf.get_height() - 320 + i * 30:
+                    selected_skill = skill
+    return panel_rect, selected_skill
+
+def draw_player_spell_selection(surf, player):
+    panel_rect = draw_player_spell_list(surf, player)
+    selected_spell = None
+    for event in pygame.event.get():
+        if event.type == pygame.MOUSEBUTTONDOWN:
+            mouse_pos = pygame.mouse.get_pos()
+            for i, spell in enumerate(player.spells):
+                if surf.get_width() - 410 <= mouse_pos[0] <= surf.get_width() - 310 and surf.get_height() - 350 + i * 30 <= mouse_pos[1] <= surf.get_height() - 320 + i * 30:
+                    selected_spell = spell
+    return panel_rect, selected_spell
+
+def draw_player_status_effect_selection(surf, player):
+    panel_rect = draw_player_status_effect_list(surf, player)
+    selected_effect = None
+    for event in pygame.event.get():
+        if event.type == pygame.MOUSEBUTTONDOWN:
+            mouse_pos = pygame.mouse.get_pos()
+            for i, effect in enumerate(player.status_effects):
+                if surf.get_width() - 410 <= mouse_pos[0] <= surf.get_width() - 310 and surf.get_height() - 350 + i * 30 <= mouse_pos[1] <= surf.get_height() - 320 + i * 30:
+                    selected_effect = effect
+    return panel_rect, selected_effect
+
+def draw_player_attribute_selection(surf, player):
+    panel_rect = draw_player_attribute_list(surf, player)
+    selected_attribute = None
+    for event in pygame.event.get():
+        if event.type == pygame.MOUSEBUTTONDOWN:
+            mouse_pos = pygame.mouse.get_pos()
+            for i, attribute in enumerate(player.attributes):
+                if surf.get_width() - 410 <= mouse_pos[0] <= surf.get_width() - 310 and surf.get_height() - 350 + i * 30 <= mouse_pos[1] <= surf.get_height() - 320 + i * 30:
+                    selected_attribute = attribute
+    return panel_rect, selected_attribute
+
+def draw_player_inventory_interface(surf, player):
+    panel_rect, selected_item = draw_player_inventory_selection(surf, player)
+    if selected_item is not None:
+        details_panel_rect = pygame.draw.rect(surf, (50, 50, 50), (surf.get_width() - 820, surf.get_height() - 360, 400, 300), 0)
+        font = pygame.font.Font(None, 24)
+        text = font.render(selected_item.name, True, (255, 255, 255))
+        surf.blit(text, (surf.get_width() - 810, surf.get_height() - 350))
+        text = font.render(f'Description: {selected_item.description}', True, (255, 255, 255))
+        surf.blit(text, (surf.get_width() - 810, surf.get_height() - 320))
+        actions_panel_rect, action_button = draw_player_inventory_actions(surf, selected_item)
+    return panel_rect
+
+def draw_player_equipment_interface(surf, player):
+    panel_rect, selected_slot = draw_player_equipment_selection(surf, player)
+    if selected_slot is not None:
+        item = player.equipment[selected_slot]
+        details_panel_rect = pygame.draw.rect(surf, (50, 50, 50), (surf.get_width() - 820, surf.get_height() - 360, 400, 300), 0)
+        font = pygame.font.Font(None, 24)
+        if item is not None:
+            text = font.render(item.name, True, (255, 255, 255))
+            surf.blit(text, (surf.get_width() - 810, surf.get_height() - 350))
+            text = font.render(f'Description: {item.description}', True, (255, 255, 255))
+            surf.blit(text, (surf.get_width() - 810, surf.get_height() - 320))
+        else:
+            text = font.render('Empty', True, (255, 255, 255))
+            surf.blit(text, (surf.get_width() - 810, surf.get_height() - 350))
+        actions_panel_rect, action_button = draw_player_equipment_actions(surf, item)
+    return panel_rect
+
+def draw_player_quest_interface(surf, player):
+    panel_rect, selected_quest = draw_player_quest_selection(surf, player)
+    if selected_quest is not None:
+        details_panel_rect = pygame.draw.rect(surf, (50, 50, 50), (surf.get_width() - 820, surf.get_height() - 360, 400, 300), 0)
+        font = pygame.font.Font(None, 24)
+        text = font.render(selected_quest.name, True, (255, 255, 255))
+        surf.blit(text, (surf.get_width() - 810, surf.get_height() - 350))
+        text = font.render(f'Description: {selected_quest.description}', True, (255, 255, 255))
+        surf.blit(text, (surf.get_width() - 810, surf.get_height() - 320))
+        actions_panel_rect, action_button = draw_player_quest_actions(surf, selected_quest)
+    return panel_rect
+
+def draw_player_skill_interface(surf, player):
+    panel_rect, selected_skill = draw_player_skill_selection(surf, player)
+    if selected_skill is not None:
+        details_panel_rect = pygame.draw.rect(surf, (50, 50, 50), (surf.get_width() - 820, surf.get_height() - 360, 400, 300), 0)
+        font = pygame.font.Font(None, 24)
+        text = font.render(selected_skill.name, True, (255, 255, 255))
+        surf.blit(text, (surf.get_width() - 810, surf.get_height() - 350))
+        text = font.render(f'Description: {selected_skill.description}', True, (255, 255, 255))
+        surf.blit(text, (surf.get_width() - 810, surf.get_height() - 320))
+        actions_panel_rect, action_button = draw_player_skill_actions(surf, selected_skill)
+    return panel_rect
+
+def draw_player_spell_interface(surf, player):
+    panel_rect, selected_spell = draw_player_spell_selection(surf, player)
+    if selected_spell is not None:
+        details_panel_rect = pygame.draw.rect(surf, (50, 50, 50), (surf.get_width() - 820, surf.get_height() - 360, 400, 300), 0)
+        font = pygame.font.Font(None, 24)
+        text = font.render(selected_spell.name, True, (255, 255, 255))
+        surf.blit(text, (surf.get_width() - 810, surf.get_height() - 350))
+        text = font.render(f'Description: {selected_spell.description}', True, (255, 255, 255))
+        surf.blit(text, (surf.get_width() - 810, surf.get_height() - 320))
+        actions_panel_rect, action_button = draw_player_spell_actions(surf, selected_spell)
+    return panel_rect
+
+def draw_player_status_effect_interface(surf, player):
+    panel_rect, selected_effect = draw_player_status_effect_selection(surf, player)
+    if selected_effect is not None:
+        details_panel_rect = pygame.draw.rect(surf, (50, 50, 50), (surf.get_width() - 820, surf.get_height() - 360, 400, 300), 0)
+        font = pygame.font.Font(None, 24)
+        text = font.render(selected_effect.name, True, (255, 255, 255))
+        surf.blit(text, (surf.get_width() - 810, surf.get_height() - 350))
+        text = font.render(f'Description: {selected_effect.description}', True, (255, 255, 255))
+        surf.blit(text, (surf.get_width() - 810, surf.get_height() - 320))
+        actions_panel_rect, action_button = draw_player_status_effect_actions(surf, selected_effect)
+    return panel_rect
+
+def draw_player_attribute_interface(surf, player):
+    panel_rect, selected_attribute = draw_player_attribute_selection(surf, player)
+    if selected_attribute is not None:
+        details_panel_rect = pygame.draw.rect(surf, (50, 50, 50), (surf.get_width() - 820, surf.get_height() - 360, 400, 300), 0)
+        font = pygame.font.Font(None, 24)
+        text = font.render(selected_attribute.name, True, (255, 255, 255))
+        surf.blit(text, (surf.get_width() - 810, surf.get_height() - 350))
+        text = font.render(f'Description: {selected_attribute.description}', True, (255, 255, 255))
+        surf.blit(text, (surf.get_width() - 810, surf.get_height() - 320))
+        actions_panel_rect, action_button = draw_player_attribute_actions(surf, selected_attribute)
+    return panel_rect
+
+def draw_player_inventory_actions(surf, item):
+    panel_rect = pygame.draw.rect(surf, (50, 50, 50), (surf.get_width() - 820, surf.get_height() - 60, 400, 30), 0)
+    font = pygame.font.Font(None, 24)
+    text = font.render('Use', True, (255, 255, 255))
+    surf.blit(text, (surf.get_width() - 810, surf.get_height() - 50))
+    action_button = 'use'
+    return panel_rect, action_button
+
+def draw_player_equipment_actions(surf, item):
+    panel_rect = pygame.draw.rect(surf, (50, 50, 50), (surf.get_width() - 820, surf.get_height() - 60, 400, 30), 0)
+    font = pygame.font.Font(None, 24)
+    if item is not None:
+        text = font.render('Unequip', True, (255, 255, 255))
+        surf.blit(text, (surf.get_width() - 810, surf.get_height() - 50))
+        action_button = 'unequip'
+    else:
+        text = font.render('Equip', True, (255, 255, 255))
+        surf.blit(text, (surf.get_width() - 810, surf.get_height() - 50))
+        action_button = 'equip'
+    return panel_rect, action_button
+
+def draw_player_quest_actions(surf, quest):
+    panel_rect = pygame.draw.rect(surf, (50, 50, 50), (surf.get_width() - 820, surf.get_height() - 60, 400, 30), 0)
+    font = pygame.font.Font(None, 24)
+    text = font.render('Accept', True, (255, 255, 255))
+    surf.blit(text, (surf.get_width() - 810, surf.get_height() - 50))
+    action_button = 'accept'
+    return panel_rect, action_button
+
+def draw_player_skill_actions(surf, skill):
+    panel_rect = pygame.draw.rect(surf, (50, 50, 50), (surf.get_width() - 820, surf.get_height() - 60, 400, 30), 0)
+    font = pygame.font.Font(None, 24)
+    text = font.render('Use', True, (255, 255, 255))
+    surf.blit(text, (surf.get_width() - 810, surf.get_height() - 50))
+    action_button = 'use'
+    return panel_rect, action_button
+
+def draw_player_spell_actions(surf, spell):
+    panel_rect = pygame.draw.rect(surf, (50, 50, 50), (surf.get_width() - 820, surf.get_height() - 60, 400, 30), 0)
+    font = pygame.font.Font(None, 24)
+    text = font.render('Cast', True, (255, 255, 255))
+    surf.blit(text, (surf.get_width() - 810, surf.get_height() - 50))
+    action_button = 'cast'
+    return panel_rect, action_button
+
+def draw_player_status_effect_actions(surf, effect):
+    panel_rect = pygame.draw.rect(surf, (50, 50, 50), (surf.get_width() - 820, surf.get_height() - 60, 400, 30), 0)
+    font = pygame.font.Font(None, 24)
+    text = font.render('Remove', True, (255, 255, 255))
+    surf.blit(text, (surf.get_width() - 810, surf.get_height() - 50))
+    action_button = 'remove'
+    return panel_rect, action_button
+
+def draw_player_attribute_actions(surf, attribute):
+    panel_rect = pygame.draw.rect(surf, (50, 50, 50), (surf.get_width() - 820, surf.get_height() - 60, 400, 30), 0)
+    font = pygame.font.Font(None, 24)
+    text = font.render('Upgrade', True, (255, 255, 255))
+    surf.blit(text, (surf.get_width() - 810, surf.get_height() - 50))
+    action_button = 'upgrade'
+    return panel_rect, action_button
+
+# Example usage
+pygame.init()
+screen = pygame.display.set_mode((1280, 720))
+
+player = Player()
+
+running = True
+while running:
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            running = False
+
+    screen.fill((0, 0, 0))
+    draw_player_inventory_interface(screen, player)
+    pygame.display.flip()
+
+pygame.quit()
+
+# This code sets up a basic Pygame window and defines a `Player` class with various attributes like inventory, equipment, quests, skills, spells, status effects, and attributes. The interfaces for each of these are defined in functions that draw the necessary UI elements on the screen.
+
+# The `draw_player_inventory_interface` function is an example of how you might draw the inventory interface, including a selection panel, details panel, and actions panel. Similar functions are provided for other player attributes.
 
 # ── QUEST MODULE ─────────────────────────────────────────────────────────────
 
@@ -575,60 +998,51 @@ def spawn_entities(WORLD_MAP, TOWNS, CITIES, BANDIT_CAMPS, GOBLIN_CAMPS, ENEMY_D
 
     for camp in BANDIT_CAMPS:
         for _ in range(4):
-            enemies.append({'type': 'bandit', 'location': camp, **ENEMY_DEFS['bandit']})
+            enemies.append({'type': 'bandit', 'name': f'Bandit_{random.choice(NPC_NAMES)}', 'location': camp})
 
     for camp in GOBLIN_CAMPS:
         for _ in range(4):
-            enemies.append({'type': 'goblin', 'location': camp, **ENEMY_DEFS['goblin']})
-        enemies.append({'type': 'orc', 'location': camp, **ENEMY_DEFS['orc']})
-
-    wild_locations = [loc for loc, biome in WORLD_MAP.items() if biome not in ['town', 'city', 'water']]
-    random.shuffle(wild_locations)
-    for _ in range(30):
-        enemies.append({'type': random.choice(['bandit', 'goblin']), 'location': wild_locations.pop(), **ENEMY_DEFS[random.choice(['bandit', 'goblin'])]})
+            enemies.append({'type': 'goblin', 'name': f'Goblin_{random.choice(NPC_NAMES)}', 'location': camp})
+        enemies.append({'type': 'orc', 'name': f'Orc_{random.choice(NPC_NAMES)}', 'location': camp})
 
     for town in TOWNS:
         jobs = ['Merchant', 'Guard', 'Guard', 'Farmer', 'Farmer', 'Miner', 'Blacksmith']
         for job in jobs:
-            name = random.choice(NPC_NAMES)
-            npcs.append({'name': name, 'job': job, 'location': town})
+            npcs.append({'name': random.choice(NPC_NAMES), 'job': job, 'location': town})
+
+    wild_locations = [loc for loc, biome in WORLD_MAP.items() if biome not in ['town', 'city', 'water']]
+    for _ in range(30):
+        location = random.choice(wild_locations)
+        enemy_type = random.choices(['bandit', 'goblin'], weights=[2, 1], k=1)[0]
+        enemies.append({'type': enemy_type, 'name': f'{enemy_type.capitalize()}_{random.choice(NPC_NAMES)}', 'location': location})
 
     return enemies, npcs, buildings
 
 def check_kill_quests(player, enemy_name):
-    if 'kill_quests' not in player:
-        player['kill_quests'] = {}
-    for quest, details in player['kill_quests'].items():
-        if details['enemy'] == enemy_name and details['progress'] < details['target']:
-            details['progress'] += 1
-            break
+    for quest in player['quests']:
+        if quest['type'] == 'kill' and quest['target'] == enemy_name:
+            quest['progress'] += 1
+            if quest['progress'] >= quest['goal']:
+                quest['completed'] = True
 
 def check_item_quests(player, item_name, qty):
-    if 'item_quests' not in player:
-        player['item_quests'] = {}
-    for quest, details in player['item_quests'].items():
-        if details['item'] == item_name and details['progress'] < details['target']:
-            details['progress'] += qty
-            break
+    for quest in player['quests']:
+        if quest['type'] == 'collect' and quest['target'] == item_name:
+            quest['progress'] += qty
+            if quest['progress'] >= quest['goal']:
+                quest['completed'] = True
 
 def complete_ready_quests(player):
     completed_quests = []
-    if 'kill_quests' in player:
-        for quest, details in list(player['kill_quests'].items()):
-            if details['progress'] >= details['target']:
-                completed_quests.append(quest)
-                del player['kill_quests'][quest]
-                # Add rewards here
-    if 'item_quests' in player:
-        for quest, details in list(player['item_quests'].items()):
-            if details['progress'] >= details['target']:
-                completed_quests.append(quest)
-                del player['item_quests'][quest]
-                # Add rewards here
+    for quest in player['quests']:
+        if quest['completed']:
+            player['rewards'].append(quest['reward'])
+            completed_quests.append(quest['name'])
+    player['quests'] = [q for q in player['quests'] if not q['completed']]
     return completed_quests
 
 def harvest_nearby(player, WORLD_MAP):
-    location = player.get('location')
+    location = player['location']
     biome = WORLD_MAP.get(location)
     if biome == 'forest':
         return 'chop'
@@ -640,42 +1054,42 @@ def harvest_nearby(player, WORLD_MAP):
         return ''
 
 # ── ECONOMY MODULE ───────────────────────────────────────────────────────────
-# Economy and Crafting Module for Demiworld
+# Economy and Crafting Module for DemiWorld
 
 CRAFT_RECIPES = {
     'Fletching': [
         {'name': 'Arrow', 'cost': {'Feather': 1, 'Wood': 1}, 'out': {'Arrow': 5}},
         {'name': 'Quiver', 'cost': {'Leather': 2, 'String': 1}, 'out': {'Quiver': 1}},
-        {'name': 'Crossbow Bolt', 'cost': {'Iron': 1, 'Wood': 1}, 'out': {'Crossbow Bolt': 5}},
+        {'name': 'Crossbow Bolt', 'cost': {'Iron Ingot': 1, 'Wood': 1}, 'out': {'Crossbow Bolt': 5}},
         {'name': 'Bow', 'cost': {'Wood': 3, 'String': 2}, 'out': {'Bow': 1}}
     ],
     'Blacksmith': [
-        {'name': 'Iron Sword', 'cost': {'Iron': 5, 'Coal': 2}, 'out': {'Iron Sword': 1}},
-        {'name': 'Steel Armor', 'cost': {'Steel': 8, 'Leather': 3}, 'out': {'Steel Armor': 1}},
-        {'name': 'Horse Shoe', 'cost': {'Iron': 4, 'Nail': 5}, 'out': {'Horse Shoe': 2}},
-        {'name': 'Shield', 'cost': {'Wood': 6, 'Leather': 3}, 'out': {'Shield': 1}}
+        {'name': 'Iron Sword', 'cost': {'Iron Ingot': 5, 'Steel': 2}, 'out': {'Iron Sword': 1}},
+        {'name': 'Steel Shield', 'cost': {'Steel': 4, 'Leather': 2}, 'out': {'Steel Shield': 1}},
+        {'name': 'Armor Plate', 'cost': {'Steel': 6, 'Iron Ingot': 3}, 'out': {'Armor Plate': 1}},
+        {'name': 'Horse Shoe', 'cost': {'Iron Ingot': 2, 'Steel': 1}, 'out': {'Horse Shoe': 4}}
     ],
     'Alchemy': [
-        {'name': 'Health Potion', 'cost': {'Herb': 4, 'Water': 1}, 'out': {'Health Potion': 2}},
-        {'name': 'Mana Potion', 'cost': {'Crystal Dust': 3, 'Water': 1}, 'out': {'Mana Potion': 2}},
-        {'name': 'Fire Scroll', 'cost': {'Sulfur': 5, 'Paper': 1}, 'out': {'Fire Scroll': 1}},
-        {'name': 'Invisibility Potion', 'cost': {'Mushroom': 3, 'Crystal Dust': 4}, 'out': {'Invisibility Potion': 1}}
+        {'name': 'Health Potion', 'cost': {'Herb': 3, 'Water Bottle': 1}, 'out': {'Health Potion': 5}},
+        {'name': 'Mana Potion', 'cost': {'Crystal Dust': 2, 'Water Bottle': 1}, 'out': {'Mana Potion': 5}},
+        {'name': 'Fire Scroll', 'cost': {'Sulfur': 3, 'Paper': 1}, 'out': {'Fire Scroll': 3}},
+        {'name': 'Ice Scroll', 'cost': {'Snowflake Crystal': 2, 'Paper': 1}, 'out': {'Ice Scroll': 3}}
     ],
     'Building': [
-        {'name': 'House', 'cost': {'Wood': 20, 'Stone': 15}, 'out': {'House': 1}},
-        {'name': 'Shop', 'cost': {'Wood': 30, 'Iron': 10}, 'out': {'Shop': 1}},
-        {'name': 'Barracks', 'cost': {'Stone': 40, 'Iron': 20}, 'out': {'Barracks': 1}},
-        {'name': 'Farm', 'cost': {'Wood': 25, 'Soil': 30}, 'out': {'Farm': 1}}
+        {'name': 'House', 'cost': {'Wood': 50, 'Stone': 20}, 'out': {'House': 1}},
+        {'name': 'Shop', 'cost': {'Wood': 40, 'Iron Ingot': 10}, 'out': {'Shop': 1}},
+        {'name': 'Barracks', 'cost': {'Stone': 60, 'Steel': 20}, 'out': {'Barracks': 1}},
+        {'name': 'Farm', 'cost': {'Wood': 30, 'Soil': 40}, 'out': {'Farm': 1}}
     ]
 }
 
 BUILDING_TYPES = {
-    'House': {'col': (204, 153, 255), 'w': 5, 'h': 5, 'cost': {'Wood': 20, 'Stone': 15}},
-    'Shop': {'col': (255, 204, 153), 'w': 6, 'h': 6, 'cost': {'Wood': 30, 'Iron': 10}},
-    'Barracks': {'col': (153, 204, 255), 'w': 8, 'h': 8, 'cost': {'Stone': 40, 'Iron': 20}},
-    'Farm': {'col': (153, 255, 153), 'w': 7, 'h': 7, 'cost': {'Wood': 25, 'Soil': 30}},
-    'Tower': {'col': (255, 153, 153), 'w': 9, 'h': 9, 'cost': {'Stone': 60, 'Iron': 30}},
-    'Warehouse': {'col': (204, 255, 204), 'w': 7, 'h': 8, 'cost': {'Wood': 40, 'Stone': 25}}
+    'House': {'col': (255, 228, 196), 'w': 5, 'h': 5, 'cost': {'Wood': 50, 'Stone': 20}},
+    'Shop': {'col': (240, 230, 140), 'w': 6, 'h': 4, 'cost': {'Wood': 40, 'Iron Ingot': 10}},
+    'Barracks': {'col': (192, 192, 192), 'w': 7, 'h': 5, 'cost': {'Stone': 60, 'Steel': 20}},
+    'Farm': {'col': (144, 238, 144), 'w': 6, 'h': 6, 'cost': {'Wood': 30, 'Soil': 40}},
+    'Tower': {'col': (173, 216, 230), 'w': 5, 'h': 8, 'cost': {'Stone': 80, 'Steel': 30}},
+    'Warehouse': {'col': (255, 248, 220), 'w': 7, 'h': 6, 'cost': {'Wood': 60, 'Iron Ingot': 15}}
 }
 
 def buy_item(player, npc, item_name):
@@ -683,18 +1097,18 @@ def buy_item(player, npc, item_name):
         player.gold -= npc.prices[item_name]
         player.inventory[item_name] = player.inventory.get(item_name, 0) + 1
         npc.inventory[item_name] -= 1
-        return True, 'Item purchased'
+        return True, 'Item bought successfully'
     else:
-        return False, 'Purchase failed'
+        return False, 'Not enough gold or item not available'
 
 def sell_item(player, npc, item_name):
     if item_name in player.inventory and player.inventory[item_name] > 0:
         player.gold += npc.prices[item_name]
         player.inventory[item_name] -= 1
         npc.inventory[item_name] = npc.inventory.get(item_name, 0) + 1
-        return True, 'Item sold'
+        return True, 'Item sold successfully'
     else:
-        return False, 'Sale failed'
+        return False, 'Item not in inventory'
 
 def craft_item(player, recipe):
     if all(player.inventory.get(mat, 0) >= qty for mat, qty in recipe['cost'].items()):
@@ -702,9 +1116,9 @@ def craft_item(player, recipe):
             player.inventory[mat] -= qty
         for item, qty in recipe['out'].items():
             player.inventory[item] = player.inventory.get(item, 0) + qty
-        return True, 'Crafting successful'
+        return True, 'Item crafted successfully'
     else:
-        return False, 'Crafting failed'
+        return False, 'Not enough materials'
 
 # ── FALLBACK DEFINITIONS (only used if agents returned nothing) ──────────────
 
@@ -1451,7 +1865,7 @@ if 'draw_hud' not in dir():
                     (1180,H-145),(1280,H-175),(1280,H)]
         pygame.draw.polygon(surf, (8, 12, 22), hill_pts)
         # Title glow
-        title = project_name if project_name else "Demiworld"
+        title = project_name if project_name else "DemiWorld"
         for blur in range(4, 0, -1):
             gs = font(50 + blur).render(title, True, (80, 30, 120))
             surf.blit(gs, (W//2 - gs.get_width()//2, H//5 - blur))
@@ -1576,11 +1990,44 @@ if 'draw_hud' not in dir():
         txt(surf,"GAME OVER",W//2,H//3,64,(220,40,40),center=True)
         txt(surf,"Press R to restart or ESC to quit",W//2,H//2,18,(180,180,180),center=True)
 
+# --- Guaranteed fallback: draw_main_menu ---
+# The block above only runs when the agent didn't supply draw_hud, which
+# means draw_main_menu (and its helpers) can end up undefined whenever an
+# agent DID supply its own draw_hud. Umbra strips any agent-authored
+# draw_main_menu override, so without this independent guard the game has
+# no draw_main_menu at all and crashes on launch (NameError). This block
+# is self-contained (no dependency on draw_panel) so it always works.
+if 'draw_main_menu' not in dir():
+    _mm_stars = [(random.randint(0,1280), random.randint(0,720), random.randint(1,3),
+                  random.random()*0.5+0.3) for _ in range(120)]
+    def draw_main_menu(surf, project_name):
+        W, H = surf.get_size()
+        for y in range(H):
+            t = y / H
+            pygame.draw.line(surf, (int(5+t*15), int(5+t*8), int(15+t*35)), (0, y), (W, y))
+        tick = pygame.time.get_ticks()
+        for sx, sy, sr, spd in _mm_stars:
+            b = int(120 + 100 * abs(math.sin(tick * 0.001 * spd)))
+            pygame.draw.circle(surf, (b, b, min(255, b+60)), (sx, sy), sr)
+        txt(surf, project_name, W//2, H//4, 56, (230,230,255), center=True)
+        labels = ["New Game", "Load Game", "Settings", "Quit"]
+        keys = ["new_game", "load_game", "settings", "quit"]
+        btns = {}
+        for i, (lbl, key) in enumerate(zip(labels, keys)):
+            bw, bh = 240, 48
+            bx, by = W//2 - bw//2, H//2 + i*60
+            r = pygame.Rect(bx, by, bw, bh)
+            pygame.draw.rect(surf, (40,40,70), r)
+            pygame.draw.rect(surf, (110,110,180), r, 2)
+            txt(surf, lbl, bx+bw//2, by+bh//2-8, 18, (220,220,255), center=True)
+            btns[key] = r
+        return btns
+
 # ═══════════════════════════════════════════════════════════════════════════
 # MAIN GAME
 # ═══════════════════════════════════════════════════════════════════════════
 
-GAME_TITLE  = "Demiworld"
+GAME_TITLE  = "DemiWorld"
 SAVE_PATH   = "demiworld_save.json"
 SCREEN_W    = 1280
 SCREEN_H    = 720
@@ -1602,11 +2049,11 @@ ST_GAMEOVER    = "GAME_OVER"
 
 pygame.init()
 screen = pygame.display.set_mode((SCREEN_W, SCREEN_H))
-GAME_TITLE = GAME_TITLE if "GAME_TITLE" in dir() else "Demiworld"
+GAME_TITLE = GAME_TITLE if "GAME_TITLE" in dir() else "DemiWorld"
 pygame.display.set_caption(GAME_TITLE)
 clock  = pygame.time.Clock()
 
-project_name = 'Demiworld'
+project_name = 'DemiWorld'
 
 def main():
     global player_ref

@@ -1,5 +1,6 @@
 import json
 import math
+from collections import defaultdict
 
 class Camera:
     def __init__(self, x=0, y=0):
@@ -21,13 +22,12 @@ class FloatText:
 
     def update(self):
         self.y -= 1
-        self.alpha -= 4
-        if self.alpha < 0:
-            self.alpha = 0
+        self.alpha -= 5
 
     def draw(self, surf, cx, cy):
-        txt_surf = self.font.render(self.text, True, (self.col[0], self.col[1], self.col[2], self.alpha))
-        surf.blit(txt_surf, (int(self.x - cx), int(self.y - cy)))
+        if self.alpha > 0:
+            txt_surf = self.font.render(self.text, True, (*self.col[:3], self.alpha))
+            surf.blit(txt_surf, (int(self.x - cx), int(self.y - cy)))
 
 class Projectile:
     def __init__(self, x, y, tx, ty, dmg, col, spd=9):
@@ -51,12 +51,12 @@ class Projectile:
 
 class Building:
     TYPES = {
-        'House': {'col': (139, 69, 19), 'w': 2, 'h': 2, 'cost': {'wood': 40, 'stone': 20}},
-        'Shop': {'col': (255, 215, 0), 'w': 3, 'h': 2, 'cost': {'wood': 60, 'stone': 30}},
-        'Barracks': {'col': (192, 192, 192), 'w': 4, 'h': 3, 'cost': {'wood': 80, 'stone': 50}},
-        'Farm': {'col': (34, 139, 34), 'w': 3, 'h': 3, 'cost': {'wood': 70, 'stone': 25}},
-        'Tower': {'col': (165, 42, 42), 'w': 2, 'h': 4, 'cost': {'wood': 90, 'stone': 60}},
-        'Warehouse': {'col': (218, 165, 32), 'w': 3, 'h': 3, 'cost': {'wood': 75, 'stone': 40}}
+        'House': {'col': (200, 160, 120), 'w': 3, 'h': 3, 'cost': {'wood': 10, 'stone': 5}},
+        'Shop': {'col': (255, 215, 0), 'w': 4, 'h': 3, 'cost': {'wood': 15, 'stone': 7}},
+        'Barracks': {'col': (165, 42, 42), 'w': 5, 'h': 4, 'cost': {'wood': 20, 'stone': 10}},
+        'Farm': {'col': (34, 139, 34), 'w': 4, 'h': 4, 'cost': {'wood': 8, 'stone': 3}},
+        'Tower': {'col': (255, 69, 0), 'w': 3, 'h': 5, 'cost': {'wood': 12, 'stone': 15}},
+        'Warehouse': {'col': (210, 180, 140), 'w': 4, 'h': 4, 'cost': {'wood': 18, 'stone': 9}}
     }
 
     def __init__(self, btype, tx, ty):
@@ -71,16 +71,16 @@ class Building:
         x = (self.tx * 32) - cx
         y = (self.ty * 32) - cy
         pygame.draw.rect(surf, self.col, (x, y, self.w * 32, self.h * 32))
-        pygame.draw.polygon(surf, (165, 42, 42), [(x + self.w * 16, y), (x, y - 16), (x + self.w * 32, y - 16)])
-        pygame.draw.rect(surf, (0, 0, 0), (x + 8, y + self.h * 32 - 16, 16, 16))
-        pygame.draw.rect(surf, (255, 255, 255), (x + 12, y + self.h * 32 - 12, 8, 8))
+        pygame.draw.polygon(surf, (160, 82, 45), [(x + self.w * 16, y), (x, y - 16), (x + self.w * 32, y - 16)])
+        pygame.draw.rect(surf, (0, 0, 0), (x + 10, y + self.h * 32 - 20, 12, 20))
+        pygame.draw.rect(surf, (255, 255, 255), (x + self.w * 16 - 8, y + 10, 16, 16))
 
 def save_game(player, buildings, filepath):
+    data = {
+        'player': player.__dict__,
+        'buildings': [{'btype': b.btype, 'tx': b.tx, 'ty': b.ty} for b in buildings]
+    }
     try:
-        data = {
-            'player': player.__dict__,
-            'buildings': [{'btype': b.btype, 'tx': b.tx, 'ty': b.ty} for b in buildings]
-        }
         with open(filepath, 'w') as f:
             json.dump(data, f)
         return True
