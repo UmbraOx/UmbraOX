@@ -1023,17 +1023,8 @@ def _stitch_game(project_name, brief, components):
             # Strip agent def main() / def run_game() / def game_loop() 
             # that would override the skeleton's main()
             # Strip agent redefinitions of skeleton helpers (txt, draw_main_menu variants, etc.)
-            # These are "contract" functions: main()'s event loop unpacks their
-            # return value into a specific shape (dict of named rects, or a
-            # fixed-arity tuple). If an agent redefines one with a different
-            # return shape (e.g. a list instead of a dict), main() crashes the
-            # instant that screen is used. Always strip agent versions so the
-            # skeleton's own contract-safe implementations govern.
             _SKELETON_FUNS = {"main","run_game","game_loop","game_main","start_game","run",
-                              "txt","draw_text","render_text","draw_main_menu","draw_menu",
-                              "draw_hud","draw_bar","draw_panel","draw_inventory","draw_shop",
-                              "draw_pause","draw_class_select","draw_crafting","draw_city_build",
-                              "draw_world_map","draw_dialogue","draw_gameover"}
+                              "txt","draw_text","render_text","draw_main_menu","draw_menu"}
             if s.startswith("def ") and any(s.startswith("def "+n+"(") for n in _SKELETON_FUNS):
                 # Skip entire function body
                 i += 1
