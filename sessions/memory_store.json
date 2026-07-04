@@ -1,12 +1,12 @@
 {
   "last_game_file": {
     "key": "last_game_file",
-    "value": "C:\\Umbra\\workspaces\\agent_builds\\quicktest6\\quicktest6_game.py",
+    "value": "C:\\Umbra\\workspaces\\agent_builds\\quicktest7\\quicktest7_game.py",
     "tags": [
       "game"
     ],
     "source": "runtime",
-    "created_at": "2026-07-04T02:58:40.973484",
+    "created_at": "2026-07-04T11:50:12.007677",
     "access_count": 0
   },
   "deep_build:testrpg": {
@@ -102,6 +102,22 @@
     ],
     "source": "runtime",
     "created_at": "2026-07-03T17:41:47.805513",
+    "access_count": 0
+  },
+  "run:run_20260704_102233": {
+    "key": "run:run_20260704_102233",
+    "value": {
+      "prompt": "make a 1 level snake game",
+      "files": 5,
+      "passed": 5,
+      "run_dir": "C:\\Umbra\\workspaces\\run_20260704_102233"
+    },
+    "tags": [
+      "run",
+      "pipeline"
+    ],
+    "source": "runtime",
+    "created_at": "2026-07-04T10:32:01.379137",
     "access_count": 0
   }
 }

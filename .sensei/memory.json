@@ -1,0 +1,6 @@
+[
+  {
+    "user": "what's next on the Umbra plan",
+    "assistant": "Based on the provided context, the **next steps for the Umbra plan** are focused on resolving technical debt, improving code quality, and addressing high-priority refactor targets. Here's the breakdown:\n\n---\n\n### **1. Resolve TODOs in `Umbra.py` (High Priority)**\n- **Issue**: The file has explicit TODOs requiring full implementation of functions (e.g., `_detect_self_intent`, `_load_user_language_model`, `_classify_with_user_model`).\n- **Action**: Implement missing logic in these functions. For example:\n  - `_detect_self_intent()` must analyze user input to determine intent (e.g., via NLP or ru"
+  }
+]

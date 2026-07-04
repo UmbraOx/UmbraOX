@@ -1,0 +1,13 @@
+{
+  "models": [
+    "qwen2.5-coder:32b",
+    "deepseek-r1:32b",
+    "qwen3:14b"
+  ],
+  "snapshot_refresh_interval": 60,
+  "auto_patch_enabled": true,
+  "confidence_threshold": 0.8,
+  "max_conversation_memory": 10,
+  "force_full_jury": false,
+  "critic_enabled": true
+}
