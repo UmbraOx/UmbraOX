@@ -24,6 +24,10 @@ import inspect
 # *required* params the agent's version added with a sensible default
 # guessed from the parameter name. It only changes behavior when the
 # plain call would have raised a TypeError.
+_COORD_X_NAMES = {"x","px","dx","ex","nx","bx","tx"}
+_COORD_Y_NAMES = {"y","py","dy","ey","ny","by","ty"}
+_OBJECT_NAMES  = {"player","entity","target","obj","actor","self_entity","p"}
+
 def _umbra_flex(fn, *args, **kwargs):
     try:
         return fn(*args, **kwargs)
@@ -39,12 +43,61 @@ def _umbra_flex(fn, *args, **kwargs):
     has_varargs = any(p.kind == inspect.Parameter.VAR_POSITIONAL
                        for p in sig.parameters.values())
     max_pos = len(params) if not has_varargs else len(args)
-    call_args = list(args[:max_pos])
-    for i in range(len(call_args), min(max_pos, len(params))):
-        p = params[i]
+    target_params = params[:max_pos]
+
+    def _is_plain(v):
+        return isinstance(v, (int, float, str, bool, list, dict, tuple, type(None)))
+
+    # Build a pool of (value, tag_set) candidates. Object-like args (e.g. a
+    # Player/Entity instance) also contribute their .x/.y as separate
+    # coordinate candidates, since an agent's version of a method may want
+    # raw coordinates where the skeleton passes a whole object (or vice
+    # versa). This is what makes the adapter type/semantic-aware instead
+    # of purely positional.
+    pool = []          # list of [value, tags, used]
+    plain_fifo = []     # original args, for pure positional fallback
+    for a in args:
+        plain_fifo.append(a)
+        if not _is_plain(a) and hasattr(a, "x") and hasattr(a, "y"):
+            pool.append([a, {"object"}, False])
+            try:
+                pool.append([getattr(a, "x"), set(_COORD_X_NAMES), False])
+            except Exception:
+                pass
+            try:
+                pool.append([getattr(a, "y"), set(_COORD_Y_NAMES), False])
+            except Exception:
+                pass
+        else:
+            pool.append([a, {"scalar"}, False])
+
+    call_args = []
+    fifo_idx = 0
+    for p in target_params:
+        nl = p.name.lower()
+        want_tags = set()
+        if nl in _COORD_X_NAMES: want_tags |= _COORD_X_NAMES
+        if nl in _COORD_Y_NAMES: want_tags |= _COORD_Y_NAMES
+        if nl in _OBJECT_NAMES:  want_tags |= {"object"}
+
+        matched = None
+        if want_tags:
+            for cand in pool:
+                if not cand[2] and cand[1] & want_tags:
+                    matched = cand
+                    break
+        if matched:
+            matched[2] = True
+            call_args.append(matched[0])
+            continue
+
+        if fifo_idx < len(plain_fifo):
+            call_args.append(plain_fifo[fifo_idx])
+            fifo_idx += 1
+            continue
+
         if p.default is not inspect.Parameter.empty:
             break
-        nl = p.name.lower()
         if nl in ("sw", "screen_w", "width", "w"):
             call_args.append(1280)
         elif nl in ("sh", "screen_h", "height", "h"):
@@ -55,7 +108,7 @@ def _umbra_flex(fn, *args, **kwargs):
             call_args.append("Entity")
         elif nl in ("cls", "class_name", "player_class", "job"):
             call_args.append("Warrior")
-        elif nl in ("x", "y", "ex", "ey", "nx", "ny"):
+        elif want_tags:
             call_args.append(0)
         else:
             call_args.append(None)
