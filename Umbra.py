@@ -1488,10 +1488,25 @@ try:
             print("SMOKE_FAIL: draw_main_menu returned " + type(r).__name__ + ", expected dict")
             sys.exit(1)
 
+    class_labels = []
     if hasattr(mod, "draw_class_select"):
         r = mod.draw_class_select(surf)
         if not isinstance(r, dict):
             print("SMOKE_FAIL: draw_class_select returned " + type(r).__name__ + ", expected dict")
+            sys.exit(1)
+        class_labels = list(r.keys())
+
+    # Actually construct a Player for every class-select button label, not
+    # just a hardcoded "Warrior" - this is exactly the gap that let a
+    # class-name-validation crash through: the class-select screen offered
+    # a label the agent's own Player.__init__ didn't recognize.
+    for _cls_label in class_labels:
+        try:
+            flex(mod.Player, _cls_label)
+        except Exception as e:
+            print("SMOKE_FAIL: Player(" + repr(_cls_label) +
+                  ") crashed - class-select button doesn't match Player's "
+                  "accepted classes: " + repr(e))
             sys.exit(1)
 
     if hasattr(mod, "spawn_world_entities"):
