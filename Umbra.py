@@ -1521,10 +1521,27 @@ try:
             getattr(mod, "WORLD_MAP", []), getattr(mod, "TOWNS", []),
             getattr(mod, "CITIES", []), getattr(mod, "BANDIT_CAMPS", [(0, 0)]),
             getattr(mod, "GOBLIN_CAMPS", [(0, 0)]), getattr(mod, "ENEMY_DEFS", {}))
+        # Exercise both update() and draw() - missing draw() (agent defines
+        # an entity class but never gives it a way to render itself) is
+        # just as fatal as a missing update() once main()'s draw loop
+        # reaches it, and was slipping through untested before.
         for e in (enemies or [])[:2]:
             flex(e.update, player, 0.016)
+            if not hasattr(e, "draw"):
+                print("SMOKE_FAIL: Enemy instance has no draw() method")
+                sys.exit(1)
+            flex(e.draw, surf, 0, 0)
         for n in (npcs or [])[:2]:
             flex(n.update, 0.016)
+            if not hasattr(n, "draw"):
+                print("SMOKE_FAIL: NPC instance has no draw() method")
+                sys.exit(1)
+            flex(n.draw, surf, 0, 0)
+        for b in (buildings or [])[:2]:
+            if not hasattr(b, "draw"):
+                print("SMOKE_FAIL: Building instance has no draw() method")
+                sys.exit(1)
+            flex(b.draw, surf, 0, 0)
 
 except Exception as e:
     import traceback
