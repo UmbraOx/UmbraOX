@@ -9,6 +9,11 @@ __pycache__/
 *.pyd
 *.py.bak.*
 *.bak
+# Our actual apply_fixes backup naming (Umbra.py.bak22_20260630_221829, etc.)
+# didn't match the two patterns above, so every batch's backup file was
+# silently being committed. This catches the real pattern.
+*.bak[0-9]*
+*.bak_batch*
 
 # Virtual environments
 venv/
@@ -36,6 +41,12 @@ workspaces/*/run_*/
 workspaces/videos/
 workspaces/*/generated/
 workspaces/cache/
+# Generated test/full game builds and their project metadata, and
+# generated images - these are local test output, not source, and
+# bloat the repo (some via LFS) every time a game/image is built.
+workspaces/agent_builds/
+workspaces/projects/
+workspaces/images/
 
 # Temp / Cache
 temp/
