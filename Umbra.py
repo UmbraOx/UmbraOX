@@ -717,19 +717,35 @@ def _ollama_stream(prompt, model=None, timeout=1800, num_predict=-1, token_cb=No
 
     MAX_RETRIES = 3
     RETRY_DELAYS = [5, 15, 30]
+    # `timeout` passed to urlopen() is only a PER-READLINE socket timeout,
+    # not a total budget. A slow-but-technically-alive Ollama connection
+    # (trickling one token every few minutes) would never trip that and
+    # could hang indefinitely, even though the caller asked for e.g. a
+    # 10-minute budget. Enforce real wall-clock elapsed time too.
+    _wall_start = _time.time()
 
     last_error = None
     for attempt in range(MAX_RETRIES + 1):
+        if _time.time() - _wall_start > timeout:
+            last_error = "wall-clock timeout after " + str(int(_time.time() - _wall_start)) + "s"
+            _umbra_print(f"  [STREAM ERROR] {last_error}")
+            break
         req = _ur.Request(
             "http://localhost:11434/api/generate",
             data=payload,
             headers={"Content-Type": "application/json"},
             method="POST",
         )
+        # Per-readline socket timeout should not itself exceed the
+        # remaining wall-clock budget.
+        _remaining = max(5, timeout - (_time.time() - _wall_start))
         parts = []
         try:
-            with _ur.urlopen(req, timeout=timeout) as resp:
+            with _ur.urlopen(req, timeout=_remaining) as resp:
                 while True:
+                    if _time.time() - _wall_start > timeout:
+                        raise TimeoutError("wall-clock timeout after " +
+                                            str(int(_time.time() - _wall_start)) + "s")
                     line = resp.readline()
                     if not line:
                         break
@@ -757,6 +773,8 @@ def _ollama_stream(prompt, model=None, timeout=1800, num_predict=-1, token_cb=No
             last_error = str(ex)
             _umbra_print(f"  [STREAM ERROR] attempt {attempt+1}/{MAX_RETRIES+1}: {last_error}")
 
+        if _time.time() - _wall_start > timeout:
+            break
         if attempt < MAX_RETRIES:
             _time.sleep(RETRY_DELAYS[attempt])
 
