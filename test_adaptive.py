@@ -1,1 +1,0 @@
-print("adaptive system active")
