@@ -883,7 +883,14 @@ def _syntax_repair(code, model):
             "No explanations. No markdown. Pure Python only.\n\nERROR:\n" + err_info +
             "\n\nCODE:\n" + "\n".join(lines)
         )
-        fixed = _ollama_stream(fix_prompt, model=model, timeout=120, num_predict=4096)
+        # This asks the model to regenerate an ENTIRE file (up to 4096
+        # tokens) - comparable in size/cost to a full agent generation call,
+        # which observably takes 3-20+ minutes on this hardware. 120s was
+        # never realistic here and was guaranteed to fail, wasting time by
+        # always falling back to the far more expensive full-regeneration
+        # path instead. This is a repair call specifically, not a project-
+        # wide budget - the overall build can still take hours.
+        fixed = _ollama_stream(fix_prompt, model=model, timeout=600, num_predict=4096)
         if fixed:
             fixed = _clean_agent_output(fixed)
             ast.parse(fixed)
