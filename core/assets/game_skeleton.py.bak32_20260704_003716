@@ -11,55 +11,6 @@ import random
 import json
 import os
 import time
-import inspect
-
-# ─── Adaptive contract calling ──────────────────────────────────────────
-# Agent-authored classes (Player, Camera, Enemy, NPC, ...) sometimes have
-# constructors/methods with a different arity than what this skeleton
-# calls with (e.g. Camera.update(self, player) instead of
-# Camera.update(self, player, sw, sh)). That mismatch used to be an
-# instant TypeError crash the moment the game reached that call. This
-# wrapper inspects the real target's signature and adapts: trims extra
-# positional args the target doesn't accept, and fills any additional
-# *required* params the agent's version added with a sensible default
-# guessed from the parameter name. It only changes behavior when the
-# plain call would have raised a TypeError.
-def _umbra_flex(fn, *args, **kwargs):
-    try:
-        return fn(*args, **kwargs)
-    except TypeError:
-        pass
-    try:
-        sig = inspect.signature(fn)
-    except (TypeError, ValueError):
-        raise
-    params = [p for p in sig.parameters.values()
-              if p.kind in (inspect.Parameter.POSITIONAL_ONLY,
-                             inspect.Parameter.POSITIONAL_OR_KEYWORD)]
-    has_varargs = any(p.kind == inspect.Parameter.VAR_POSITIONAL
-                       for p in sig.parameters.values())
-    max_pos = len(params) if not has_varargs else len(args)
-    call_args = list(args[:max_pos])
-    for i in range(len(call_args), min(max_pos, len(params))):
-        p = params[i]
-        if p.default is not inspect.Parameter.empty:
-            break
-        nl = p.name.lower()
-        if nl in ("sw", "screen_w", "width", "w"):
-            call_args.append(1280)
-        elif nl in ("sh", "screen_h", "height", "h"):
-            call_args.append(720)
-        elif nl in ("dt", "delta", "delta_time"):
-            call_args.append(0.016)
-        elif "name" in nl:
-            call_args.append("Entity")
-        elif nl in ("cls", "class_name", "player_class", "job"):
-            call_args.append("Warrior")
-        elif nl in ("x", "y", "ex", "ey", "nx", "ny"):
-            call_args.append(0)
-        else:
-            call_args.append(None)
-    return fn(*call_args, **kwargs)
 
 # ── INJECTED AGENT MODULES ──────────────────────────────────────────────────
 # Each block below is replaced by Umbra with real agent output.
@@ -496,19 +447,19 @@ if 'spawn_world_entities' not in dir():
             for _ in range(random.randint(3,6)):
                 ex = bx*T + random.randint(-2,2)*T
                 ey = by*T + random.randint(-2,2)*T
-                enemies.append(_umbra_flex(Enemy, "Bandit", ex, ey))
+                enemies.append(Enemy("Bandit",ex,ey))
                 ei+=1
         for gx,gy in goblin_camps:
             for _ in range(random.randint(4,7)):
                 ex = gx*T + random.randint(-2,2)*T
                 ey = gy*T + random.randint(-2,2)*T
-                enemies.append(_umbra_flex(Enemy, "Goblin", ex, ey))
+                enemies.append(Enemy("Goblin",ex,ey))
         for tx,ty,tname in towns:
             for i,job in enumerate(jobs):
                 nx = tx*T + (i%3)*40
                 ny = ty*T + (i//3)*40
                 name = random.choice(npc_names)
-                npcs.append(_umbra_flex(NPC, name, nx, ny, job))
+                npcs.append(NPC(name, nx, ny, job))
             for btype in ["House","House","Shop","Barracks"]:
                 btx = tx + random.randint(-2,2)
                 bty = ty + random.randint(-2,2)
@@ -1026,9 +977,9 @@ def main():
     if 'gen_world' in dir():
         gen_world()
 
-    player    = _umbra_flex(Player, "Warrior")
+    player    = Player("Warrior")
     player_ref = player   # used by draw_dialogue for quest acceptance
-    camera    = _umbra_flex(Camera)
+    camera    = Camera()
 
     enemies, npcs, buildings = spawn_world_entities(
         WORLD_MAP, TOWNS, CITIES, BANDIT_CAMPS, GOBLIN_CAMPS, ENEMY_DEFS
@@ -1280,7 +1231,7 @@ def main():
                     btns = draw_class_select(screen)
                     for cls, r in btns.items():
                         if r.collidepoint(mx,my):
-                            player = _umbra_flex(Player, cls)
+                            player = Player(cls)
                             player_ref = player
                             notify("Playing as " + cls)
                             state = ST_PLAY
@@ -1423,10 +1374,10 @@ def main():
             if player.attack_cooldown > 0:
                 player.attack_cooldown -= dt
 
-            _umbra_flex(camera.update, player, SCREEN_W, SCREEN_H)
+            camera.update(player, SCREEN_W, SCREEN_H)
 
             for e in enemies:
-                _umbra_flex(e.update, player, dt)
+                e.update(player, dt)
                 # Enemy attacks player
                 if e.alive and math.hypot(e.x-player.x, e.y-player.y) < 35:
                     if random.random() < 0.3*dt:
@@ -1435,7 +1386,7 @@ def main():
                         add_float("-"+str(dmg)+" HP", player.x, player.y-20, (255,80,80))
 
             for p in projectiles:
-                _umbra_flex(p.update, dt)
+                p.update(dt)
                 if p.alive:
                     for e in enemies:
                         if e.alive and math.hypot(e.x-p.x, e.y-p.y) < 25:
@@ -1451,7 +1402,7 @@ def main():
             projectiles = [p for p in projectiles if p.alive]
 
             for ft in float_texts:
-                _umbra_flex(ft.update, dt)
+                ft.update(dt)
             float_texts = [ft for ft in float_texts if ft.life > 0]
             for ft in player.float_texts:
                 float_texts.append(FloatText(ft[0], player.x, player.y-50, ft[1]))
