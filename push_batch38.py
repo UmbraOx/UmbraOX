@@ -5,6 +5,6 @@ def run(cmd):
     print(r.stdout); print(r.stderr)
 
 run("git add -A")
-run('git commit -m "batch39: smoke test checks Player() against every class-select label"')
+run('git commit -m "batch38: Player construction survives agent __init__ validation errors"')
 run("git push origin main")
-print("Batch 39 pushed.")
+print("Batch 38 pushed.")

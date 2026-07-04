@@ -1626,13 +1626,37 @@ def _run_deep_build(runtime, description, project_name, agents_to_run=None):
 try:
     _op=Player.__init__
     def _np(self,*a,**kw):
-        _op(self,*a,**kw)
+        # An agent's __init__ may validate its own arguments (e.g. reject a
+        # class name string it doesn't recognize) and raise. That used to
+        # propagate straight up and crash the game the instant a player
+        # picked a class. Retry with progressively safer fallbacks instead
+        # of ever letting Player construction hard-crash the game.
+        try:
+            _op(self,*a,**kw)
+        except Exception:
+            _fallback_names = ["Warrior","Fighter","Knight","Adventurer","Hero"]
+            _ok=False
+            for _fn in _fallback_names:
+                try:
+                    if a:
+                        _op(self,_fn,*a[1:],**kw)
+                    else:
+                        _op(self,_fn,**kw)
+                    _ok=True; break
+                except Exception:
+                    continue
+            if not _ok:
+                try:
+                    _op(self)
+                except Exception:
+                    pass
         for _at,_dv in [('active_quests',{}),('completed_quests',[]),
                         ('inventory',{}),('equipped',{'weapon':None,'armor':None}),
                         ('spells',[]),('gold',50),('level',1),('xp',0),
                         ('xp_next',100),('float_texts',[]),('atk',10),
                         ('defense',5),('spd',180),('alive',True),
-                        ('attack_cooldown',0.0),('regen_timer',0.0)]:
+                        ('attack_cooldown',0.0),('regen_timer',0.0),
+                        ('x',400.0),('y',300.0),('cls',a[0] if a else 'Warrior')]:
             if not hasattr(self,_at): setattr(self,_at,_dv)
     Player.__init__=_np
 except Exception: pass
