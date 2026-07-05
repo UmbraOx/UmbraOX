@@ -1543,6 +1543,13 @@ try:
                 sys.exit(1)
             flex(b.draw, surf, 0, 0)
 
+    # Exercise draw_world across a spread of camera positions, including
+    # ones near map edges/corners - this is exactly the gap that let a
+    # None-cell/out-of-bounds WORLD_MAP crash through untested before.
+    if hasattr(mod, "draw_world"):
+        for _cx, _cy in [(0, 0), (5000, 5000), (-100, -100), (99999, 99999)]:
+            mod.draw_world(surf, _cx, _cy)
+
 except Exception as e:
     import traceback
     print("SMOKE_FAIL: " + repr(e))
