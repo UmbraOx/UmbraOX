@@ -1,4 +1,14 @@
-# UMBRA — Local Autonomous AI Runtime OS
+import datetime
+
+ts = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
+FP = r"C:\Umbra\README.md"
+
+with open(FP, "r", encoding="utf-8") as f:
+    old = f.read()
+with open(FP + f".bak45_{ts}", "w", encoding="utf-8") as f:
+    f.write(old)
+
+NEW_README = r'''# UMBRA — Local Autonomous AI Runtime OS
 
 **v3.1.0** | Python 3.12 (venv) | Windows 11 | 100% local, no subscriptions, no API keys
 
@@ -289,3 +299,9 @@ python test_gameplay_crash.py
 Built for one person's own hardware, one project at a time, patched batch by
 batch with a human who isn't a coder and an AI that reads the whole repo
 before touching it.
+'''
+
+with open(FP, "w", encoding="utf-8") as f:
+    f.write(NEW_README)
+
+print("README.md rewritten - now reflects v3.1.0, working conventions, and now/next/later roadmap")
