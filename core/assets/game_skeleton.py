@@ -1531,7 +1531,16 @@ def main():
         elif state in (ST_PLAY, ST_INVENTORY, ST_QUEST, ST_DIALOGUE,
                        ST_SHOP, ST_CRAFT, ST_PAUSE, ST_CITY, ST_MAP):
             # World
-            draw_world(screen, int(camera.x), int(camera.y))
+            # A crash inside draw_world (e.g. an agent's WORLD_MAP accessor
+            # returning/indexing None for a tile it didn't generate) used to
+            # take down the entire game the instant the camera reached that
+            # tile. UMBRA_WORLD_PATCH fixes the accessor itself when
+            # possible; this is the last-resort net: skip rendering the
+            # world for this one frame rather than crashing outright.
+            try:
+                draw_world(screen, int(camera.x), int(camera.y))
+            except Exception:
+                pass
 
             # Buildings
             for b in buildings:

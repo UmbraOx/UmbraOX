@@ -1752,6 +1752,36 @@ try:
                 _cls.draw = _umbra_fallback_draw
 except Exception:
     pass
+# UMBRA_WORLD_PATCH
+# WORLD_MAP and its accessor (get_biome/get_tile) are entirely agent-authored
+# whenever the agent supplies its own WORLD_MAP (the skeleton's own safe
+# fallback - which bounds-checks and never has None cells - only runs if
+# 'WORLD_MAP' isn't already in globals). An agent's WORLD_MAP can have gaps
+# (None cells) or its accessor can index without bounds-checking, crashing
+# draw_world() the instant the camera reaches that tile. Patch this the same
+# way as the Player/Enemy fixes above: wrap whatever accessor exists so it
+# can never return None or raise, and scrub any None cells already present.
+try:
+    for _bn in ('get_biome', 'get_tile'):
+        if _bn in dir():
+            _orig_biome_fn = eval(_bn)
+            def _umbra_make_safe_biome(_fn):
+                def _safe_biome(*a, **kw):
+                    try:
+                        _r = _fn(*a, **kw)
+                        return _r if _r is not None else "GRASS"
+                    except Exception:
+                        return "GRASS"
+                return _safe_biome
+            globals()[_bn] = _umbra_make_safe_biome(_orig_biome_fn)
+    if 'WORLD_MAP' in dir() and isinstance(WORLD_MAP, list):
+        for _wrow in WORLD_MAP:
+            if isinstance(_wrow, list):
+                for _wi in range(len(_wrow)):
+                    if _wrow[_wi] is None:
+                        _wrow[_wi] = "GRASS"
+except Exception:
+    pass
 '''
         if 'if __name__' in game_code:
             game_code=game_code.replace('if __name__',_pp+'\nif __name__',1)
