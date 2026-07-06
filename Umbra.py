@@ -1885,6 +1885,26 @@ except Exception: pass
             _umbra_print("    " + _sl)
         _umbra_print("[SMOKE TEST] Run 'fix last build' to attempt an automatic repair.")
 
+    # Remember this build's smoke-test result so 'play last'/'play <name>'
+    # can refuse to launch a build we already know is broken, instead of
+    # the warning above being easy to miss and the game just closing anyway.
+    try:
+        _smoke_status_path = os.path.join(_UMBRA_ROOT, "sessions", "smoke_status.json")
+        _smoke_status = {}
+        if os.path.exists(_smoke_status_path):
+            try:
+                _smoke_status = json.load(open(_smoke_status_path, "r", encoding="utf-8"))
+            except Exception:
+                _smoke_status = {}
+        _smoke_status[game_path] = {
+            "ok": _smoke_ok,
+            "summary": _smoke_out.strip().splitlines()[-1] if _smoke_out.strip() else "",
+        }
+        os.makedirs(os.path.dirname(_smoke_status_path), exist_ok=True)
+        json.dump(_smoke_status, open(_smoke_status_path, "w", encoding="utf-8"))
+    except Exception:
+        pass
+
     if pm:
         proj = pm.get_project(project_name) or pm.create_project(project_name, description=description)
         pm.add_file_to_project(proj, game_path, "game")
@@ -3538,6 +3558,24 @@ def _process_command(runtime, user_input):
                 candidates.sort(reverse=True)
                 game_path = candidates[0][1]
         if game_path and os.path.exists(game_path):
+            # Refuse to launch a build we already know failed its smoke
+            # test, unless the person explicitly overrides - the warning
+            # printed at build time is easy to miss/scroll past, and this
+            # was letting people relaunch a build we'd already told them
+            # was broken.
+            _allow_broken = cmd.endswith(" anyway")
+            try:
+                _sstatus_path = os.path.join(_UMBRA_ROOT, "sessions", "smoke_status.json")
+                if os.path.exists(_sstatus_path) and not _allow_broken:
+                    _sstatus = json.load(open(_sstatus_path, "r", encoding="utf-8"))
+                    _entry = _sstatus.get(game_path)
+                    if _entry and not _entry.get("ok", True):
+                        _umbra_print("[UMBRA] NOT launching - this build already failed its smoke test:")
+                        _umbra_print("    " + _entry.get("summary", "(no details saved)"))
+                        _umbra_print("[UMBRA] Type 'fix last build' to repair it, or '" + cmd + " anyway' to launch it as-is.")
+                        return
+            except Exception:
+                pass
             # Auto-patch game: fix draw_main_menu to return dict not list
             try:
                 import re as _rp, ast as _ast2
