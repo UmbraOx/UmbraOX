@@ -1,9 +1,2 @@
-class BaseAgent:
-
-    def __init__(self, name):
-
-        self.name = name
-
-    def execute(self, task, plan=None):
-
-        raise NotImplementedError
+# Sensei Auto-Patch: agents/base_agent.py
+# WARNING: No code block extracted.

@@ -1750,13 +1750,34 @@ try:
             pygame.draw.circle(surf,(200,180,120),(_px,_py),8)
         except Exception:
             pass
+    def _umbra_make_safe_draw(_orig, _fallback):
+        def _safe_draw(self, surf, *a, **kw):
+            try:
+                return _orig(self, surf, *a, **kw)
+            except Exception:
+                # The agent's draw() exists but crashed at runtime - most
+                # often a rendering attribute (color, radius, sprite...)
+                # its own __init__ never set (exactly what happened with
+                # Enemy.col). Rather than keep adding one missing attribute
+                # name at a time forever, fall back to a generic safe
+                # renderer so the entity is still visible instead of
+                # crashing the whole game.
+                try:
+                    return _fallback(self, surf, *a, **kw)
+                except Exception:
+                    return None
+        return _safe_draw
+
     for _cn in ('Player','Camera','Enemy','NPC','Projectile','FloatText','Building'):
         if _cn in dir():
             _cls = eval(_cn)
             if not hasattr(_cls,'update'):
                 _cls.update = _umbra_noop_method
-            if _cn in ('Enemy','NPC','Projectile','Building') and not hasattr(_cls,'draw'):
-                _cls.draw = _umbra_fallback_draw
+            if _cn in ('Enemy','NPC','Projectile','Building'):
+                if not hasattr(_cls,'draw'):
+                    _cls.draw = _umbra_fallback_draw
+                else:
+                    _cls.draw = _umbra_make_safe_draw(_cls.draw, _umbra_fallback_draw)
 except Exception:
     pass
 # UMBRA_WORLD_PATCH
