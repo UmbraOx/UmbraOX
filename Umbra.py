@@ -689,7 +689,7 @@ def _get_agent_model():
     return "qwen2.5-coder:32b"
 
 
-def _ollama_stream(prompt, model=None, timeout=1800, num_predict=-1, token_cb=None):
+def _ollama_stream(prompt, model=None, timeout=3600, num_predict=-1, token_cb=None):
     """
     Stream tokens from Ollama HTTP API.
     Retries up to 3x on HTTP 500 / empty response (Ollama overload).
@@ -1773,7 +1773,7 @@ try:
             _cls = eval(_cn)
             if not hasattr(_cls,'update'):
                 _cls.update = _umbra_noop_method
-            if _cn in ('Enemy','NPC','Projectile','Building'):
+            if _cn in ('Player','Enemy','NPC','Projectile','Building'):
                 if not hasattr(_cls,'draw'):
                     _cls.draw = _umbra_fallback_draw
                 else:
