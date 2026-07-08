@@ -1141,8 +1141,19 @@ def main():
             add_float("-"+str(dmg), best.x, best.y-20, (255,80,80))
             if best.hp <= 0:
                 best.alive = False
-                check_quest_kill(player, best.name)
-                done = complete_ready_quests(player)
+                # check_quest_kill/complete_ready_quests are plain
+                # functions (usually quest-agent authored), not object
+                # methods, so they can't be monkey-patched with a
+                # constructor safety net like Player/Enemy - wrap the
+                # call site itself instead.
+                try:
+                    check_quest_kill(player, best.name)
+                except Exception:
+                    pass
+                try:
+                    done = complete_ready_quests(player)
+                except Exception:
+                    done = []
                 for qn in done:
                     notify("Quest Complete: " + qn)
                 player.gain_xp(best.xp_val)
@@ -1497,7 +1508,10 @@ def main():
                             p.alive = False
                             if e.hp <= 0:
                                 e.alive = False
-                                check_quest_kill(player, e.name)
+                                try:
+                                    check_quest_kill(player, e.name)
+                                except Exception:
+                                    pass
                                 player.gain_xp(e.xp_val)
                                 player.gold += e.gold_drop
                                 add_float("+"+str(e.xp_val)+"xp", e.x, e.y-40,(100,255,100))
