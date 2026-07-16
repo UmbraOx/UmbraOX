@@ -2869,27 +2869,27 @@ def _maybe_tts(runtime, text):
             return
         if not _ensure_pyttsx3():
             return
-        # pyttsx3's SAPI5 driver on Windows is backed by a COM object that
-        # is NOT safe to re-create on every call from a background thread
-        # (which is how the GUI invokes this) - that mismatch is the most
-        # common reason "tts on" silently does nothing at all. Initialize
-        # COM for this thread if pywin32 is available, and reuse a single
-        # cached engine instance instead of creating a new one every call.
-        try:
-            import pythoncom
-            pythoncom.CoInitialize()
-        except Exception:
-            pass
-        engine = runtime.get("_tts_pyttsx3_engine")
-        if engine is None:
-            import pyttsx3
-            engine = pyttsx3.init()
-            runtime["_tts_pyttsx3_engine"] = engine
-        engine.say(text)
-        engine.runAndWait()
+        # In-process pyttsx3 (even with COM init + engine reuse) can still
+        # silently produce no audio at all when runAndWait() is called from
+        # a background thread (which is how the GUI invokes this) - SAPI5
+        # needs a message loop a worker thread doesn't have, and this
+        # failure mode raises no Python exception, so nothing was ever
+        # printed either. Sidestep the whole class of threading/COM
+        # apartment issues by running each utterance in a fully isolated
+        # subprocess instead - slower per-call, but reliable.
+        _tts_script = (
+            "import pyttsx3,sys\n"
+            "e=pyttsx3.init()\n"
+            "e.say(sys.argv[1])\n"
+            "e.runAndWait()\n"
+        )
+        _r = subprocess.run(
+            [sys.executable, "-c", _tts_script, text[:500]],
+            capture_output=True, text=True, timeout=30
+        )
+        if _r.returncode != 0:
+            _umbra_print("  [TTS] Error: " + (_r.stderr or "unknown")[-300:] + "\n")
     except Exception as _tts_ex:
-        # Was a bare "except: pass" - meant "tts on" could fail completely
-        # silently with zero feedback, which is exactly what was reported.
         _umbra_print("  [TTS] Error: " + str(_tts_ex) + "\n")
 
 
@@ -3477,12 +3477,14 @@ def _process_command(runtime, user_input):
         _umbra_print("  [MIC] Continuous voice OFF.\n")
         return
 
-    if cmd in ("tts on", "text to speech on", "speak responses"):
+    if cmd in ("tts on", "text to speech on", "speak responses",
+               "turn on tts", "turn tts on", "enable tts"):
         runtime["_tts_enabled"] = True
         _umbra_print("  [TTS] Text-to-speech ON.\n")
         return
 
-    if cmd in ("tts off", "text to speech off", "stop speaking"):
+    if cmd in ("tts off", "text to speech off", "stop speaking",
+               "turn off tts", "turn tts off", "disable tts"):
         runtime["_tts_enabled"] = False
         _umbra_print("  [TTS] Text-to-speech OFF.\n")
         return
@@ -3556,7 +3558,8 @@ def _process_command(runtime, user_input):
         handle_files_browser(runtime, cmd)
         return
 
-    if "list workspace" in cmd or "workspace files" in cmd:
+    if ("list workspace" in cmd or "workspace files" in cmd
+            or "list workplace" in cmd or "workplace files" in cmd):
         handle_files_browser(runtime, "workspace")
         return
 
