@@ -1719,6 +1719,44 @@ try:
             self.gain_xp = _umbra_gain_xp
     Player.__init__=_np
 except Exception: pass
+# UMBRA_NPC_PATCH
+# Same issue as UMBRA_PLAYER_PATCH: an agent's NPC.__init__ may validate
+# its own arguments (e.g. reject a job name it doesn't recognize) and
+# raise, which used to propagate straight up and crash spawn_world_entities
+# the instant the world tried to populate. Retry with safe fallbacks
+# instead of ever letting NPC construction crash the game.
+try:
+    if 'NPC' in dir():
+        _onpc = NPC.__init__
+        def _nnpc(self,*a,**kw):
+            try:
+                _onpc(self,*a,**kw)
+            except Exception:
+                _fallback_jobs = ["Villager","Merchant","Farmer","Guard","Innkeeper"]
+                _ok=False
+                for _fj in _fallback_jobs:
+                    try:
+                        if len(a) >= 4:
+                            _onpc(self,a[0],a[1],a[2],_fj,*a[4:],**kw)
+                        else:
+                            _onpc(self,*a,**kw)
+                        _ok=True; break
+                    except Exception:
+                        continue
+                if not _ok:
+                    try:
+                        _onpc(self)
+                    except Exception:
+                        pass
+            for _at,_dv in [('name',a[0] if a else 'Villager'),
+                            ('x',a[1] if len(a)>1 else 0.0),
+                            ('y',a[2] if len(a)>2 else 0.0),
+                            ('job',a[3] if len(a)>3 else 'Villager'),
+                            ('alive',True)]:
+                if not hasattr(self,_at): setattr(self,_at,_dv)
+        NPC.__init__ = _nnpc
+except Exception:
+    pass
 # UMBRA_ENEMY_PATCH
 try:
     _oe=Enemy.__init__
@@ -3386,6 +3424,33 @@ def _process_command(runtime, user_input):
         import os as _osexit; _osexit._exit(0)
 
     # Voice / TTS (was interactive_mode-only; GUI now routes through here too)
+    if cmd in ("gaming mode on", "force gaming mode"):
+        _rm = runtime.get("resource_manager")
+        if _rm:
+            _rm.set_manual_gaming_mode(True)
+            _umbra_print("  [RESOURCES] Gaming mode forced ON - Umbra will throttle itself regardless of process detection.\n")
+        else:
+            _umbra_print("  [RESOURCES] Resource manager not available.\n")
+        return
+
+    if cmd in ("gaming mode off",):
+        _rm = runtime.get("resource_manager")
+        if _rm:
+            _rm.set_manual_gaming_mode(False)
+            _umbra_print("  [RESOURCES] Gaming mode forced OFF.\n")
+        else:
+            _umbra_print("  [RESOURCES] Resource manager not available.\n")
+        return
+
+    if cmd in ("gaming mode auto", "gaming mode automatic"):
+        _rm = runtime.get("resource_manager")
+        if _rm:
+            _rm.set_manual_gaming_mode(None)
+            _umbra_print("  [RESOURCES] Gaming mode back to automatic detection.\n")
+        else:
+            _umbra_print("  [RESOURCES] Resource manager not available.\n")
+        return
+
     if cmd in ("voice on", "continuous voice on", "always listen"):
         runtime["_continuous_voice"] = True
         _umbra_print("  [MIC] Continuous voice ON.\n")

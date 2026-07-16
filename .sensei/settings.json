@@ -9,5 +9,6 @@
   "confidence_threshold": 0.8,
   "max_conversation_memory": 10,
   "force_full_jury": false,
-  "critic_enabled": true
+  "critic_enabled": true,
+  "gaming_mode": false
 }

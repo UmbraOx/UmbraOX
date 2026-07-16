@@ -501,7 +501,7 @@
     ]
   },
   "Umbra.py": {
-    "mtime": 1783249910.4098468,
+    "mtime": 1783491008.8107355,
     "chunk_ids": [
       "Umbra.py::_kill_port::65",
       "Umbra.py::_is_port_open::82",
@@ -539,37 +539,37 @@
       "Umbra.py::_test_game::1398",
       "Umbra.py::_run_smoke_test::1564",
       "Umbra.py::_run_deep_build::1593",
-      "Umbra.py::handle_self_fix::1912",
-      "Umbra.py::_repair_python_file::1979",
-      "Umbra.py::handle_workspace_repair::2001",
-      "Umbra.py::_apply_common_improvements::2080",
-      "Umbra.py::_run_real_pipeline::2137",
-      "Umbra.py::handle_self_install::2309",
-      "Umbra.py::handle_integrate::2419",
-      "Umbra.py::handle_files_browser::2483",
-      "Umbra.py::_detect_self_intent::2595",
-      "Umbra.py::_load_user_language_model::2615",
-      "Umbra.py::_record_user_phrase::2626",
-      "Umbra.py::_classify_with_user_model::2654",
-      "Umbra.py::_ensure_pyttsx3::2671",
-      "Umbra.py::_maybe_tts::2697",
-      "Umbra.py::_fallback_game_name::2727",
-      "Umbra.py::_ask_game_clarifications::2753",
-      "Umbra.py::_init_resource_manager::2798",
-      "Umbra.py::build_runtime::2811",
-      "Umbra.py::print_banner::3074",
-      "Umbra.py::print_status::3081",
-      "Umbra.py::print_config::3146",
-      "Umbra.py::print_metrics::3201",
-      "Umbra.py::_handle_project_switch::3217",
-      "Umbra.py::_process_command::3239",
-      "Umbra.py::_launch_gui::3596",
-      "Umbra.py::_direct_llm_answer::3761",
-      "Umbra.py::run_prompt::3796",
-      "Umbra.py::_run_studio_project::4293",
-      "Umbra.py::interactive_mode::4372",
-      "Umbra.py::_shutdown::4996",
-      "Umbra.py::main::5019"
+      "Umbra.py::handle_self_fix::2039",
+      "Umbra.py::_repair_python_file::2106",
+      "Umbra.py::handle_workspace_repair::2128",
+      "Umbra.py::_apply_common_improvements::2207",
+      "Umbra.py::_run_real_pipeline::2264",
+      "Umbra.py::handle_self_install::2436",
+      "Umbra.py::handle_integrate::2546",
+      "Umbra.py::handle_files_browser::2610",
+      "Umbra.py::_detect_self_intent::2722",
+      "Umbra.py::_load_user_language_model::2742",
+      "Umbra.py::_record_user_phrase::2753",
+      "Umbra.py::_classify_with_user_model::2781",
+      "Umbra.py::_ensure_pyttsx3::2798",
+      "Umbra.py::_maybe_tts::2824",
+      "Umbra.py::_fallback_game_name::2854",
+      "Umbra.py::_ask_game_clarifications::2880",
+      "Umbra.py::_init_resource_manager::2925",
+      "Umbra.py::build_runtime::2938",
+      "Umbra.py::print_banner::3201",
+      "Umbra.py::print_status::3208",
+      "Umbra.py::print_config::3273",
+      "Umbra.py::print_metrics::3328",
+      "Umbra.py::_handle_project_switch::3344",
+      "Umbra.py::_process_command::3366",
+      "Umbra.py::_launch_gui::3741",
+      "Umbra.py::_direct_llm_answer::3906",
+      "Umbra.py::run_prompt::3941",
+      "Umbra.py::_run_studio_project::4438",
+      "Umbra.py::interactive_mode::4517",
+      "Umbra.py::_shutdown::5141",
+      "Umbra.py::main::5164"
     ]
   },
   "umbra_desktop.py": {
@@ -943,7 +943,7 @@
     ]
   },
   "core/assets/game_skeleton.py": {
-    "mtime": 1783249904.8666577,
+    "mtime": 1783491012.1340315,
     "chunk_ids": [
       "core/assets/game_skeleton.py::_umbra_flex::31",
       "core/assets/game_skeleton.py::font::644",
@@ -3308,7 +3308,7 @@
     ]
   },
   "core/runtime/runtime_file_audit_engine.py": {
-    "mtime": 1783270825.5496795,
+    "mtime": 1783683109.452285,
     "chunk_ids": [
       "core/runtime/runtime_file_audit_engine.py::RuntimeFileAuditEngine::4"
     ]
@@ -6703,7 +6703,7 @@
     ]
   },
   "workspaces/agent_builds/demiworld/demiworld_game.py": {
-    "mtime": 1783082037.5811057,
+    "mtime": 1783693429.8542206,
     "chunk_ids": [
       "workspaces/agent_builds/demiworld/demiworld_game.py::gen_world::43",
       "workspaces/agent_builds/demiworld/demiworld_game.py::draw_world::53",
@@ -7071,7 +7071,7 @@
     ]
   },
   "workspaces/agent_builds/quicktest/quicktest_game.py": {
-    "mtime": 1783261047.6780446,
+    "mtime": 1783690675.3659174,
     "chunk_ids": [
       "workspaces/agent_builds/quicktest/quicktest_game.py::gen_world::28",
       "workspaces/agent_builds/quicktest/quicktest_game.py::draw_world::35",
@@ -7602,7 +7602,7 @@
     ]
   },
   "workspaces/agent_builds/quicktest/ui_quicktest.py": {
-    "mtime": 1783270855.471064,
+    "mtime": 1783693882.8344984,
     "chunk_ids": [
       "workspaces/agent_builds/quicktest/ui_quicktest.py::font_cache::7",
       "workspaces/agent_builds/quicktest/ui_quicktest.py::txt::12",
@@ -9513,6 +9513,366 @@
     "mtime": 1783322885.1560392,
     "chunk_ids": [
       "push_batch49.py::run::3"
+    ]
+  },
+  "apply_fixes_50.py": {
+    "mtime": 1783414366.791009,
+    "chunk_ids": [
+      "apply_fixes_50.py::__module__::1"
+    ]
+  },
+  "apply_fixes_51.py": {
+    "mtime": 1783490894.7092013,
+    "chunk_ids": [
+      "apply_fixes_51.py::__module__::1"
+    ]
+  },
+  "apply_fixes_52.py": {
+    "mtime": 1783490917.9264078,
+    "chunk_ids": [
+      "apply_fixes_52.py::__module__::1"
+    ]
+  },
+  "apply_fixes_53.py": {
+    "mtime": 1783490934.6007555,
+    "chunk_ids": [
+      "apply_fixes_53.py::__module__::1"
+    ]
+  },
+  "push_batch50.py": {
+    "mtime": 1783414321.6758368,
+    "chunk_ids": [
+      "push_batch50.py::run::3"
+    ]
+  },
+  "push_batch51.py": {
+    "mtime": 1783490909.4244127,
+    "chunk_ids": [
+      "push_batch51.py::run::3"
+    ]
+  },
+  "push_batch52.py": {
+    "mtime": 1783490925.8093097,
+    "chunk_ids": [
+      "push_batch52.py::run::3"
+    ]
+  },
+  "push_batch53.py": {
+    "mtime": 1783490941.9055276,
+    "chunk_ids": [
+      "push_batch53.py::run::3"
+    ]
+  },
+  "workspaces/agent_builds/quicktest10/character_quicktest10.py": {
+    "mtime": 1783347063.5076778,
+    "chunk_ids": [
+      "workspaces/agent_builds/quicktest10/character_quicktest10.py::Player::10",
+      "workspaces/agent_builds/quicktest10/character_quicktest10.py::Enemy::78",
+      "workspaces/agent_builds/quicktest10/character_quicktest10.py::NPC::101"
+    ]
+  },
+  "workspaces/agent_builds/quicktest10/economy_quicktest10.py": {
+    "mtime": 1783354944.985266,
+    "chunk_ids": [
+      "workspaces/agent_builds/quicktest10/economy_quicktest10.py::buy_item::39",
+      "workspaces/agent_builds/quicktest10/economy_quicktest10.py::sell_item::47",
+      "workspaces/agent_builds/quicktest10/economy_quicktest10.py::craft_item::57"
+    ]
+  },
+  "workspaces/agent_builds/quicktest10/item_quicktest10.py": {
+    "mtime": 1783348062.1095095,
+    "chunk_ids": [
+      "workspaces/agent_builds/quicktest10/item_quicktest10.py::__module__::1"
+    ]
+  },
+  "workspaces/agent_builds/quicktest10/mechanic_quicktest10.py": {
+    "mtime": 1783348759.3304803,
+    "chunk_ids": [
+      "workspaces/agent_builds/quicktest10/mechanic_quicktest10.py::Camera::6",
+      "workspaces/agent_builds/quicktest10/mechanic_quicktest10.py::FloatText::15",
+      "workspaces/agent_builds/quicktest10/mechanic_quicktest10.py::Projectile::38",
+      "workspaces/agent_builds/quicktest10/mechanic_quicktest10.py::Building::59",
+      "workspaces/agent_builds/quicktest10/mechanic_quicktest10.py::save_game::88",
+      "workspaces/agent_builds/quicktest10/mechanic_quicktest10.py::load_game::99"
+    ]
+  },
+  "workspaces/agent_builds/quicktest10/quest_quicktest10.py": {
+    "mtime": 1783354444.9386263,
+    "chunk_ids": [
+      "workspaces/agent_builds/quicktest10/quest_quicktest10.py::spawn_entities::8",
+      "workspaces/agent_builds/quicktest10/quest_quicktest10.py::check_kill_quests::40",
+      "workspaces/agent_builds/quicktest10/quest_quicktest10.py::check_item_quests::47",
+      "workspaces/agent_builds/quicktest10/quest_quicktest10.py::complete_ready_quests::54",
+      "workspaces/agent_builds/quicktest10/quest_quicktest10.py::harvest_nearby::63"
+    ]
+  },
+  "workspaces/agent_builds/quicktest10/quicktest10_game.py": {
+    "mtime": 1783355475.394498,
+    "chunk_ids": [
+      "workspaces/agent_builds/quicktest10/quicktest10_game.py::_umbra_flex::31",
+      "workspaces/agent_builds/quicktest10/quicktest10_game.py::gen_world::130",
+      "workspaces/agent_builds/quicktest10/quicktest10_game.py::draw_world::137",
+      "workspaces/agent_builds/quicktest10/quicktest10_game.py::get_biome::149",
+      "workspaces/agent_builds/quicktest10/quicktest10_game.py::Player::162",
+      "workspaces/agent_builds/quicktest10/quicktest10_game.py::Enemy::230",
+      "workspaces/agent_builds/quicktest10/quicktest10_game.py::NPC::253",
+      "workspaces/agent_builds/quicktest10/quicktest10_game.py::Camera::365",
+      "workspaces/agent_builds/quicktest10/quicktest10_game.py::FloatText::374",
+      "workspaces/agent_builds/quicktest10/quicktest10_game.py::Projectile::396",
+      "workspaces/agent_builds/quicktest10/quicktest10_game.py::Building::416",
+      "workspaces/agent_builds/quicktest10/quicktest10_game.py::save_game::444",
+      "workspaces/agent_builds/quicktest10/quicktest10_game.py::load_game::454",
+      "workspaces/agent_builds/quicktest10/quicktest10_game.py::spawn_entities::480",
+      "workspaces/agent_builds/quicktest10/quicktest10_game.py::check_kill_quests::512",
+      "workspaces/agent_builds/quicktest10/quicktest10_game.py::check_item_quests::519",
+      "workspaces/agent_builds/quicktest10/quicktest10_game.py::complete_ready_quests::526",
+      "workspaces/agent_builds/quicktest10/quicktest10_game.py::harvest_nearby::535",
+      "workspaces/agent_builds/quicktest10/quicktest10_game.py::buy_item::584",
+      "workspaces/agent_builds/quicktest10/quicktest10_game.py::sell_item::592",
+      "workspaces/agent_builds/quicktest10/quicktest10_game.py::craft_item::602",
+      "workspaces/agent_builds/quicktest10/quicktest10_game.py::font::1116",
+      "workspaces/agent_builds/quicktest10/quicktest10_game.py::txt::1120",
+      "workspaces/agent_builds/quicktest10/quicktest10_game.py::main::1549"
+    ]
+  },
+  "workspaces/agent_builds/quicktest10/world_quicktest10.py": {
+    "mtime": 1783346285.0254734,
+    "chunk_ids": [
+      "workspaces/agent_builds/quicktest10/world_quicktest10.py::gen_world::25",
+      "workspaces/agent_builds/quicktest10/world_quicktest10.py::draw_world::32",
+      "workspaces/agent_builds/quicktest10/world_quicktest10.py::get_biome::44"
+    ]
+  },
+  "workspaces/agent_builds/quicktest11/character_quicktest11.py": {
+    "mtime": 1783418946.4015079,
+    "chunk_ids": [
+      "workspaces/agent_builds/quicktest11/character_quicktest11.py::Player::17",
+      "workspaces/agent_builds/quicktest11/character_quicktest11.py::Enemy::75",
+      "workspaces/agent_builds/quicktest11/character_quicktest11.py::NPC::101"
+    ]
+  },
+  "workspaces/agent_builds/quicktest11/economy_quicktest11.py": {
+    "mtime": 1783427985.908077,
+    "chunk_ids": [
+      "workspaces/agent_builds/quicktest11/economy_quicktest11.py::buy_item::39",
+      "workspaces/agent_builds/quicktest11/economy_quicktest11.py::sell_item::48",
+      "workspaces/agent_builds/quicktest11/economy_quicktest11.py::craft_item::57"
+    ]
+  },
+  "workspaces/agent_builds/quicktest11/item_quicktest11.py": {
+    "mtime": 1783420454.893363,
+    "chunk_ids": [
+      "workspaces/agent_builds/quicktest11/item_quicktest11.py::__module__::1"
+    ]
+  },
+  "workspaces/agent_builds/quicktest11/mechanic_quicktest11.py": {
+    "mtime": 1783421445.8907096,
+    "chunk_ids": [
+      "workspaces/agent_builds/quicktest11/mechanic_quicktest11.py::Camera::6",
+      "workspaces/agent_builds/quicktest11/mechanic_quicktest11.py::FloatText::15",
+      "workspaces/agent_builds/quicktest11/mechanic_quicktest11.py::Projectile::36",
+      "workspaces/agent_builds/quicktest11/mechanic_quicktest11.py::Building::57",
+      "workspaces/agent_builds/quicktest11/mechanic_quicktest11.py::save_game::89",
+      "workspaces/agent_builds/quicktest11/mechanic_quicktest11.py::load_game::102"
+    ]
+  },
+  "workspaces/agent_builds/quicktest11/quest_quicktest11.py": {
+    "mtime": 1783427504.1802773,
+    "chunk_ids": [
+      "workspaces/agent_builds/quicktest11/quest_quicktest11.py::spawn_entities::23",
+      "workspaces/agent_builds/quicktest11/quest_quicktest11.py::check_kill_quests::50",
+      "workspaces/agent_builds/quicktest11/quest_quicktest11.py::check_item_quests::58",
+      "workspaces/agent_builds/quicktest11/quest_quicktest11.py::complete_ready_quests::66",
+      "workspaces/agent_builds/quicktest11/quest_quicktest11.py::harvest_nearby::85"
+    ]
+  },
+  "workspaces/agent_builds/quicktest11/quicktest11_game.py": {
+    "mtime": 1783427986.050747,
+    "chunk_ids": [
+      "workspaces/agent_builds/quicktest11/quicktest11_game.py::_umbra_flex::31",
+      "workspaces/agent_builds/quicktest11/quicktest11_game.py::gen_world::130",
+      "workspaces/agent_builds/quicktest11/quicktest11_game.py::draw_world::137",
+      "workspaces/agent_builds/quicktest11/quicktest11_game.py::get_biome::146",
+      "workspaces/agent_builds/quicktest11/quicktest11_game.py::Player::166",
+      "workspaces/agent_builds/quicktest11/quicktest11_game.py::Enemy::224",
+      "workspaces/agent_builds/quicktest11/quicktest11_game.py::NPC::250",
+      "workspaces/agent_builds/quicktest11/quicktest11_game.py::Camera::370",
+      "workspaces/agent_builds/quicktest11/quicktest11_game.py::FloatText::379",
+      "workspaces/agent_builds/quicktest11/quicktest11_game.py::Projectile::399",
+      "workspaces/agent_builds/quicktest11/quicktest11_game.py::Building::419",
+      "workspaces/agent_builds/quicktest11/quicktest11_game.py::save_game::450",
+      "workspaces/agent_builds/quicktest11/quicktest11_game.py::load_game::463",
+      "workspaces/agent_builds/quicktest11/quicktest11_game.py::font_cache::480",
+      "workspaces/agent_builds/quicktest11/quicktest11_game.py::bar::485",
+      "workspaces/agent_builds/quicktest11/quicktest11_game.py::panel::491",
+      "workspaces/agent_builds/quicktest11/quicktest11_game.py::btn::499",
+      "workspaces/agent_builds/quicktest11/quicktest11_game.py::draw_minimap::505",
+      "workspaces/agent_builds/quicktest11/quicktest11_game.py::draw_quest_log::519",
+      "workspaces/agent_builds/quicktest11/quicktest11_game.py::draw_city_panel::526",
+      "workspaces/agent_builds/quicktest11/quicktest11_game.py::spawn_entities::557",
+      "workspaces/agent_builds/quicktest11/quicktest11_game.py::check_kill_quests::584",
+      "workspaces/agent_builds/quicktest11/quicktest11_game.py::check_item_quests::592",
+      "workspaces/agent_builds/quicktest11/quicktest11_game.py::complete_ready_quests::600",
+      "workspaces/agent_builds/quicktest11/quicktest11_game.py::harvest_nearby::619",
+      "workspaces/agent_builds/quicktest11/quicktest11_game.py::buy_item::684",
+      "workspaces/agent_builds/quicktest11/quicktest11_game.py::sell_item::693",
+      "workspaces/agent_builds/quicktest11/quicktest11_game.py::craft_item::702",
+      "workspaces/agent_builds/quicktest11/quicktest11_game.py::font::1214",
+      "workspaces/agent_builds/quicktest11/quicktest11_game.py::txt::1218",
+      "workspaces/agent_builds/quicktest11/quicktest11_game.py::main::1647"
+    ]
+  },
+  "workspaces/agent_builds/quicktest11/ui_quicktest11.py": {
+    "mtime": 1783427066.3234642,
+    "chunk_ids": [
+      "workspaces/agent_builds/quicktest11/ui_quicktest11.py::font_cache::5",
+      "workspaces/agent_builds/quicktest11/ui_quicktest11.py::txt::10",
+      "workspaces/agent_builds/quicktest11/ui_quicktest11.py::bar::20",
+      "workspaces/agent_builds/quicktest11/ui_quicktest11.py::panel::26",
+      "workspaces/agent_builds/quicktest11/ui_quicktest11.py::btn::34",
+      "workspaces/agent_builds/quicktest11/ui_quicktest11.py::draw_hud::40",
+      "workspaces/agent_builds/quicktest11/ui_quicktest11.py::draw_minimap::49",
+      "workspaces/agent_builds/quicktest11/ui_quicktest11.py::draw_main_menu::63",
+      "workspaces/agent_builds/quicktest11/ui_quicktest11.py::draw_class_select::75",
+      "workspaces/agent_builds/quicktest11/ui_quicktest11.py::draw_inventory::90",
+      "workspaces/agent_builds/quicktest11/ui_quicktest11.py::draw_quest_log::100",
+      "workspaces/agent_builds/quicktest11/ui_quicktest11.py::draw_shop::107",
+      "workspaces/agent_builds/quicktest11/ui_quicktest11.py::draw_crafting::118",
+      "workspaces/agent_builds/quicktest11/ui_quicktest11.py::draw_dialogue::132",
+      "workspaces/agent_builds/quicktest11/ui_quicktest11.py::draw_pause::141",
+      "workspaces/agent_builds/quicktest11/ui_quicktest11.py::draw_city_panel::150",
+      "workspaces/agent_builds/quicktest11/ui_quicktest11.py::draw_world_map::158"
+    ]
+  },
+  "workspaces/agent_builds/quicktest11/world_quicktest11.py": {
+    "mtime": 1783417530.891468,
+    "chunk_ids": [
+      "workspaces/agent_builds/quicktest11/world_quicktest11.py::gen_world::25",
+      "workspaces/agent_builds/quicktest11/world_quicktest11.py::draw_world::32",
+      "workspaces/agent_builds/quicktest11/world_quicktest11.py::get_biome::41"
+    ]
+  },
+  "workspaces/agent_builds/quicktest12/character_quicktest12.py": {
+    "mtime": 1783493577.8632355,
+    "chunk_ids": [
+      "workspaces/agent_builds/quicktest12/character_quicktest12.py::Player::10",
+      "workspaces/agent_builds/quicktest12/character_quicktest12.py::Enemy::79",
+      "workspaces/agent_builds/quicktest12/character_quicktest12.py::NPC::103"
+    ]
+  },
+  "workspaces/agent_builds/quicktest12/economy_quicktest12.py": {
+    "mtime": 1783499763.8768022,
+    "chunk_ids": [
+      "workspaces/agent_builds/quicktest12/economy_quicktest12.py::buy_item::39",
+      "workspaces/agent_builds/quicktest12/economy_quicktest12.py::sell_item::48",
+      "workspaces/agent_builds/quicktest12/economy_quicktest12.py::craft_item::57"
+    ]
+  },
+  "workspaces/agent_builds/quicktest12/item_quicktest12.py": {
+    "mtime": 1783494796.0722759,
+    "chunk_ids": [
+      "workspaces/agent_builds/quicktest12/item_quicktest12.py::__module__::1"
+    ]
+  },
+  "workspaces/agent_builds/quicktest12/mechanic_quicktest12.py": {
+    "mtime": 1783495566.2623944,
+    "chunk_ids": [
+      "workspaces/agent_builds/quicktest12/mechanic_quicktest12.py::Camera::6",
+      "workspaces/agent_builds/quicktest12/mechanic_quicktest12.py::FloatText::15",
+      "workspaces/agent_builds/quicktest12/mechanic_quicktest12.py::Projectile::36",
+      "workspaces/agent_builds/quicktest12/mechanic_quicktest12.py::Building::57",
+      "workspaces/agent_builds/quicktest12/mechanic_quicktest12.py::save_game::84",
+      "workspaces/agent_builds/quicktest12/mechanic_quicktest12.py::load_game::97"
+    ]
+  },
+  "workspaces/agent_builds/quicktest12/quest_quicktest12.py": {
+    "mtime": 1783498964.082105,
+    "chunk_ids": [
+      "workspaces/agent_builds/quicktest12/quest_quicktest12.py::spawn_entities::8",
+      "workspaces/agent_builds/quicktest12/quest_quicktest12.py::check_kill_quests::42",
+      "workspaces/agent_builds/quicktest12/quest_quicktest12.py::check_item_quests::49",
+      "workspaces/agent_builds/quicktest12/quest_quicktest12.py::complete_ready_quests::56",
+      "workspaces/agent_builds/quicktest12/quest_quicktest12.py::harvest_nearby::65"
+    ]
+  },
+  "workspaces/agent_builds/quicktest12/quicktest12_game.py": {
+    "mtime": 1783499764.9148026,
+    "chunk_ids": [
+      "workspaces/agent_builds/quicktest12/quicktest12_game.py::_umbra_flex::31",
+      "workspaces/agent_builds/quicktest12/quicktest12_game.py::gen_world::130",
+      "workspaces/agent_builds/quicktest12/quicktest12_game.py::draw_world::137",
+      "workspaces/agent_builds/quicktest12/quicktest12_game.py::get_biome::147",
+      "workspaces/agent_builds/quicktest12/quicktest12_game.py::Player::160",
+      "workspaces/agent_builds/quicktest12/quicktest12_game.py::Enemy::229",
+      "workspaces/agent_builds/quicktest12/quicktest12_game.py::NPC::253",
+      "workspaces/agent_builds/quicktest12/quicktest12_game.py::Camera::363",
+      "workspaces/agent_builds/quicktest12/quicktest12_game.py::FloatText::372",
+      "workspaces/agent_builds/quicktest12/quicktest12_game.py::Projectile::392",
+      "workspaces/agent_builds/quicktest12/quicktest12_game.py::Building::412",
+      "workspaces/agent_builds/quicktest12/quicktest12_game.py::save_game::438",
+      "workspaces/agent_builds/quicktest12/quicktest12_game.py::load_game::450",
+      "workspaces/agent_builds/quicktest12/quicktest12_game.py::font_cache::468",
+      "workspaces/agent_builds/quicktest12/quicktest12_game.py::bar::473",
+      "workspaces/agent_builds/quicktest12/quicktest12_game.py::panel::480",
+      "workspaces/agent_builds/quicktest12/quicktest12_game.py::btn::488",
+      "workspaces/agent_builds/quicktest12/quicktest12_game.py::draw_minimap::494",
+      "workspaces/agent_builds/quicktest12/quicktest12_game.py::draw_quest_log::506",
+      "workspaces/agent_builds/quicktest12/quicktest12_game.py::draw_city_panel::513",
+      "workspaces/agent_builds/quicktest12/quicktest12_game.py::draw_game_over::521",
+      "workspaces/agent_builds/quicktest12/quicktest12_game.py::draw_player_stats::527",
+      "workspaces/agent_builds/quicktest12/quicktest12_game.py::draw_player_inventory::532",
+      "workspaces/agent_builds/quicktest12/quicktest12_game.py::draw_player_equipment::537",
+      "workspaces/agent_builds/quicktest12/quicktest12_game.py::draw_player_quests::543",
+      "workspaces/agent_builds/quicktest12/quicktest12_game.py::draw_player_spells::547",
+      "workspaces/agent_builds/quicktest12/quicktest12_game.py::draw_player_status_effects::552",
+      "workspaces/agent_builds/quicktest12/quicktest12_game.py::spawn_entities::563",
+      "workspaces/agent_builds/quicktest12/quicktest12_game.py::check_kill_quests::597",
+      "workspaces/agent_builds/quicktest12/quicktest12_game.py::check_item_quests::604",
+      "workspaces/agent_builds/quicktest12/quicktest12_game.py::complete_ready_quests::611",
+      "workspaces/agent_builds/quicktest12/quicktest12_game.py::harvest_nearby::620",
+      "workspaces/agent_builds/quicktest12/quicktest12_game.py::buy_item::669",
+      "workspaces/agent_builds/quicktest12/quicktest12_game.py::sell_item::678",
+      "workspaces/agent_builds/quicktest12/quicktest12_game.py::craft_item::687",
+      "workspaces/agent_builds/quicktest12/quicktest12_game.py::font::1199",
+      "workspaces/agent_builds/quicktest12/quicktest12_game.py::txt::1203",
+      "workspaces/agent_builds/quicktest12/quicktest12_game.py::main::1632"
+    ]
+  },
+  "workspaces/agent_builds/quicktest12/ui_quicktest12.py": {
+    "mtime": 1783498447.3412366,
+    "chunk_ids": [
+      "workspaces/agent_builds/quicktest12/ui_quicktest12.py::font_cache::5",
+      "workspaces/agent_builds/quicktest12/ui_quicktest12.py::txt::10",
+      "workspaces/agent_builds/quicktest12/ui_quicktest12.py::bar::20",
+      "workspaces/agent_builds/quicktest12/ui_quicktest12.py::panel::27",
+      "workspaces/agent_builds/quicktest12/ui_quicktest12.py::btn::35",
+      "workspaces/agent_builds/quicktest12/ui_quicktest12.py::draw_hud::41",
+      "workspaces/agent_builds/quicktest12/ui_quicktest12.py::draw_minimap::50",
+      "workspaces/agent_builds/quicktest12/ui_quicktest12.py::draw_main_menu::62",
+      "workspaces/agent_builds/quicktest12/ui_quicktest12.py::draw_class_select::71",
+      "workspaces/agent_builds/quicktest12/ui_quicktest12.py::draw_inventory::79",
+      "workspaces/agent_builds/quicktest12/ui_quicktest12.py::draw_quest_log::87",
+      "workspaces/agent_builds/quicktest12/ui_quicktest12.py::draw_shop::94",
+      "workspaces/agent_builds/quicktest12/ui_quicktest12.py::draw_crafting::103",
+      "workspaces/agent_builds/quicktest12/ui_quicktest12.py::draw_dialogue::116",
+      "workspaces/agent_builds/quicktest12/ui_quicktest12.py::draw_pause::125",
+      "workspaces/agent_builds/quicktest12/ui_quicktest12.py::draw_city_panel::134",
+      "workspaces/agent_builds/quicktest12/ui_quicktest12.py::draw_world_map::142",
+      "workspaces/agent_builds/quicktest12/ui_quicktest12.py::draw_game_over::154",
+      "workspaces/agent_builds/quicktest12/ui_quicktest12.py::draw_player_stats::160",
+      "workspaces/agent_builds/quicktest12/ui_quicktest12.py::draw_player_inventory::165",
+      "workspaces/agent_builds/quicktest12/ui_quicktest12.py::draw_player_equipment::170",
+      "workspaces/agent_builds/quicktest12/ui_quicktest12.py::draw_player_quests::176",
+      "workspaces/agent_builds/quicktest12/ui_quicktest12.py::draw_player_spells::180",
+      "workspaces/agent_builds/quicktest12/ui_quicktest12.py::draw_player_status_effects::185"
+    ]
+  },
+  "workspaces/agent_builds/quicktest12/world_quicktest12.py": {
+    "mtime": 1783492717.2603755,
+    "chunk_ids": [
+      "workspaces/agent_builds/quicktest12/world_quicktest12.py::gen_world::25",
+      "workspaces/agent_builds/quicktest12/world_quicktest12.py::draw_world::35",
+      "workspaces/agent_builds/quicktest12/world_quicktest12.py::get_biome::45"
     ]
   }
 }

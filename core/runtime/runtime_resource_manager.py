@@ -15,17 +15,26 @@ from datetime import datetime
 
 # Processes that indicate gaming/streaming is active
 GAMING_PROCESS_NAMES = {
-    # Games
+    # Launchers - covers the vast majority of PC games regardless of
+    # which specific title is running, since a name-based list of
+    # individual games can never keep up (this was the actual bug -
+    # detection silently found nothing for anything not on the list,
+    # so throttling never engaged even during active gameplay)
     "steam.exe", "steamwebhelper.exe", "gameoverlayui.exe",
-    "epicgameslauncher.exe", "origin.exe", "gog galaxy.exe",
+    "epicgameslauncher.exe", "origin.exe", "eadesktop.exe",
+    "gog galaxy.exe", "galaxyclient.exe", "battle.net.exe",
+    "ubisoftconnect.exe", "upc.exe", "riotclientservices.exe",
+    "riotclientux.exe",
+    # Common specific titles (best-effort, not exhaustive)
     "minecraft.exe", "javaw.exe", "robloxplayerbeta.exe",
     "league of legends.exe", "leagueclient.exe", "r5apex.exe",
-    "csgo.exe", "cs2.exe", "valorant.exe", "fortnite.exe",
-    "GTA5.exe", "RDR2.exe", "Cyberpunk2077.exe",
-    # Streaming
+    "csgo.exe", "cs2.exe", "valorant.exe", "fortnite-win64-shipping.exe",
+    "fortniteclient-win64-shipping.exe", "gta5.exe", "rdr2.exe",
+    "cyberpunk2077.exe", "eldenring.exe", "starfield.exe",
+    "baldursgate3.exe", "helldivers2.exe", "palworld.exe",
+    # Streaming / recording
     "obs64.exe", "obs32.exe", "streamlabs obs.exe",
     "xsplit.core.exe", "nvidia broadcast.exe",
-    # Recording
     "shadowplay.exe", "medal.exe",
 }
 
@@ -72,6 +81,15 @@ class RuntimeResourceManager:
         self._monitor_thread = None
         self._current_status = ResourceStatus()
         self._callbacks = []
+        # Process-name detection can never cover every possible game -
+        # this gives a guaranteed manual override ("gaming mode on"/"off")
+        # so throttling isn't left entirely to a best-effort name match.
+        self._manual_override = None  # None = auto, True = force on, False = force off
+
+    def set_manual_gaming_mode(self, enabled_or_none):
+        """enabled_or_none: True to force gaming mode on, False to force
+        it off, None to go back to automatic process-name detection."""
+        self._manual_override = enabled_or_none
 
         # Set this process to below-normal priority immediately
         self._set_process_priority_low()
@@ -172,8 +190,15 @@ class RuntimeResourceManager:
 
     def check_status(self):
         status = ResourceStatus()
-        status.gaming_processes = self.detect_gaming_processes()
-        status.gaming_detected = len(status.gaming_processes) > 0
+        if self._manual_override is True:
+            status.gaming_processes = ["manual override"]
+            status.gaming_detected = True
+        elif self._manual_override is False:
+            status.gaming_processes = []
+            status.gaming_detected = False
+        else:
+            status.gaming_processes = self.detect_gaming_processes()
+            status.gaming_detected = len(status.gaming_processes) > 0
         status.memory_pct = self.get_memory_usage_pct()
         status.throttled = status.gaming_detected or status.memory_pct > self.max_memory_pct
         self._current_status = status

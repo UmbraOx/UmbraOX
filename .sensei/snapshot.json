@@ -1,13 +1,13 @@
 {
   "project_root": "C:\\Umbra",
-  "file_count": 1219,
+  "file_count": 1254,
   "summary": {
-    "total_modules": 1146,
-    "total_functions": 2702,
-    "total_classes": 1007,
-    "total_imports": 1763,
+    "total_modules": 1177,
+    "total_functions": 2858,
+    "total_classes": 1049,
+    "total_imports": 1839,
     "todo_count": 12,
-    "hotspot_count": 40,
+    "hotspot_count": 45,
     "complexity_level": "very_high"
   },
   "hotspots": [
@@ -52,6 +52,11 @@
       "severity": "high"
     },
     {
+      "file": "workspaces/agent_builds/quicktest12/quicktest12_game.py",
+      "score": 49.5,
+      "severity": "high"
+    },
+    {
       "file": "workspaces/agent_builds/quicktest6/quicktest6_game.py",
       "score": 47.5,
       "severity": "high"
@@ -77,6 +82,11 @@
       "severity": "high"
     },
     {
+      "file": "workspaces/agent_builds/quicktest11/quicktest11_game.py",
+      "score": 42.5,
+      "severity": "high"
+    },
+    {
       "file": "test_umbra_full.py",
       "score": 40.0,
       "severity": "high"
@@ -87,6 +97,11 @@
       "severity": "high"
     },
     {
+      "file": "workspaces/agent_builds/quicktest10/quicktest10_game.py",
+      "score": 35.5,
+      "severity": "high"
+    },
+    {
       "file": "workspaces/agent_builds/quicktest5/ui_quicktest5.py",
       "score": 35.5,
       "severity": "high"
@@ -94,6 +109,11 @@
     {
       "file": "workspaces/projects/demiworld/code/demiworld_game.py",
       "score": 25.0,
+      "severity": "medium"
+    },
+    {
+      "file": "workspaces/agent_builds/quicktest12/ui_quicktest12.py",
+      "score": 24.5,
       "severity": "medium"
     },
     {
@@ -163,6 +183,11 @@
     },
     {
       "file": "core/tests/test_runtime_memory_store.py",
+      "score": 17.5,
+      "severity": "medium"
+    },
+    {
+      "file": "workspaces/agent_builds/quicktest11/ui_quicktest11.py",
       "score": 17.5,
       "severity": "medium"
     },
@@ -305,6 +330,10 @@
     "apply_fixes_47.py": "file",
     "apply_fixes_48.py": "file",
     "apply_fixes_49.py": "file",
+    "apply_fixes_50.py": "file",
+    "apply_fixes_51.py": "file",
+    "apply_fixes_52.py": "file",
+    "apply_fixes_53.py": "file",
     "cleanup_and_push.py": "file",
     "create_shortcuts.py": "file",
     "gui_server.py": "file",
@@ -352,6 +381,10 @@
     "push_batch47.py": "file",
     "push_batch48.py": "file",
     "push_batch49.py": "file",
+    "push_batch50.py": "file",
+    "push_batch51.py": "file",
+    "push_batch52.py": "file",
+    "push_batch53.py": "file",
     "QUICK_START.md": "file",
     "README.md": "file",
     "runtime_brain.json": "file",
@@ -1338,6 +1371,7 @@
     "sandbox/sandbox/test.py": "file",
     "sandbox/survival_game_backend/package.json": "file",
     "sessions/memory_store.json": "file",
+    "sessions/smoke_status.json": "file",
     "snapshots/20260630_082418_0001.json": "file",
     "snapshots/20260630_082926_0001.json": "file",
     "snapshots/20260630_083246_0001.json": "file",
@@ -1382,6 +1416,29 @@
     "workspaces/agent_builds/quicktest/quicktest_game.py": "file",
     "workspaces/agent_builds/quicktest/ui_quicktest.py": "file",
     "workspaces/agent_builds/quicktest/world_quicktest.py": "file",
+    "workspaces/agent_builds/quicktest10/character_quicktest10.py": "file",
+    "workspaces/agent_builds/quicktest10/economy_quicktest10.py": "file",
+    "workspaces/agent_builds/quicktest10/item_quicktest10.py": "file",
+    "workspaces/agent_builds/quicktest10/mechanic_quicktest10.py": "file",
+    "workspaces/agent_builds/quicktest10/quest_quicktest10.py": "file",
+    "workspaces/agent_builds/quicktest10/quicktest10_game.py": "file",
+    "workspaces/agent_builds/quicktest10/world_quicktest10.py": "file",
+    "workspaces/agent_builds/quicktest11/character_quicktest11.py": "file",
+    "workspaces/agent_builds/quicktest11/economy_quicktest11.py": "file",
+    "workspaces/agent_builds/quicktest11/item_quicktest11.py": "file",
+    "workspaces/agent_builds/quicktest11/mechanic_quicktest11.py": "file",
+    "workspaces/agent_builds/quicktest11/quest_quicktest11.py": "file",
+    "workspaces/agent_builds/quicktest11/quicktest11_game.py": "file",
+    "workspaces/agent_builds/quicktest11/ui_quicktest11.py": "file",
+    "workspaces/agent_builds/quicktest11/world_quicktest11.py": "file",
+    "workspaces/agent_builds/quicktest12/character_quicktest12.py": "file",
+    "workspaces/agent_builds/quicktest12/economy_quicktest12.py": "file",
+    "workspaces/agent_builds/quicktest12/item_quicktest12.py": "file",
+    "workspaces/agent_builds/quicktest12/mechanic_quicktest12.py": "file",
+    "workspaces/agent_builds/quicktest12/quest_quicktest12.py": "file",
+    "workspaces/agent_builds/quicktest12/quicktest12_game.py": "file",
+    "workspaces/agent_builds/quicktest12/ui_quicktest12.py": "file",
+    "workspaces/agent_builds/quicktest12/world_quicktest12.py": "file",
     "workspaces/agent_builds/quicktest2/character_quicktest2.py": "file",
     "workspaces/agent_builds/quicktest2/economy_quicktest2.py": "file",
     "workspaces/agent_builds/quicktest2/item_quicktest2.py": "file",
@@ -1443,6 +1500,9 @@
     "workspaces/projects/optiopia/project.json": "file",
     "workspaces/projects/optiopia/code/optiopia_game.py": "file",
     "workspaces/projects/quicktest/project.json": "file",
+    "workspaces/projects/quicktest10/project.json": "file",
+    "workspaces/projects/quicktest11/project.json": "file",
+    "workspaces/projects/quicktest12/project.json": "file",
     "workspaces/projects/quicktest2/project.json": "file",
     "workspaces/projects/quicktest5/project.json": "file",
     "workspaces/projects/quicktest6/project.json": "file",
@@ -1526,7 +1586,11 @@
         "push_batch46.py",
         "push_batch47.py",
         "push_batch48.py",
-        "push_batch49.py"
+        "push_batch49.py",
+        "push_batch50.py",
+        "push_batch51.py",
+        "push_batch52.py",
+        "push_batch53.py"
       ],
       "backup_and_read": [
         "apply_fixes_24.py",
@@ -1654,6 +1718,9 @@
         "workspaces/agent_builds/fantasy/fantasy_game.py",
         "workspaces/agent_builds/mygame/mygame_game.py",
         "workspaces/agent_builds/quicktest/quicktest_game.py",
+        "workspaces/agent_builds/quicktest10/quicktest10_game.py",
+        "workspaces/agent_builds/quicktest11/quicktest11_game.py",
+        "workspaces/agent_builds/quicktest12/quicktest12_game.py",
         "workspaces/agent_builds/quicktest2/quicktest2_game.py",
         "workspaces/agent_builds/quicktest5/quicktest5_game.py",
         "workspaces/agent_builds/quicktest6/quicktest6_game.py",
@@ -2136,6 +2203,9 @@
         "core/assets/game_skeleton.py",
         "workspaces/agent_builds/fantasy/fantasy_game.py",
         "workspaces/agent_builds/mygame/mygame_game.py",
+        "workspaces/agent_builds/quicktest10/quicktest10_game.py",
+        "workspaces/agent_builds/quicktest11/quicktest11_game.py",
+        "workspaces/agent_builds/quicktest12/quicktest12_game.py",
         "workspaces/agent_builds/quicktest5/quicktest5_game.py",
         "workspaces/agent_builds/quicktest6/quicktest6_game.py",
         "workspaces/agent_builds/quicktest7/quicktest7_game.py",
@@ -2147,6 +2217,9 @@
         "workspaces/agent_builds/fantasy/fantasy_game.py",
         "workspaces/agent_builds/mygame/mygame_game.py",
         "workspaces/agent_builds/quicktest/quicktest_game.py",
+        "workspaces/agent_builds/quicktest10/quicktest10_game.py",
+        "workspaces/agent_builds/quicktest11/quicktest11_game.py",
+        "workspaces/agent_builds/quicktest12/quicktest12_game.py",
         "workspaces/agent_builds/quicktest2/quicktest2_game.py",
         "workspaces/agent_builds/quicktest5/quicktest5_game.py",
         "workspaces/agent_builds/quicktest6/quicktest6_game.py",
@@ -2163,6 +2236,11 @@
         "workspaces/agent_builds/mygame/ui_mygame.py",
         "workspaces/agent_builds/quicktest/quicktest_game.py",
         "workspaces/agent_builds/quicktest/ui_quicktest.py",
+        "workspaces/agent_builds/quicktest10/quicktest10_game.py",
+        "workspaces/agent_builds/quicktest11/quicktest11_game.py",
+        "workspaces/agent_builds/quicktest11/ui_quicktest11.py",
+        "workspaces/agent_builds/quicktest12/quicktest12_game.py",
+        "workspaces/agent_builds/quicktest12/ui_quicktest12.py",
         "workspaces/agent_builds/quicktest2/quicktest2_game.py",
         "workspaces/agent_builds/quicktest5/quicktest5_game.py",
         "workspaces/agent_builds/quicktest5/ui_quicktest5.py",
@@ -3605,6 +3683,12 @@
         "workspaces/agent_builds/mygame/world_mygame.py",
         "workspaces/agent_builds/quicktest/quicktest_game.py",
         "workspaces/agent_builds/quicktest/world_quicktest.py",
+        "workspaces/agent_builds/quicktest10/quicktest10_game.py",
+        "workspaces/agent_builds/quicktest10/world_quicktest10.py",
+        "workspaces/agent_builds/quicktest11/quicktest11_game.py",
+        "workspaces/agent_builds/quicktest11/world_quicktest11.py",
+        "workspaces/agent_builds/quicktest12/quicktest12_game.py",
+        "workspaces/agent_builds/quicktest12/world_quicktest12.py",
         "workspaces/agent_builds/quicktest2/quicktest2_game.py",
         "workspaces/agent_builds/quicktest2/world_quicktest2.py",
         "workspaces/agent_builds/quicktest5/quicktest5_game.py",
@@ -3628,6 +3712,12 @@
         "workspaces/agent_builds/mygame/world_mygame.py",
         "workspaces/agent_builds/quicktest/quicktest_game.py",
         "workspaces/agent_builds/quicktest/world_quicktest.py",
+        "workspaces/agent_builds/quicktest10/quicktest10_game.py",
+        "workspaces/agent_builds/quicktest10/world_quicktest10.py",
+        "workspaces/agent_builds/quicktest11/quicktest11_game.py",
+        "workspaces/agent_builds/quicktest11/world_quicktest11.py",
+        "workspaces/agent_builds/quicktest12/quicktest12_game.py",
+        "workspaces/agent_builds/quicktest12/world_quicktest12.py",
         "workspaces/agent_builds/quicktest2/quicktest2_game.py",
         "workspaces/agent_builds/quicktest2/world_quicktest2.py",
         "workspaces/agent_builds/quicktest5/quicktest5_game.py",
@@ -3650,6 +3740,12 @@
         "workspaces/agent_builds/mygame/world_mygame.py",
         "workspaces/agent_builds/quicktest/quicktest_game.py",
         "workspaces/agent_builds/quicktest/world_quicktest.py",
+        "workspaces/agent_builds/quicktest10/quicktest10_game.py",
+        "workspaces/agent_builds/quicktest10/world_quicktest10.py",
+        "workspaces/agent_builds/quicktest11/quicktest11_game.py",
+        "workspaces/agent_builds/quicktest11/world_quicktest11.py",
+        "workspaces/agent_builds/quicktest12/quicktest12_game.py",
+        "workspaces/agent_builds/quicktest12/world_quicktest12.py",
         "workspaces/agent_builds/quicktest2/quicktest2_game.py",
         "workspaces/agent_builds/quicktest2/world_quicktest2.py",
         "workspaces/agent_builds/quicktest5/quicktest5_game.py",
@@ -3672,6 +3768,12 @@
         "workspaces/agent_builds/mygame/mygame_game.py",
         "workspaces/agent_builds/quicktest/mechanic_quicktest.py",
         "workspaces/agent_builds/quicktest/quicktest_game.py",
+        "workspaces/agent_builds/quicktest10/mechanic_quicktest10.py",
+        "workspaces/agent_builds/quicktest10/quicktest10_game.py",
+        "workspaces/agent_builds/quicktest11/mechanic_quicktest11.py",
+        "workspaces/agent_builds/quicktest11/quicktest11_game.py",
+        "workspaces/agent_builds/quicktest12/mechanic_quicktest12.py",
+        "workspaces/agent_builds/quicktest12/quicktest12_game.py",
         "workspaces/agent_builds/quicktest2/mechanic_quicktest2.py",
         "workspaces/agent_builds/quicktest2/quicktest2_game.py",
         "workspaces/agent_builds/quicktest5/mechanic_quicktest5.py",
@@ -3695,6 +3797,12 @@
         "workspaces/agent_builds/mygame/mygame_game.py",
         "workspaces/agent_builds/quicktest/mechanic_quicktest.py",
         "workspaces/agent_builds/quicktest/quicktest_game.py",
+        "workspaces/agent_builds/quicktest10/mechanic_quicktest10.py",
+        "workspaces/agent_builds/quicktest10/quicktest10_game.py",
+        "workspaces/agent_builds/quicktest11/mechanic_quicktest11.py",
+        "workspaces/agent_builds/quicktest11/quicktest11_game.py",
+        "workspaces/agent_builds/quicktest12/mechanic_quicktest12.py",
+        "workspaces/agent_builds/quicktest12/quicktest12_game.py",
         "workspaces/agent_builds/quicktest2/mechanic_quicktest2.py",
         "workspaces/agent_builds/quicktest2/quicktest2_game.py",
         "workspaces/agent_builds/quicktest5/mechanic_quicktest5.py",
@@ -3718,6 +3826,10 @@
         "workspaces/agent_builds/mygame/ui_mygame.py",
         "workspaces/agent_builds/quicktest/quicktest_game.py",
         "workspaces/agent_builds/quicktest/ui_quicktest.py",
+        "workspaces/agent_builds/quicktest11/quicktest11_game.py",
+        "workspaces/agent_builds/quicktest11/ui_quicktest11.py",
+        "workspaces/agent_builds/quicktest12/quicktest12_game.py",
+        "workspaces/agent_builds/quicktest12/ui_quicktest12.py",
         "workspaces/agent_builds/quicktest2/quicktest2_game.py",
         "workspaces/agent_builds/quicktest5/quicktest5_game.py",
         "workspaces/agent_builds/quicktest5/ui_quicktest5.py",
@@ -3739,6 +3851,10 @@
         "workspaces/agent_builds/mygame/ui_mygame.py",
         "workspaces/agent_builds/quicktest/quicktest_game.py",
         "workspaces/agent_builds/quicktest/ui_quicktest.py",
+        "workspaces/agent_builds/quicktest11/quicktest11_game.py",
+        "workspaces/agent_builds/quicktest11/ui_quicktest11.py",
+        "workspaces/agent_builds/quicktest12/quicktest12_game.py",
+        "workspaces/agent_builds/quicktest12/ui_quicktest12.py",
         "workspaces/agent_builds/quicktest2/quicktest2_game.py",
         "workspaces/agent_builds/quicktest5/quicktest5_game.py",
         "workspaces/agent_builds/quicktest5/ui_quicktest5.py",
@@ -3760,6 +3876,10 @@
         "workspaces/agent_builds/mygame/ui_mygame.py",
         "workspaces/agent_builds/quicktest/quicktest_game.py",
         "workspaces/agent_builds/quicktest/ui_quicktest.py",
+        "workspaces/agent_builds/quicktest11/quicktest11_game.py",
+        "workspaces/agent_builds/quicktest11/ui_quicktest11.py",
+        "workspaces/agent_builds/quicktest12/quicktest12_game.py",
+        "workspaces/agent_builds/quicktest12/ui_quicktest12.py",
         "workspaces/agent_builds/quicktest2/quicktest2_game.py",
         "workspaces/agent_builds/quicktest5/quicktest5_game.py",
         "workspaces/agent_builds/quicktest5/ui_quicktest5.py",
@@ -3781,6 +3901,10 @@
         "workspaces/agent_builds/mygame/ui_mygame.py",
         "workspaces/agent_builds/quicktest/quicktest_game.py",
         "workspaces/agent_builds/quicktest/ui_quicktest.py",
+        "workspaces/agent_builds/quicktest11/quicktest11_game.py",
+        "workspaces/agent_builds/quicktest11/ui_quicktest11.py",
+        "workspaces/agent_builds/quicktest12/quicktest12_game.py",
+        "workspaces/agent_builds/quicktest12/ui_quicktest12.py",
         "workspaces/agent_builds/quicktest2/quicktest2_game.py",
         "workspaces/agent_builds/quicktest5/quicktest5_game.py",
         "workspaces/agent_builds/quicktest5/quicktest5_game.py",
@@ -3802,6 +3926,8 @@
         "workspaces/agent_builds/mygame/ui_mygame.py",
         "workspaces/agent_builds/quicktest/quicktest_game.py",
         "workspaces/agent_builds/quicktest/ui_quicktest.py",
+        "workspaces/agent_builds/quicktest11/ui_quicktest11.py",
+        "workspaces/agent_builds/quicktest12/ui_quicktest12.py",
         "workspaces/agent_builds/quicktest5/ui_quicktest5.py",
         "workspaces/agent_builds/quicktest6/ui_quicktest6.py",
         "workspaces/agent_builds/quicktest7/ui_quicktest7.py",
@@ -3821,6 +3947,10 @@
         "workspaces/agent_builds/mygame/ui_mygame.py",
         "workspaces/agent_builds/quicktest/quicktest_game.py",
         "workspaces/agent_builds/quicktest/ui_quicktest.py",
+        "workspaces/agent_builds/quicktest11/quicktest11_game.py",
+        "workspaces/agent_builds/quicktest11/ui_quicktest11.py",
+        "workspaces/agent_builds/quicktest12/quicktest12_game.py",
+        "workspaces/agent_builds/quicktest12/ui_quicktest12.py",
         "workspaces/agent_builds/quicktest2/quicktest2_game.py",
         "workspaces/agent_builds/quicktest5/quicktest5_game.py",
         "workspaces/agent_builds/quicktest5/ui_quicktest5.py",
@@ -3842,6 +3972,8 @@
         "workspaces/agent_builds/mygame/ui_mygame.py",
         "workspaces/agent_builds/quicktest/quicktest_game.py",
         "workspaces/agent_builds/quicktest/ui_quicktest.py",
+        "workspaces/agent_builds/quicktest11/ui_quicktest11.py",
+        "workspaces/agent_builds/quicktest12/ui_quicktest12.py",
         "workspaces/agent_builds/quicktest5/ui_quicktest5.py",
         "workspaces/agent_builds/quicktest6/ui_quicktest6.py",
         "workspaces/agent_builds/quicktest7/ui_quicktest7.py",
@@ -3856,6 +3988,8 @@
         "workspaces/agent_builds/mygame/ui_mygame.py",
         "workspaces/agent_builds/quicktest/quicktest_game.py",
         "workspaces/agent_builds/quicktest/ui_quicktest.py",
+        "workspaces/agent_builds/quicktest11/ui_quicktest11.py",
+        "workspaces/agent_builds/quicktest12/ui_quicktest12.py",
         "workspaces/agent_builds/quicktest5/ui_quicktest5.py",
         "workspaces/agent_builds/quicktest6/ui_quicktest6.py",
         "workspaces/agent_builds/quicktest7/ui_quicktest7.py",
@@ -3874,6 +4008,10 @@
         "workspaces/agent_builds/mygame/ui_mygame.py",
         "workspaces/agent_builds/quicktest/quicktest_game.py",
         "workspaces/agent_builds/quicktest/ui_quicktest.py",
+        "workspaces/agent_builds/quicktest11/quicktest11_game.py",
+        "workspaces/agent_builds/quicktest11/ui_quicktest11.py",
+        "workspaces/agent_builds/quicktest12/quicktest12_game.py",
+        "workspaces/agent_builds/quicktest12/ui_quicktest12.py",
         "workspaces/agent_builds/quicktest2/quicktest2_game.py",
         "workspaces/agent_builds/quicktest5/quicktest5_game.py",
         "workspaces/agent_builds/quicktest5/ui_quicktest5.py",
@@ -3893,6 +4031,8 @@
         "workspaces/agent_builds/mygame/ui_mygame.py",
         "workspaces/agent_builds/quicktest/quicktest_game.py",
         "workspaces/agent_builds/quicktest/ui_quicktest.py",
+        "workspaces/agent_builds/quicktest11/ui_quicktest11.py",
+        "workspaces/agent_builds/quicktest12/ui_quicktest12.py",
         "workspaces/agent_builds/quicktest5/ui_quicktest5.py",
         "workspaces/agent_builds/quicktest6/ui_quicktest6.py",
         "workspaces/agent_builds/quicktest7/ui_quicktest7.py",
@@ -3908,6 +4048,8 @@
         "workspaces/agent_builds/mygame/ui_mygame.py",
         "workspaces/agent_builds/quicktest/quicktest_game.py",
         "workspaces/agent_builds/quicktest/ui_quicktest.py",
+        "workspaces/agent_builds/quicktest11/ui_quicktest11.py",
+        "workspaces/agent_builds/quicktest12/ui_quicktest12.py",
         "workspaces/agent_builds/quicktest5/ui_quicktest5.py",
         "workspaces/agent_builds/quicktest6/ui_quicktest6.py",
         "workspaces/agent_builds/quicktest7/ui_quicktest7.py",
@@ -3922,6 +4064,8 @@
         "workspaces/agent_builds/mygame/ui_mygame.py",
         "workspaces/agent_builds/quicktest/quicktest_game.py",
         "workspaces/agent_builds/quicktest/ui_quicktest.py",
+        "workspaces/agent_builds/quicktest11/ui_quicktest11.py",
+        "workspaces/agent_builds/quicktest12/ui_quicktest12.py",
         "workspaces/agent_builds/quicktest5/ui_quicktest5.py",
         "workspaces/agent_builds/quicktest6/ui_quicktest6.py",
         "workspaces/agent_builds/quicktest7/ui_quicktest7.py",
@@ -3936,6 +4080,8 @@
         "workspaces/agent_builds/mygame/ui_mygame.py",
         "workspaces/agent_builds/quicktest/quicktest_game.py",
         "workspaces/agent_builds/quicktest/ui_quicktest.py",
+        "workspaces/agent_builds/quicktest11/ui_quicktest11.py",
+        "workspaces/agent_builds/quicktest12/ui_quicktest12.py",
         "workspaces/agent_builds/quicktest5/ui_quicktest5.py",
         "workspaces/agent_builds/quicktest6/ui_quicktest6.py",
         "workspaces/agent_builds/quicktest7/ui_quicktest7.py",
@@ -3951,6 +4097,10 @@
         "workspaces/agent_builds/mygame/ui_mygame.py",
         "workspaces/agent_builds/quicktest/quicktest_game.py",
         "workspaces/agent_builds/quicktest/ui_quicktest.py",
+        "workspaces/agent_builds/quicktest11/quicktest11_game.py",
+        "workspaces/agent_builds/quicktest11/ui_quicktest11.py",
+        "workspaces/agent_builds/quicktest12/quicktest12_game.py",
+        "workspaces/agent_builds/quicktest12/ui_quicktest12.py",
         "workspaces/agent_builds/quicktest5/quicktest5_game.py",
         "workspaces/agent_builds/quicktest5/ui_quicktest5.py",
         "workspaces/agent_builds/quicktest6/quicktest6_game.py",
@@ -3969,6 +4119,8 @@
         "workspaces/agent_builds/mygame/ui_mygame.py",
         "workspaces/agent_builds/quicktest/quicktest_game.py",
         "workspaces/agent_builds/quicktest/ui_quicktest.py",
+        "workspaces/agent_builds/quicktest11/ui_quicktest11.py",
+        "workspaces/agent_builds/quicktest12/ui_quicktest12.py",
         "workspaces/agent_builds/quicktest6/ui_quicktest6.py",
         "workspaces/agent_builds/quicktest7/ui_quicktest7.py",
         "workspaces/agent_builds/quicktest9/ui_quicktest9.py",
@@ -3984,6 +4136,8 @@
         "workspaces/agent_builds/mygame/ui_mygame.py",
         "workspaces/agent_builds/quicktest/quicktest_game.py",
         "workspaces/agent_builds/quicktest/ui_quicktest.py",
+        "workspaces/agent_builds/quicktest12/quicktest12_game.py",
+        "workspaces/agent_builds/quicktest12/ui_quicktest12.py",
         "workspaces/agent_builds/quicktest2/quicktest2_game.py",
         "workspaces/agent_builds/quicktest2/quicktest2_game.py",
         "workspaces/agent_builds/quicktest2/quicktest2_game.py",
@@ -4003,6 +4157,8 @@
         "workspaces/agent_builds/fantasy/ui_fantasy.py",
         "workspaces/agent_builds/quicktest/quicktest_game.py",
         "workspaces/agent_builds/quicktest/ui_quicktest.py",
+        "workspaces/agent_builds/quicktest12/quicktest12_game.py",
+        "workspaces/agent_builds/quicktest12/ui_quicktest12.py",
         "workspaces/agent_builds/quicktest2/quicktest2_game.py",
         "workspaces/agent_builds/quicktest5/quicktest5_game.py",
         "workspaces/agent_builds/quicktest5/ui_quicktest5.py",
@@ -4014,6 +4170,8 @@
         "workspaces/agent_builds/demiworld/ui_demiworld.py",
         "workspaces/agent_builds/quicktest/quicktest_game.py",
         "workspaces/agent_builds/quicktest/ui_quicktest.py",
+        "workspaces/agent_builds/quicktest12/quicktest12_game.py",
+        "workspaces/agent_builds/quicktest12/ui_quicktest12.py",
         "workspaces/agent_builds/quicktest2/quicktest2_game.py",
         "workspaces/agent_builds/quicktest2/quicktest2_game.py"
       ],
@@ -4022,6 +4180,8 @@
         "workspaces/agent_builds/demiworld/ui_demiworld.py",
         "workspaces/agent_builds/quicktest/quicktest_game.py",
         "workspaces/agent_builds/quicktest/ui_quicktest.py",
+        "workspaces/agent_builds/quicktest12/quicktest12_game.py",
+        "workspaces/agent_builds/quicktest12/ui_quicktest12.py",
         "workspaces/agent_builds/quicktest2/quicktest2_game.py"
       ],
       "draw_player_quests": [
@@ -4029,6 +4189,8 @@
         "workspaces/agent_builds/demiworld/ui_demiworld.py",
         "workspaces/agent_builds/quicktest/quicktest_game.py",
         "workspaces/agent_builds/quicktest/ui_quicktest.py",
+        "workspaces/agent_builds/quicktest12/quicktest12_game.py",
+        "workspaces/agent_builds/quicktest12/ui_quicktest12.py",
         "workspaces/agent_builds/quicktest2/quicktest2_game.py"
       ],
       "draw_player_skills": [
@@ -4042,11 +4204,15 @@
         "workspaces/agent_builds/demiworld/demiworld_game.py",
         "workspaces/agent_builds/demiworld/ui_demiworld.py",
         "workspaces/agent_builds/quicktest/quicktest_game.py",
-        "workspaces/agent_builds/quicktest/ui_quicktest.py"
+        "workspaces/agent_builds/quicktest/ui_quicktest.py",
+        "workspaces/agent_builds/quicktest12/quicktest12_game.py",
+        "workspaces/agent_builds/quicktest12/ui_quicktest12.py"
       ],
       "draw_player_status_effects": [
         "workspaces/agent_builds/demiworld/demiworld_game.py",
-        "workspaces/agent_builds/demiworld/ui_demiworld.py"
+        "workspaces/agent_builds/demiworld/ui_demiworld.py",
+        "workspaces/agent_builds/quicktest12/quicktest12_game.py",
+        "workspaces/agent_builds/quicktest12/ui_quicktest12.py"
       ],
       "draw_player_attributes": [
         "workspaces/agent_builds/demiworld/demiworld_game.py",
@@ -4217,6 +4383,12 @@
         "workspaces/agent_builds/mygame/quest_mygame.py",
         "workspaces/agent_builds/quicktest/quest_quicktest.py",
         "workspaces/agent_builds/quicktest/quicktest_game.py",
+        "workspaces/agent_builds/quicktest10/quest_quicktest10.py",
+        "workspaces/agent_builds/quicktest10/quicktest10_game.py",
+        "workspaces/agent_builds/quicktest11/quest_quicktest11.py",
+        "workspaces/agent_builds/quicktest11/quicktest11_game.py",
+        "workspaces/agent_builds/quicktest12/quest_quicktest12.py",
+        "workspaces/agent_builds/quicktest12/quicktest12_game.py",
         "workspaces/agent_builds/quicktest2/quest_quicktest2.py",
         "workspaces/agent_builds/quicktest2/quicktest2_game.py",
         "workspaces/agent_builds/quicktest5/quest_quicktest5.py",
@@ -4239,6 +4411,12 @@
         "workspaces/agent_builds/mygame/quest_mygame.py",
         "workspaces/agent_builds/quicktest/quest_quicktest.py",
         "workspaces/agent_builds/quicktest/quicktest_game.py",
+        "workspaces/agent_builds/quicktest10/quest_quicktest10.py",
+        "workspaces/agent_builds/quicktest10/quicktest10_game.py",
+        "workspaces/agent_builds/quicktest11/quest_quicktest11.py",
+        "workspaces/agent_builds/quicktest11/quicktest11_game.py",
+        "workspaces/agent_builds/quicktest12/quest_quicktest12.py",
+        "workspaces/agent_builds/quicktest12/quicktest12_game.py",
         "workspaces/agent_builds/quicktest2/quest_quicktest2.py",
         "workspaces/agent_builds/quicktest2/quicktest2_game.py",
         "workspaces/agent_builds/quicktest5/quest_quicktest5.py",
@@ -4261,6 +4439,12 @@
         "workspaces/agent_builds/mygame/quest_mygame.py",
         "workspaces/agent_builds/quicktest/quest_quicktest.py",
         "workspaces/agent_builds/quicktest/quicktest_game.py",
+        "workspaces/agent_builds/quicktest10/quest_quicktest10.py",
+        "workspaces/agent_builds/quicktest10/quicktest10_game.py",
+        "workspaces/agent_builds/quicktest11/quest_quicktest11.py",
+        "workspaces/agent_builds/quicktest11/quicktest11_game.py",
+        "workspaces/agent_builds/quicktest12/quest_quicktest12.py",
+        "workspaces/agent_builds/quicktest12/quicktest12_game.py",
         "workspaces/agent_builds/quicktest2/quest_quicktest2.py",
         "workspaces/agent_builds/quicktest2/quicktest2_game.py",
         "workspaces/agent_builds/quicktest5/quest_quicktest5.py",
@@ -4283,6 +4467,12 @@
         "workspaces/agent_builds/mygame/quest_mygame.py",
         "workspaces/agent_builds/quicktest/quest_quicktest.py",
         "workspaces/agent_builds/quicktest/quicktest_game.py",
+        "workspaces/agent_builds/quicktest10/quest_quicktest10.py",
+        "workspaces/agent_builds/quicktest10/quicktest10_game.py",
+        "workspaces/agent_builds/quicktest11/quest_quicktest11.py",
+        "workspaces/agent_builds/quicktest11/quicktest11_game.py",
+        "workspaces/agent_builds/quicktest12/quest_quicktest12.py",
+        "workspaces/agent_builds/quicktest12/quicktest12_game.py",
         "workspaces/agent_builds/quicktest2/quest_quicktest2.py",
         "workspaces/agent_builds/quicktest2/quicktest2_game.py",
         "workspaces/agent_builds/quicktest5/quest_quicktest5.py",
@@ -4305,6 +4495,12 @@
         "workspaces/agent_builds/mygame/quest_mygame.py",
         "workspaces/agent_builds/quicktest/quest_quicktest.py",
         "workspaces/agent_builds/quicktest/quicktest_game.py",
+        "workspaces/agent_builds/quicktest10/quest_quicktest10.py",
+        "workspaces/agent_builds/quicktest10/quicktest10_game.py",
+        "workspaces/agent_builds/quicktest11/quest_quicktest11.py",
+        "workspaces/agent_builds/quicktest11/quicktest11_game.py",
+        "workspaces/agent_builds/quicktest12/quest_quicktest12.py",
+        "workspaces/agent_builds/quicktest12/quicktest12_game.py",
         "workspaces/agent_builds/quicktest2/quest_quicktest2.py",
         "workspaces/agent_builds/quicktest2/quicktest2_game.py",
         "workspaces/agent_builds/quicktest5/quest_quicktest5.py",
@@ -4327,6 +4523,12 @@
         "workspaces/agent_builds/mygame/mygame_game.py",
         "workspaces/agent_builds/quicktest/economy_quicktest.py",
         "workspaces/agent_builds/quicktest/quicktest_game.py",
+        "workspaces/agent_builds/quicktest10/economy_quicktest10.py",
+        "workspaces/agent_builds/quicktest10/quicktest10_game.py",
+        "workspaces/agent_builds/quicktest11/economy_quicktest11.py",
+        "workspaces/agent_builds/quicktest11/quicktest11_game.py",
+        "workspaces/agent_builds/quicktest12/economy_quicktest12.py",
+        "workspaces/agent_builds/quicktest12/quicktest12_game.py",
         "workspaces/agent_builds/quicktest2/economy_quicktest2.py",
         "workspaces/agent_builds/quicktest2/quicktest2_game.py",
         "workspaces/agent_builds/quicktest5/economy_quicktest5.py",
@@ -4349,6 +4551,12 @@
         "workspaces/agent_builds/mygame/mygame_game.py",
         "workspaces/agent_builds/quicktest/economy_quicktest.py",
         "workspaces/agent_builds/quicktest/quicktest_game.py",
+        "workspaces/agent_builds/quicktest10/economy_quicktest10.py",
+        "workspaces/agent_builds/quicktest10/quicktest10_game.py",
+        "workspaces/agent_builds/quicktest11/economy_quicktest11.py",
+        "workspaces/agent_builds/quicktest11/quicktest11_game.py",
+        "workspaces/agent_builds/quicktest12/economy_quicktest12.py",
+        "workspaces/agent_builds/quicktest12/quicktest12_game.py",
         "workspaces/agent_builds/quicktest2/economy_quicktest2.py",
         "workspaces/agent_builds/quicktest2/quicktest2_game.py",
         "workspaces/agent_builds/quicktest5/economy_quicktest5.py",
@@ -4371,6 +4579,12 @@
         "workspaces/agent_builds/mygame/mygame_game.py",
         "workspaces/agent_builds/quicktest/economy_quicktest.py",
         "workspaces/agent_builds/quicktest/quicktest_game.py",
+        "workspaces/agent_builds/quicktest10/economy_quicktest10.py",
+        "workspaces/agent_builds/quicktest10/quicktest10_game.py",
+        "workspaces/agent_builds/quicktest11/economy_quicktest11.py",
+        "workspaces/agent_builds/quicktest11/quicktest11_game.py",
+        "workspaces/agent_builds/quicktest12/economy_quicktest12.py",
+        "workspaces/agent_builds/quicktest12/quicktest12_game.py",
         "workspaces/agent_builds/quicktest2/economy_quicktest2.py",
         "workspaces/agent_builds/quicktest2/quicktest2_game.py",
         "workspaces/agent_builds/quicktest5/economy_quicktest5.py",
@@ -4389,6 +4603,8 @@
         "workspaces/agent_builds/fantasy/ui_fantasy.py",
         "workspaces/agent_builds/mygame/ui_mygame.py",
         "workspaces/agent_builds/quicktest/ui_quicktest.py",
+        "workspaces/agent_builds/quicktest11/ui_quicktest11.py",
+        "workspaces/agent_builds/quicktest12/ui_quicktest12.py",
         "workspaces/agent_builds/quicktest5/ui_quicktest5.py",
         "workspaces/agent_builds/quicktest5/ui_quicktest5.py",
         "workspaces/agent_builds/quicktest6/ui_quicktest6.py",
@@ -8596,6 +8812,12 @@
         "workspaces/agent_builds/mygame/mygame_game.py",
         "workspaces/agent_builds/quicktest/character_quicktest.py",
         "workspaces/agent_builds/quicktest/quicktest_game.py",
+        "workspaces/agent_builds/quicktest10/character_quicktest10.py",
+        "workspaces/agent_builds/quicktest10/quicktest10_game.py",
+        "workspaces/agent_builds/quicktest11/character_quicktest11.py",
+        "workspaces/agent_builds/quicktest11/quicktest11_game.py",
+        "workspaces/agent_builds/quicktest12/character_quicktest12.py",
+        "workspaces/agent_builds/quicktest12/quicktest12_game.py",
         "workspaces/agent_builds/quicktest2/character_quicktest2.py",
         "workspaces/agent_builds/quicktest2/quicktest2_game.py",
         "workspaces/agent_builds/quicktest5/character_quicktest5.py",
@@ -8622,6 +8844,12 @@
         "workspaces/agent_builds/mygame/mygame_game.py",
         "workspaces/agent_builds/quicktest/character_quicktest.py",
         "workspaces/agent_builds/quicktest/quicktest_game.py",
+        "workspaces/agent_builds/quicktest10/character_quicktest10.py",
+        "workspaces/agent_builds/quicktest10/quicktest10_game.py",
+        "workspaces/agent_builds/quicktest11/character_quicktest11.py",
+        "workspaces/agent_builds/quicktest11/quicktest11_game.py",
+        "workspaces/agent_builds/quicktest12/character_quicktest12.py",
+        "workspaces/agent_builds/quicktest12/quicktest12_game.py",
         "workspaces/agent_builds/quicktest2/character_quicktest2.py",
         "workspaces/agent_builds/quicktest2/quicktest2_game.py",
         "workspaces/agent_builds/quicktest5/character_quicktest5.py",
@@ -8648,6 +8876,12 @@
         "workspaces/agent_builds/mygame/mygame_game.py",
         "workspaces/agent_builds/quicktest/character_quicktest.py",
         "workspaces/agent_builds/quicktest/quicktest_game.py",
+        "workspaces/agent_builds/quicktest10/character_quicktest10.py",
+        "workspaces/agent_builds/quicktest10/quicktest10_game.py",
+        "workspaces/agent_builds/quicktest11/character_quicktest11.py",
+        "workspaces/agent_builds/quicktest11/quicktest11_game.py",
+        "workspaces/agent_builds/quicktest12/character_quicktest12.py",
+        "workspaces/agent_builds/quicktest12/quicktest12_game.py",
         "workspaces/agent_builds/quicktest2/character_quicktest2.py",
         "workspaces/agent_builds/quicktest2/quicktest2_game.py",
         "workspaces/agent_builds/quicktest5/character_quicktest5.py",
@@ -8672,6 +8906,12 @@
         "workspaces/agent_builds/mygame/mygame_game.py",
         "workspaces/agent_builds/quicktest/mechanic_quicktest.py",
         "workspaces/agent_builds/quicktest/quicktest_game.py",
+        "workspaces/agent_builds/quicktest10/mechanic_quicktest10.py",
+        "workspaces/agent_builds/quicktest10/quicktest10_game.py",
+        "workspaces/agent_builds/quicktest11/mechanic_quicktest11.py",
+        "workspaces/agent_builds/quicktest11/quicktest11_game.py",
+        "workspaces/agent_builds/quicktest12/mechanic_quicktest12.py",
+        "workspaces/agent_builds/quicktest12/quicktest12_game.py",
         "workspaces/agent_builds/quicktest2/mechanic_quicktest2.py",
         "workspaces/agent_builds/quicktest2/quicktest2_game.py",
         "workspaces/agent_builds/quicktest5/mechanic_quicktest5.py",
@@ -8694,6 +8934,12 @@
         "workspaces/agent_builds/mygame/mygame_game.py",
         "workspaces/agent_builds/quicktest/mechanic_quicktest.py",
         "workspaces/agent_builds/quicktest/quicktest_game.py",
+        "workspaces/agent_builds/quicktest10/mechanic_quicktest10.py",
+        "workspaces/agent_builds/quicktest10/quicktest10_game.py",
+        "workspaces/agent_builds/quicktest11/mechanic_quicktest11.py",
+        "workspaces/agent_builds/quicktest11/quicktest11_game.py",
+        "workspaces/agent_builds/quicktest12/mechanic_quicktest12.py",
+        "workspaces/agent_builds/quicktest12/quicktest12_game.py",
         "workspaces/agent_builds/quicktest2/mechanic_quicktest2.py",
         "workspaces/agent_builds/quicktest2/quicktest2_game.py",
         "workspaces/agent_builds/quicktest5/mechanic_quicktest5.py",
@@ -8716,6 +8962,12 @@
         "workspaces/agent_builds/mygame/mygame_game.py",
         "workspaces/agent_builds/quicktest/mechanic_quicktest.py",
         "workspaces/agent_builds/quicktest/quicktest_game.py",
+        "workspaces/agent_builds/quicktest10/mechanic_quicktest10.py",
+        "workspaces/agent_builds/quicktest10/quicktest10_game.py",
+        "workspaces/agent_builds/quicktest11/mechanic_quicktest11.py",
+        "workspaces/agent_builds/quicktest11/quicktest11_game.py",
+        "workspaces/agent_builds/quicktest12/mechanic_quicktest12.py",
+        "workspaces/agent_builds/quicktest12/quicktest12_game.py",
         "workspaces/agent_builds/quicktest2/mechanic_quicktest2.py",
         "workspaces/agent_builds/quicktest2/quicktest2_game.py",
         "workspaces/agent_builds/quicktest5/mechanic_quicktest5.py",
@@ -8738,6 +8990,12 @@
         "workspaces/agent_builds/mygame/mygame_game.py",
         "workspaces/agent_builds/quicktest/mechanic_quicktest.py",
         "workspaces/agent_builds/quicktest/quicktest_game.py",
+        "workspaces/agent_builds/quicktest10/mechanic_quicktest10.py",
+        "workspaces/agent_builds/quicktest10/quicktest10_game.py",
+        "workspaces/agent_builds/quicktest11/mechanic_quicktest11.py",
+        "workspaces/agent_builds/quicktest11/quicktest11_game.py",
+        "workspaces/agent_builds/quicktest12/mechanic_quicktest12.py",
+        "workspaces/agent_builds/quicktest12/quicktest12_game.py",
         "workspaces/agent_builds/quicktest2/mechanic_quicktest2.py",
         "workspaces/agent_builds/quicktest2/quicktest2_game.py",
         "workspaces/agent_builds/quicktest5/mechanic_quicktest5.py",
@@ -8945,6 +9203,18 @@
       "subprocess"
     ],
     "push_batch49.py": [
+      "subprocess"
+    ],
+    "push_batch50.py": [
+      "subprocess"
+    ],
+    "push_batch51.py": [
+      "subprocess"
+    ],
+    "push_batch52.py": [
+      "subprocess"
+    ],
+    "push_batch53.py": [
       "subprocess"
     ],
     "run_umbra.py": [
@@ -10568,6 +10838,72 @@
     "workspaces/agent_builds/quicktest/world_quicktest.py": [
       "random"
     ],
+    "workspaces/agent_builds/quicktest10/character_quicktest10.py": [
+      "random"
+    ],
+    "workspaces/agent_builds/quicktest10/mechanic_quicktest10.py": [
+      "pygame",
+      "pygame",
+      "pygame"
+    ],
+    "workspaces/agent_builds/quicktest10/quest_quicktest10.py": [
+      "random"
+    ],
+    "workspaces/agent_builds/quicktest10/quicktest10_game.py": [
+      "pygame",
+      "random",
+      "inspect",
+      "pygame"
+    ],
+    "workspaces/agent_builds/quicktest10/world_quicktest10.py": [
+      "random"
+    ],
+    "workspaces/agent_builds/quicktest11/character_quicktest11.py": [
+      "random"
+    ],
+    "workspaces/agent_builds/quicktest11/mechanic_quicktest11.py": [
+      "pygame",
+      "pygame",
+      "pygame"
+    ],
+    "workspaces/agent_builds/quicktest11/quest_quicktest11.py": [
+      "random"
+    ],
+    "workspaces/agent_builds/quicktest11/quicktest11_game.py": [
+      "pygame",
+      "random",
+      "inspect",
+      "pygame"
+    ],
+    "workspaces/agent_builds/quicktest11/ui_quicktest11.py": [
+      "pygame"
+    ],
+    "workspaces/agent_builds/quicktest11/world_quicktest11.py": [
+      "random"
+    ],
+    "workspaces/agent_builds/quicktest12/character_quicktest12.py": [
+      "random"
+    ],
+    "workspaces/agent_builds/quicktest12/mechanic_quicktest12.py": [
+      "pygame",
+      "pygame",
+      "pygame"
+    ],
+    "workspaces/agent_builds/quicktest12/quest_quicktest12.py": [
+      "random"
+    ],
+    "workspaces/agent_builds/quicktest12/quicktest12_game.py": [
+      "pygame",
+      "random",
+      "inspect",
+      "pygame"
+    ],
+    "workspaces/agent_builds/quicktest12/ui_quicktest12.py": [
+      "pygame"
+    ],
+    "workspaces/agent_builds/quicktest12/world_quicktest12.py": [
+      "random"
+    ],
     "workspaces/agent_builds/quicktest2/character_quicktest2.py": [
       "random"
     ],
@@ -11289,6 +11625,50 @@
       "classes": [],
       "todos": [],
       "line_count": 99
+    },
+    "apply_fixes_50.py": {
+      "imports": [
+        "ast",
+        "datetime",
+        "sys"
+      ],
+      "functions": [],
+      "classes": [],
+      "todos": [],
+      "line_count": 54
+    },
+    "apply_fixes_51.py": {
+      "imports": [
+        "ast",
+        "datetime",
+        "sys"
+      ],
+      "functions": [],
+      "classes": [],
+      "todos": [],
+      "line_count": 100
+    },
+    "apply_fixes_52.py": {
+      "imports": [
+        "ast",
+        "datetime",
+        "sys"
+      ],
+      "functions": [],
+      "classes": [],
+      "todos": [],
+      "line_count": 113
+    },
+    "apply_fixes_53.py": {
+      "imports": [
+        "ast",
+        "datetime",
+        "sys"
+      ],
+      "functions": [],
+      "classes": [],
+      "todos": [],
+      "line_count": 78
     },
     "cleanup_and_push.py": {
       "imports": [
@@ -12290,6 +12670,78 @@
       "todos": [],
       "line_count": 10
     },
+    "push_batch50.py": {
+      "imports": [
+        "subprocess"
+      ],
+      "functions": [
+        {
+          "name": "run",
+          "args": [
+            "cmd"
+          ],
+          "docstring": "",
+          "line": 3
+        }
+      ],
+      "classes": [],
+      "todos": [],
+      "line_count": 10
+    },
+    "push_batch51.py": {
+      "imports": [
+        "subprocess"
+      ],
+      "functions": [
+        {
+          "name": "run",
+          "args": [
+            "cmd"
+          ],
+          "docstring": "",
+          "line": 3
+        }
+      ],
+      "classes": [],
+      "todos": [],
+      "line_count": 10
+    },
+    "push_batch52.py": {
+      "imports": [
+        "subprocess"
+      ],
+      "functions": [
+        {
+          "name": "run",
+          "args": [
+            "cmd"
+          ],
+          "docstring": "",
+          "line": 3
+        }
+      ],
+      "classes": [],
+      "todos": [],
+      "line_count": 10
+    },
+    "push_batch53.py": {
+      "imports": [
+        "subprocess"
+      ],
+      "functions": [
+        {
+          "name": "run",
+          "args": [
+            "cmd"
+          ],
+          "docstring": "",
+          "line": 3
+        }
+      ],
+      "classes": [],
+      "todos": [],
+      "line_count": 10
+    },
     "run_umbra.py": {
       "imports": [
         "time",
@@ -13133,7 +13585,7 @@
             "scope"
           ],
           "docstring": "",
-          "line": 1912
+          "line": 2039
         },
         {
           "name": "_repair_python_file",
@@ -13142,7 +13594,7 @@
             "path"
           ],
           "docstring": "",
-          "line": 1979
+          "line": 2106
         },
         {
           "name": "handle_workspace_repair",
@@ -13152,7 +13604,7 @@
             "auto"
           ],
           "docstring": "",
-          "line": 2001
+          "line": 2128
         },
         {
           "name": "_apply_common_improvements",
@@ -13162,7 +13614,7 @@
             "project_type"
           ],
           "docstring": "",
-          "line": 2080
+          "line": 2207
         },
         {
           "name": "_run_real_pipeline",
@@ -13173,7 +13625,7 @@
             "pm"
           ],
           "docstring": "",
-          "line": 2137
+          "line": 2264
         },
         {
           "name": "handle_self_install",
@@ -13182,7 +13634,7 @@
             "feature_description"
           ],
           "docstring": "",
-          "line": 2309
+          "line": 2436
         },
         {
           "name": "handle_integrate",
@@ -13191,7 +13643,7 @@
             "module_name"
           ],
           "docstring": "",
-          "line": 2419
+          "line": 2546
         },
         {
           "name": "handle_files_browser",
@@ -13200,7 +13652,7 @@
             "cmd"
           ],
           "docstring": "Browse, list, and clean up files in the Umbra folder.",
-          "line": 2483
+          "line": 2610
         },
         {
           "name": "_detect_self_intent",
@@ -13208,7 +13660,7 @@
             "text"
           ],
           "docstring": "",
-          "line": 2595
+          "line": 2722
         },
         {
           "name": "_load_user_language_model",
@@ -13217,7 +13669,7 @@
             "conversation"
           ],
           "docstring": "",
-          "line": 2615
+          "line": 2742
         },
         {
           "name": "_record_user_phrase",
@@ -13227,7 +13679,7 @@
             "resolved_intent"
           ],
           "docstring": "",
-          "line": 2626
+          "line": 2753
         },
         {
           "name": "_classify_with_user_model",
@@ -13236,13 +13688,13 @@
             "text"
           ],
           "docstring": "",
-          "line": 2654
+          "line": 2781
         },
         {
           "name": "_ensure_pyttsx3",
           "args": [],
           "docstring": "Auto-install pyttsx3 if missing. Returns True if available.",
-          "line": 2671
+          "line": 2798
         },
         {
           "name": "_maybe_tts",
@@ -13251,7 +13703,7 @@
             "text"
           ],
           "docstring": "",
-          "line": 2697
+          "line": 2824
         },
         {
           "name": "_fallback_game_name",
@@ -13259,7 +13711,7 @@
             "prompt"
           ],
           "docstring": "Best-effort project name when no 'called X' / 'named X' phrase is present\nand no interactive stdin is available (e.g. GUI mode) to ask for one.",
-          "line": 2727
+          "line": 2854
         },
         {
           "name": "_ask_game_clarifications",
@@ -13268,25 +13720,25 @@
             "llm"
           ],
           "docstring": "Ask Umbra to generate clarifying questions before a big build.\nReturns list of (question, answer) pairs.",
-          "line": 2753
+          "line": 2880
         },
         {
           "name": "_init_resource_manager",
           "args": [],
           "docstring": "",
-          "line": 2798
+          "line": 2925
         },
         {
           "name": "build_runtime",
           "args": [],
           "docstring": "",
-          "line": 2811
+          "line": 2938
         },
         {
           "name": "print_banner",
           "args": [],
           "docstring": "",
-          "line": 3074
+          "line": 3201
         },
         {
           "name": "print_status",
@@ -13294,13 +13746,13 @@
             "runtime"
           ],
           "docstring": "",
-          "line": 3081
+          "line": 3208
         },
         {
           "name": "print_config",
           "args": [],
           "docstring": "",
-          "line": 3146
+          "line": 3273
         },
         {
           "name": "print_metrics",
@@ -13308,7 +13760,7 @@
             "runtime"
           ],
           "docstring": "",
-          "line": 3201
+          "line": 3328
         },
         {
           "name": "_handle_project_switch",
@@ -13317,7 +13769,7 @@
             "user_input"
           ],
           "docstring": "",
-          "line": 3217
+          "line": 3344
         },
         {
           "name": "_process_command",
@@ -13326,7 +13778,7 @@
             "user_input"
           ],
           "docstring": "Process a single command \u2014 same logic as interactive_mode loop body.",
-          "line": 3239
+          "line": 3366
         },
         {
           "name": "_launch_gui",
@@ -13334,7 +13786,7 @@
             "runtime"
           ],
           "docstring": "Launch the Umbra Control Center GUI - window runs on main thread via mainloop().",
-          "line": 3596
+          "line": 3741
         },
         {
           "name": "_direct_llm_answer",
@@ -13345,7 +13797,7 @@
             "pm"
           ],
           "docstring": "Answer questions directly via LLM when conv engine is unavailable.",
-          "line": 3761
+          "line": 3906
         },
         {
           "name": "run_prompt",
@@ -13355,7 +13807,7 @@
             "project_override"
           ],
           "docstring": "",
-          "line": 3796
+          "line": 3941
         },
         {
           "name": "_run_studio_project",
@@ -13365,7 +13817,7 @@
             "project_name"
           ],
           "docstring": "",
-          "line": 4293
+          "line": 4438
         },
         {
           "name": "interactive_mode",
@@ -13373,7 +13825,7 @@
             "runtime"
           ],
           "docstring": "",
-          "line": 4372
+          "line": 4517
         },
         {
           "name": "_shutdown",
@@ -13381,13 +13833,13 @@
             "runtime"
           ],
           "docstring": "",
-          "line": 4996
+          "line": 5141
         },
         {
           "name": "main",
           "args": [],
           "docstring": "",
-          "line": 5019
+          "line": 5164
         }
       ],
       "classes": [],
@@ -13395,7 +13847,7 @@
         "\"  4. No TODO comments. Every function must be fully implemented.\\n\"",
         "\"  4. No TODO/placeholder \u2014 every function fully implemented.\\n\""
       ],
-      "line_count": 5071
+      "line_count": 5216
     },
     "umbra_desktop.py": {
       "imports": [
@@ -15540,7 +15992,7 @@
       ],
       "classes": [],
       "todos": [],
-      "line_count": 1613
+      "line_count": 1627
     },
     "core/cli/evolve_runtime.py": {
       "imports": [
@@ -66661,6 +67113,3362 @@
       "classes": [],
       "todos": [],
       "line_count": 46
+    },
+    "workspaces/agent_builds/quicktest10/character_quicktest10.py": {
+      "imports": [
+        "random",
+        "math"
+      ],
+      "functions": [],
+      "classes": [
+        {
+          "name": "Player",
+          "docstring": "",
+          "methods": [
+            {
+              "name": "__init__",
+              "args": [
+                "self",
+                "cls"
+              ],
+              "docstring": "",
+              "line": 11
+            },
+            {
+              "name": "atk_power",
+              "args": [
+                "self"
+              ],
+              "docstring": "",
+              "line": 42
+            },
+            {
+              "name": "def_power",
+              "args": [
+                "self"
+              ],
+              "docstring": "",
+              "line": 45
+            },
+            {
+              "name": "add_item",
+              "args": [
+                "self",
+                "name",
+                "qty"
+              ],
+              "docstring": "",
+              "line": 48
+            },
+            {
+              "name": "gain_xp",
+              "args": [
+                "self",
+                "amt"
+              ],
+              "docstring": "",
+              "line": 54
+            },
+            {
+              "name": "level_up",
+              "args": [
+                "self"
+              ],
+              "docstring": "",
+              "line": 59
+            },
+            {
+              "name": "regen",
+              "args": [
+                "self",
+                "dt"
+              ],
+              "docstring": "",
+              "line": 73
+            }
+          ],
+          "line": 10
+        },
+        {
+          "name": "Enemy",
+          "docstring": "",
+          "methods": [
+            {
+              "name": "__init__",
+              "args": [
+                "self",
+                "edef",
+                "tx",
+                "ty"
+              ],
+              "docstring": "",
+              "line": 79
+            },
+            {
+              "name": "update",
+              "args": [
+                "self",
+                "player",
+                "dt"
+              ],
+              "docstring": "",
+              "line": 90
+            },
+            {
+              "name": "draw",
+              "args": [
+                "self",
+                "surf",
+                "cx",
+                "cy"
+              ],
+              "docstring": "",
+              "line": 98
+            }
+          ],
+          "line": 78
+        },
+        {
+          "name": "NPC",
+          "docstring": "",
+          "methods": [
+            {
+              "name": "__init__",
+              "args": [
+                "self",
+                "name",
+                "job",
+                "tx",
+                "ty"
+              ],
+              "docstring": "",
+              "line": 102
+            }
+          ],
+          "line": 101
+        }
+      ],
+      "todos": [],
+      "line_count": 116
+    },
+    "workspaces/agent_builds/quicktest10/economy_quicktest10.py": {
+      "imports": [],
+      "functions": [
+        {
+          "name": "buy_item",
+          "args": [
+            "player",
+            "npc",
+            "item_name"
+          ],
+          "docstring": "",
+          "line": 39
+        },
+        {
+          "name": "sell_item",
+          "args": [
+            "player",
+            "npc",
+            "item_name"
+          ],
+          "docstring": "",
+          "line": 47
+        },
+        {
+          "name": "craft_item",
+          "args": [
+            "player",
+            "recipe"
+          ],
+          "docstring": "",
+          "line": 57
+        }
+      ],
+      "classes": [],
+      "todos": [],
+      "line_count": 67
+    },
+    "workspaces/agent_builds/quicktest10/item_quicktest10.py": {
+      "imports": [],
+      "functions": [],
+      "classes": [],
+      "todos": [],
+      "line_count": 89
+    },
+    "workspaces/agent_builds/quicktest10/mechanic_quicktest10.py": {
+      "imports": [
+        "json",
+        "math",
+        "os",
+        "os",
+        "pygame",
+        "pygame",
+        "pygame"
+      ],
+      "functions": [
+        {
+          "name": "save_game",
+          "args": [
+            "player",
+            "buildings",
+            "filepath"
+          ],
+          "docstring": "",
+          "line": 88
+        },
+        {
+          "name": "load_game",
+          "args": [
+            "player",
+            "buildings",
+            "filepath"
+          ],
+          "docstring": "",
+          "line": 99
+        }
+      ],
+      "classes": [
+        {
+          "name": "Camera",
+          "docstring": "",
+          "methods": [
+            {
+              "name": "__init__",
+              "args": [
+                "self",
+                "x",
+                "y"
+              ],
+              "docstring": "",
+              "line": 7
+            },
+            {
+              "name": "update",
+              "args": [
+                "self",
+                "px",
+                "py"
+              ],
+              "docstring": "",
+              "line": 11
+            }
+          ],
+          "line": 6
+        },
+        {
+          "name": "FloatText",
+          "docstring": "",
+          "methods": [
+            {
+              "name": "__init__",
+              "args": [
+                "self",
+                "text",
+                "x",
+                "y",
+                "col"
+              ],
+              "docstring": "",
+              "line": 16
+            },
+            {
+              "name": "update",
+              "args": [
+                "self"
+              ],
+              "docstring": "",
+              "line": 24
+            },
+            {
+              "name": "draw",
+              "args": [
+                "self",
+                "surf",
+                "cx",
+                "cy"
+              ],
+              "docstring": "",
+              "line": 32
+            }
+          ],
+          "line": 15
+        },
+        {
+          "name": "Projectile",
+          "docstring": "",
+          "methods": [
+            {
+              "name": "__init__",
+              "args": [
+                "self",
+                "x",
+                "y",
+                "tx",
+                "ty",
+                "dmg",
+                "col",
+                "spd"
+              ],
+              "docstring": "",
+              "line": 39
+            },
+            {
+              "name": "update",
+              "args": [
+                "self"
+              ],
+              "docstring": "",
+              "line": 51
+            },
+            {
+              "name": "draw",
+              "args": [
+                "self",
+                "surf",
+                "cx",
+                "cy"
+              ],
+              "docstring": "",
+              "line": 55
+            }
+          ],
+          "line": 38
+        },
+        {
+          "name": "Building",
+          "docstring": "",
+          "methods": [
+            {
+              "name": "__init__",
+              "args": [
+                "self",
+                "btype",
+                "tx",
+                "ty"
+              ],
+              "docstring": "",
+              "line": 69
+            },
+            {
+              "name": "draw",
+              "args": [
+                "self",
+                "surf",
+                "cx",
+                "cy"
+              ],
+              "docstring": "",
+              "line": 77
+            }
+          ],
+          "line": 59
+        }
+      ],
+      "todos": [],
+      "line_count": 114
+    },
+    "workspaces/agent_builds/quicktest10/quest_quicktest10.py": {
+      "imports": [
+        "random"
+      ],
+      "functions": [
+        {
+          "name": "spawn_entities",
+          "args": [
+            "WORLD_MAP",
+            "TOWNS",
+            "CITIES",
+            "BANDIT_CAMPS",
+            "GOBLIN_CAMPS",
+            "ENEMY_DEFS",
+            "NPC_NAMES",
+            "NPC_JOBS"
+          ],
+          "docstring": "",
+          "line": 8
+        },
+        {
+          "name": "check_kill_quests",
+          "args": [
+            "player",
+            "enemy_name"
+          ],
+          "docstring": "",
+          "line": 40
+        },
+        {
+          "name": "check_item_quests",
+          "args": [
+            "player",
+            "item_name",
+            "qty"
+          ],
+          "docstring": "",
+          "line": 47
+        },
+        {
+          "name": "complete_ready_quests",
+          "args": [
+            "player"
+          ],
+          "docstring": "",
+          "line": 54
+        },
+        {
+          "name": "harvest_nearby",
+          "args": [
+            "player",
+            "WORLD_MAP"
+          ],
+          "docstring": "",
+          "line": 63
+        }
+      ],
+      "classes": [],
+      "todos": [],
+      "line_count": 71
+    },
+    "workspaces/agent_builds/quicktest10/quicktest10_game.py": {
+      "imports": [
+        "pygame",
+        "sys",
+        "math",
+        "random",
+        "json",
+        "os",
+        "time",
+        "inspect",
+        "pygame"
+      ],
+      "functions": [
+        {
+          "name": "_umbra_flex",
+          "args": [
+            "fn"
+          ],
+          "docstring": "",
+          "line": 31
+        },
+        {
+          "name": "gen_world",
+          "args": [],
+          "docstring": "",
+          "line": 130
+        },
+        {
+          "name": "draw_world",
+          "args": [
+            "surf",
+            "cam_x",
+            "cam_y"
+          ],
+          "docstring": "",
+          "line": 137
+        },
+        {
+          "name": "get_biome",
+          "args": [
+            "tx",
+            "ty"
+          ],
+          "docstring": "",
+          "line": 149
+        },
+        {
+          "name": "save_game",
+          "args": [
+            "player",
+            "buildings",
+            "filepath"
+          ],
+          "docstring": "",
+          "line": 444
+        },
+        {
+          "name": "load_game",
+          "args": [
+            "player",
+            "buildings",
+            "filepath"
+          ],
+          "docstring": "",
+          "line": 454
+        },
+        {
+          "name": "spawn_entities",
+          "args": [
+            "WORLD_MAP",
+            "TOWNS",
+            "CITIES",
+            "BANDIT_CAMPS",
+            "GOBLIN_CAMPS",
+            "ENEMY_DEFS",
+            "NPC_NAMES",
+            "NPC_JOBS"
+          ],
+          "docstring": "",
+          "line": 480
+        },
+        {
+          "name": "check_kill_quests",
+          "args": [
+            "player",
+            "enemy_name"
+          ],
+          "docstring": "",
+          "line": 512
+        },
+        {
+          "name": "check_item_quests",
+          "args": [
+            "player",
+            "item_name",
+            "qty"
+          ],
+          "docstring": "",
+          "line": 519
+        },
+        {
+          "name": "complete_ready_quests",
+          "args": [
+            "player"
+          ],
+          "docstring": "",
+          "line": 526
+        },
+        {
+          "name": "harvest_nearby",
+          "args": [
+            "player",
+            "WORLD_MAP"
+          ],
+          "docstring": "",
+          "line": 535
+        },
+        {
+          "name": "buy_item",
+          "args": [
+            "player",
+            "npc",
+            "item_name"
+          ],
+          "docstring": "",
+          "line": 584
+        },
+        {
+          "name": "sell_item",
+          "args": [
+            "player",
+            "npc",
+            "item_name"
+          ],
+          "docstring": "",
+          "line": 592
+        },
+        {
+          "name": "craft_item",
+          "args": [
+            "player",
+            "recipe"
+          ],
+          "docstring": "",
+          "line": 602
+        },
+        {
+          "name": "font",
+          "args": [
+            "size"
+          ],
+          "docstring": "",
+          "line": 1116
+        },
+        {
+          "name": "txt",
+          "args": [
+            "surf",
+            "text",
+            "x",
+            "y",
+            "size",
+            "col",
+            "center"
+          ],
+          "docstring": "",
+          "line": 1120
+        },
+        {
+          "name": "main",
+          "args": [],
+          "docstring": "",
+          "line": 1549
+        }
+      ],
+      "classes": [
+        {
+          "name": "Player",
+          "docstring": "",
+          "methods": [
+            {
+              "name": "__init__",
+              "args": [
+                "self",
+                "cls"
+              ],
+              "docstring": "",
+              "line": 163
+            },
+            {
+              "name": "atk_power",
+              "args": [
+                "self"
+              ],
+              "docstring": "",
+              "line": 194
+            },
+            {
+              "name": "def_power",
+              "args": [
+                "self"
+              ],
+              "docstring": "",
+              "line": 197
+            },
+            {
+              "name": "add_item",
+              "args": [
+                "self",
+                "name",
+                "qty"
+              ],
+              "docstring": "",
+              "line": 200
+            },
+            {
+              "name": "gain_xp",
+              "args": [
+                "self",
+                "amt"
+              ],
+              "docstring": "",
+              "line": 206
+            },
+            {
+              "name": "level_up",
+              "args": [
+                "self"
+              ],
+              "docstring": "",
+              "line": 211
+            },
+            {
+              "name": "regen",
+              "args": [
+                "self",
+                "dt"
+              ],
+              "docstring": "",
+              "line": 225
+            }
+          ],
+          "line": 162
+        },
+        {
+          "name": "Enemy",
+          "docstring": "",
+          "methods": [
+            {
+              "name": "__init__",
+              "args": [
+                "self",
+                "edef",
+                "tx",
+                "ty"
+              ],
+              "docstring": "",
+              "line": 231
+            },
+            {
+              "name": "update",
+              "args": [
+                "self",
+                "player",
+                "dt"
+              ],
+              "docstring": "",
+              "line": 242
+            },
+            {
+              "name": "draw",
+              "args": [
+                "self",
+                "surf",
+                "cx",
+                "cy"
+              ],
+              "docstring": "",
+              "line": 250
+            }
+          ],
+          "line": 230
+        },
+        {
+          "name": "NPC",
+          "docstring": "",
+          "methods": [
+            {
+              "name": "__init__",
+              "args": [
+                "self",
+                "name",
+                "job",
+                "tx",
+                "ty"
+              ],
+              "docstring": "",
+              "line": 254
+            }
+          ],
+          "line": 253
+        },
+        {
+          "name": "Camera",
+          "docstring": "",
+          "methods": [
+            {
+              "name": "__init__",
+              "args": [
+                "self",
+                "x",
+                "y"
+              ],
+              "docstring": "",
+              "line": 366
+            },
+            {
+              "name": "update",
+              "args": [
+                "self",
+                "px",
+                "py"
+              ],
+              "docstring": "",
+              "line": 370
+            }
+          ],
+          "line": 365
+        },
+        {
+          "name": "FloatText",
+          "docstring": "",
+          "methods": [
+            {
+              "name": "__init__",
+              "args": [
+                "self",
+                "text",
+                "x",
+                "y",
+                "col"
+              ],
+              "docstring": "",
+              "line": 375
+            },
+            {
+              "name": "update",
+              "args": [
+                "self"
+              ],
+              "docstring": "",
+              "line": 383
+            },
+            {
+              "name": "draw",
+              "args": [
+                "self",
+                "surf",
+                "cx",
+                "cy"
+              ],
+              "docstring": "",
+              "line": 391
+            }
+          ],
+          "line": 374
+        },
+        {
+          "name": "Projectile",
+          "docstring": "",
+          "methods": [
+            {
+              "name": "__init__",
+              "args": [
+                "self",
+                "x",
+                "y",
+                "tx",
+                "ty",
+                "dmg",
+                "col",
+                "spd"
+              ],
+              "docstring": "",
+              "line": 397
+            },
+            {
+              "name": "update",
+              "args": [
+                "self"
+              ],
+              "docstring": "",
+              "line": 409
+            },
+            {
+              "name": "draw",
+              "args": [
+                "self",
+                "surf",
+                "cx",
+                "cy"
+              ],
+              "docstring": "",
+              "line": 413
+            }
+          ],
+          "line": 396
+        },
+        {
+          "name": "Building",
+          "docstring": "",
+          "methods": [
+            {
+              "name": "__init__",
+              "args": [
+                "self",
+                "btype",
+                "tx",
+                "ty"
+              ],
+              "docstring": "",
+              "line": 426
+            },
+            {
+              "name": "draw",
+              "args": [
+                "self",
+                "surf",
+                "cx",
+                "cy"
+              ],
+              "docstring": "",
+              "line": 434
+            }
+          ],
+          "line": 416
+        }
+      ],
+      "todos": [],
+      "line_count": 2250
+    },
+    "workspaces/agent_builds/quicktest10/world_quicktest10.py": {
+      "imports": [
+        "random"
+      ],
+      "functions": [
+        {
+          "name": "gen_world",
+          "args": [],
+          "docstring": "",
+          "line": 25
+        },
+        {
+          "name": "draw_world",
+          "args": [
+            "surf",
+            "cam_x",
+            "cam_y"
+          ],
+          "docstring": "",
+          "line": 32
+        },
+        {
+          "name": "get_biome",
+          "args": [
+            "tx",
+            "ty"
+          ],
+          "docstring": "",
+          "line": 44
+        }
+      ],
+      "classes": [],
+      "todos": [],
+      "line_count": 47
+    },
+    "workspaces/agent_builds/quicktest11/character_quicktest11.py": {
+      "imports": [
+        "random",
+        "math"
+      ],
+      "functions": [],
+      "classes": [
+        {
+          "name": "Player",
+          "docstring": "",
+          "methods": [
+            {
+              "name": "__init__",
+              "args": [
+                "self",
+                "cls"
+              ],
+              "docstring": "",
+              "line": 18
+            },
+            {
+              "name": "atk_power",
+              "args": [
+                "self"
+              ],
+              "docstring": "",
+              "line": 43
+            },
+            {
+              "name": "def_power",
+              "args": [
+                "self"
+              ],
+              "docstring": "",
+              "line": 46
+            },
+            {
+              "name": "add_item",
+              "args": [
+                "self",
+                "name",
+                "qty"
+              ],
+              "docstring": "",
+              "line": 49
+            },
+            {
+              "name": "gain_xp",
+              "args": [
+                "self",
+                "amt"
+              ],
+              "docstring": "",
+              "line": 55
+            },
+            {
+              "name": "level_up",
+              "args": [
+                "self"
+              ],
+              "docstring": "",
+              "line": 60
+            },
+            {
+              "name": "regen",
+              "args": [
+                "self",
+                "dt"
+              ],
+              "docstring": "",
+              "line": 71
+            }
+          ],
+          "line": 17
+        },
+        {
+          "name": "Enemy",
+          "docstring": "",
+          "methods": [
+            {
+              "name": "__init__",
+              "args": [
+                "self",
+                "edef",
+                "tx",
+                "ty"
+              ],
+              "docstring": "",
+              "line": 76
+            },
+            {
+              "name": "update",
+              "args": [
+                "self",
+                "player",
+                "dt"
+              ],
+              "docstring": "",
+              "line": 88
+            },
+            {
+              "name": "draw",
+              "args": [
+                "self",
+                "surf",
+                "cx",
+                "cy"
+              ],
+              "docstring": "",
+              "line": 98
+            }
+          ],
+          "line": 75
+        },
+        {
+          "name": "NPC",
+          "docstring": "",
+          "methods": [
+            {
+              "name": "__init__",
+              "args": [
+                "self",
+                "name",
+                "job",
+                "tx",
+                "ty"
+              ],
+              "docstring": "",
+              "line": 102
+            }
+          ],
+          "line": 101
+        }
+      ],
+      "todos": [],
+      "line_count": 126
+    },
+    "workspaces/agent_builds/quicktest11/economy_quicktest11.py": {
+      "imports": [],
+      "functions": [
+        {
+          "name": "buy_item",
+          "args": [
+            "player",
+            "npc",
+            "item_name"
+          ],
+          "docstring": "",
+          "line": 39
+        },
+        {
+          "name": "sell_item",
+          "args": [
+            "player",
+            "npc",
+            "item_name"
+          ],
+          "docstring": "",
+          "line": 48
+        },
+        {
+          "name": "craft_item",
+          "args": [
+            "player",
+            "recipe"
+          ],
+          "docstring": "",
+          "line": 57
+        }
+      ],
+      "classes": [],
+      "todos": [],
+      "line_count": 65
+    },
+    "workspaces/agent_builds/quicktest11/item_quicktest11.py": {
+      "imports": [],
+      "functions": [],
+      "classes": [],
+      "todos": [],
+      "line_count": 87
+    },
+    "workspaces/agent_builds/quicktest11/mechanic_quicktest11.py": {
+      "imports": [
+        "json",
+        "math",
+        "pygame",
+        "pygame",
+        "pygame"
+      ],
+      "functions": [
+        {
+          "name": "save_game",
+          "args": [
+            "player",
+            "buildings",
+            "filepath"
+          ],
+          "docstring": "",
+          "line": 89
+        },
+        {
+          "name": "load_game",
+          "args": [
+            "player",
+            "buildings",
+            "filepath"
+          ],
+          "docstring": "",
+          "line": 102
+        }
+      ],
+      "classes": [
+        {
+          "name": "Camera",
+          "docstring": "",
+          "methods": [
+            {
+              "name": "__init__",
+              "args": [
+                "self",
+                "x",
+                "y"
+              ],
+              "docstring": "",
+              "line": 7
+            },
+            {
+              "name": "update",
+              "args": [
+                "self",
+                "px",
+                "py"
+              ],
+              "docstring": "",
+              "line": 11
+            }
+          ],
+          "line": 6
+        },
+        {
+          "name": "FloatText",
+          "docstring": "",
+          "methods": [
+            {
+              "name": "__init__",
+              "args": [
+                "self",
+                "text",
+                "x",
+                "y",
+                "col"
+              ],
+              "docstring": "",
+              "line": 16
+            },
+            {
+              "name": "update",
+              "args": [
+                "self"
+              ],
+              "docstring": "",
+              "line": 24
+            },
+            {
+              "name": "draw",
+              "args": [
+                "self",
+                "surf",
+                "cx",
+                "cy"
+              ],
+              "docstring": "",
+              "line": 30
+            }
+          ],
+          "line": 15
+        },
+        {
+          "name": "Projectile",
+          "docstring": "",
+          "methods": [
+            {
+              "name": "__init__",
+              "args": [
+                "self",
+                "x",
+                "y",
+                "tx",
+                "ty",
+                "dmg",
+                "col",
+                "spd"
+              ],
+              "docstring": "",
+              "line": 37
+            },
+            {
+              "name": "update",
+              "args": [
+                "self"
+              ],
+              "docstring": "",
+              "line": 49
+            },
+            {
+              "name": "draw",
+              "args": [
+                "self",
+                "surf",
+                "cx",
+                "cy"
+              ],
+              "docstring": "",
+              "line": 53
+            }
+          ],
+          "line": 36
+        },
+        {
+          "name": "Building",
+          "docstring": "",
+          "methods": [
+            {
+              "name": "__init__",
+              "args": [
+                "self",
+                "btype",
+                "tx",
+                "ty"
+              ],
+              "docstring": "",
+              "line": 67
+            },
+            {
+              "name": "draw",
+              "args": [
+                "self",
+                "surf",
+                "cx",
+                "cy"
+              ],
+              "docstring": "",
+              "line": 75
+            }
+          ],
+          "line": 57
+        }
+      ],
+      "todos": [],
+      "line_count": 113
+    },
+    "workspaces/agent_builds/quicktest11/quest_quicktest11.py": {
+      "imports": [
+        "random"
+      ],
+      "functions": [
+        {
+          "name": "spawn_entities",
+          "args": [
+            "WORLD_MAP",
+            "TOWNS",
+            "CITIES",
+            "BANDIT_CAMPS",
+            "GOBLIN_CAMPS",
+            "ENEMY_DEFS",
+            "NPC_NAMES",
+            "NPC_JOBS"
+          ],
+          "docstring": "",
+          "line": 23
+        },
+        {
+          "name": "check_kill_quests",
+          "args": [
+            "player",
+            "enemy_name"
+          ],
+          "docstring": "",
+          "line": 50
+        },
+        {
+          "name": "check_item_quests",
+          "args": [
+            "player",
+            "item_name",
+            "qty"
+          ],
+          "docstring": "",
+          "line": 58
+        },
+        {
+          "name": "complete_ready_quests",
+          "args": [
+            "player"
+          ],
+          "docstring": "",
+          "line": 66
+        },
+        {
+          "name": "harvest_nearby",
+          "args": [
+            "player",
+            "WORLD_MAP"
+          ],
+          "docstring": "",
+          "line": 85
+        }
+      ],
+      "classes": [],
+      "todos": [],
+      "line_count": 109
+    },
+    "workspaces/agent_builds/quicktest11/quicktest11_game.py": {
+      "imports": [
+        "pygame",
+        "sys",
+        "math",
+        "random",
+        "json",
+        "os",
+        "time",
+        "inspect",
+        "pygame"
+      ],
+      "functions": [
+        {
+          "name": "_umbra_flex",
+          "args": [
+            "fn"
+          ],
+          "docstring": "",
+          "line": 31
+        },
+        {
+          "name": "gen_world",
+          "args": [],
+          "docstring": "",
+          "line": 130
+        },
+        {
+          "name": "draw_world",
+          "args": [
+            "surf",
+            "cam_x",
+            "cam_y"
+          ],
+          "docstring": "",
+          "line": 137
+        },
+        {
+          "name": "get_biome",
+          "args": [
+            "tx",
+            "ty"
+          ],
+          "docstring": "",
+          "line": 146
+        },
+        {
+          "name": "save_game",
+          "args": [
+            "player",
+            "buildings",
+            "filepath"
+          ],
+          "docstring": "",
+          "line": 450
+        },
+        {
+          "name": "load_game",
+          "args": [
+            "player",
+            "buildings",
+            "filepath"
+          ],
+          "docstring": "",
+          "line": 463
+        },
+        {
+          "name": "font_cache",
+          "args": [
+            "sz"
+          ],
+          "docstring": "",
+          "line": 480
+        },
+        {
+          "name": "bar",
+          "args": [
+            "surf",
+            "x",
+            "y",
+            "w",
+            "h",
+            "val",
+            "mx",
+            "col",
+            "bg"
+          ],
+          "docstring": "",
+          "line": 485
+        },
+        {
+          "name": "panel",
+          "args": [
+            "surf",
+            "rx",
+            "ry",
+            "rw",
+            "rh",
+            "title"
+          ],
+          "docstring": "",
+          "line": 491
+        },
+        {
+          "name": "btn",
+          "args": [
+            "surf",
+            "x",
+            "y",
+            "w",
+            "h",
+            "label",
+            "col",
+            "tcol",
+            "sz"
+          ],
+          "docstring": "",
+          "line": 499
+        },
+        {
+          "name": "draw_minimap",
+          "args": [
+            "surf",
+            "player",
+            "enemies",
+            "WORLD_MAP",
+            "BIOME_COL"
+          ],
+          "docstring": "",
+          "line": 505
+        },
+        {
+          "name": "draw_quest_log",
+          "args": [
+            "surf",
+            "player"
+          ],
+          "docstring": "",
+          "line": 519
+        },
+        {
+          "name": "draw_city_panel",
+          "args": [
+            "surf",
+            "place_type",
+            "BUILDING_TYPES"
+          ],
+          "docstring": "",
+          "line": 526
+        },
+        {
+          "name": "spawn_entities",
+          "args": [
+            "WORLD_MAP",
+            "TOWNS",
+            "CITIES",
+            "BANDIT_CAMPS",
+            "GOBLIN_CAMPS",
+            "ENEMY_DEFS",
+            "NPC_NAMES",
+            "NPC_JOBS"
+          ],
+          "docstring": "",
+          "line": 557
+        },
+        {
+          "name": "check_kill_quests",
+          "args": [
+            "player",
+            "enemy_name"
+          ],
+          "docstring": "",
+          "line": 584
+        },
+        {
+          "name": "check_item_quests",
+          "args": [
+            "player",
+            "item_name",
+            "qty"
+          ],
+          "docstring": "",
+          "line": 592
+        },
+        {
+          "name": "complete_ready_quests",
+          "args": [
+            "player"
+          ],
+          "docstring": "",
+          "line": 600
+        },
+        {
+          "name": "harvest_nearby",
+          "args": [
+            "player",
+            "WORLD_MAP"
+          ],
+          "docstring": "",
+          "line": 619
+        },
+        {
+          "name": "buy_item",
+          "args": [
+            "player",
+            "npc",
+            "item_name"
+          ],
+          "docstring": "",
+          "line": 684
+        },
+        {
+          "name": "sell_item",
+          "args": [
+            "player",
+            "npc",
+            "item_name"
+          ],
+          "docstring": "",
+          "line": 693
+        },
+        {
+          "name": "craft_item",
+          "args": [
+            "player",
+            "recipe"
+          ],
+          "docstring": "",
+          "line": 702
+        },
+        {
+          "name": "font",
+          "args": [
+            "size"
+          ],
+          "docstring": "",
+          "line": 1214
+        },
+        {
+          "name": "txt",
+          "args": [
+            "surf",
+            "text",
+            "x",
+            "y",
+            "size",
+            "col",
+            "center"
+          ],
+          "docstring": "",
+          "line": 1218
+        },
+        {
+          "name": "main",
+          "args": [],
+          "docstring": "",
+          "line": 1647
+        }
+      ],
+      "classes": [
+        {
+          "name": "Player",
+          "docstring": "",
+          "methods": [
+            {
+              "name": "__init__",
+              "args": [
+                "self",
+                "cls"
+              ],
+              "docstring": "",
+              "line": 167
+            },
+            {
+              "name": "atk_power",
+              "args": [
+                "self"
+              ],
+              "docstring": "",
+              "line": 192
+            },
+            {
+              "name": "def_power",
+              "args": [
+                "self"
+              ],
+              "docstring": "",
+              "line": 195
+            },
+            {
+              "name": "add_item",
+              "args": [
+                "self",
+                "name",
+                "qty"
+              ],
+              "docstring": "",
+              "line": 198
+            },
+            {
+              "name": "gain_xp",
+              "args": [
+                "self",
+                "amt"
+              ],
+              "docstring": "",
+              "line": 204
+            },
+            {
+              "name": "level_up",
+              "args": [
+                "self"
+              ],
+              "docstring": "",
+              "line": 209
+            },
+            {
+              "name": "regen",
+              "args": [
+                "self",
+                "dt"
+              ],
+              "docstring": "",
+              "line": 220
+            }
+          ],
+          "line": 166
+        },
+        {
+          "name": "Enemy",
+          "docstring": "",
+          "methods": [
+            {
+              "name": "__init__",
+              "args": [
+                "self",
+                "edef",
+                "tx",
+                "ty"
+              ],
+              "docstring": "",
+              "line": 225
+            },
+            {
+              "name": "update",
+              "args": [
+                "self",
+                "player",
+                "dt"
+              ],
+              "docstring": "",
+              "line": 237
+            },
+            {
+              "name": "draw",
+              "args": [
+                "self",
+                "surf",
+                "cx",
+                "cy"
+              ],
+              "docstring": "",
+              "line": 247
+            }
+          ],
+          "line": 224
+        },
+        {
+          "name": "NPC",
+          "docstring": "",
+          "methods": [
+            {
+              "name": "__init__",
+              "args": [
+                "self",
+                "name",
+                "job",
+                "tx",
+                "ty"
+              ],
+              "docstring": "",
+              "line": 251
+            }
+          ],
+          "line": 250
+        },
+        {
+          "name": "Camera",
+          "docstring": "",
+          "methods": [
+            {
+              "name": "__init__",
+              "args": [
+                "self",
+                "x",
+                "y"
+              ],
+              "docstring": "",
+              "line": 371
+            },
+            {
+              "name": "update",
+              "args": [
+                "self",
+                "px",
+                "py"
+              ],
+              "docstring": "",
+              "line": 375
+            }
+          ],
+          "line": 370
+        },
+        {
+          "name": "FloatText",
+          "docstring": "",
+          "methods": [
+            {
+              "name": "__init__",
+              "args": [
+                "self",
+                "text",
+                "x",
+                "y",
+                "col"
+              ],
+              "docstring": "",
+              "line": 380
+            },
+            {
+              "name": "update",
+              "args": [
+                "self"
+              ],
+              "docstring": "",
+              "line": 388
+            },
+            {
+              "name": "draw",
+              "args": [
+                "self",
+                "surf",
+                "cx",
+                "cy"
+              ],
+              "docstring": "",
+              "line": 394
+            }
+          ],
+          "line": 379
+        },
+        {
+          "name": "Projectile",
+          "docstring": "",
+          "methods": [
+            {
+              "name": "__init__",
+              "args": [
+                "self",
+                "x",
+                "y",
+                "tx",
+                "ty",
+                "dmg",
+                "col",
+                "spd"
+              ],
+              "docstring": "",
+              "line": 400
+            },
+            {
+              "name": "update",
+              "args": [
+                "self"
+              ],
+              "docstring": "",
+              "line": 412
+            },
+            {
+              "name": "draw",
+              "args": [
+                "self",
+                "surf",
+                "cx",
+                "cy"
+              ],
+              "docstring": "",
+              "line": 416
+            }
+          ],
+          "line": 399
+        },
+        {
+          "name": "Building",
+          "docstring": "",
+          "methods": [
+            {
+              "name": "__init__",
+              "args": [
+                "self",
+                "btype",
+                "tx",
+                "ty"
+              ],
+              "docstring": "",
+              "line": 429
+            },
+            {
+              "name": "draw",
+              "args": [
+                "self",
+                "surf",
+                "cx",
+                "cy"
+              ],
+              "docstring": "",
+              "line": 437
+            }
+          ],
+          "line": 419
+        }
+      ],
+      "todos": [],
+      "line_count": 2348
+    },
+    "workspaces/agent_builds/quicktest11/ui_quicktest11.py": {
+      "imports": [
+        "pygame"
+      ],
+      "functions": [
+        {
+          "name": "font_cache",
+          "args": [
+            "sz"
+          ],
+          "docstring": "",
+          "line": 5
+        },
+        {
+          "name": "txt",
+          "args": [
+            "surf",
+            "text",
+            "x",
+            "y",
+            "sz",
+            "col",
+            "center"
+          ],
+          "docstring": "",
+          "line": 10
+        },
+        {
+          "name": "bar",
+          "args": [
+            "surf",
+            "x",
+            "y",
+            "w",
+            "h",
+            "val",
+            "mx",
+            "col",
+            "bg"
+          ],
+          "docstring": "",
+          "line": 20
+        },
+        {
+          "name": "panel",
+          "args": [
+            "surf",
+            "rx",
+            "ry",
+            "rw",
+            "rh",
+            "title"
+          ],
+          "docstring": "",
+          "line": 26
+        },
+        {
+          "name": "btn",
+          "args": [
+            "surf",
+            "x",
+            "y",
+            "w",
+            "h",
+            "label",
+            "col",
+            "tcol",
+            "sz"
+          ],
+          "docstring": "",
+          "line": 34
+        },
+        {
+          "name": "draw_hud",
+          "args": [
+            "surf",
+            "player"
+          ],
+          "docstring": "",
+          "line": 40
+        },
+        {
+          "name": "draw_minimap",
+          "args": [
+            "surf",
+            "player",
+            "enemies",
+            "WORLD_MAP",
+            "BIOME_COL"
+          ],
+          "docstring": "",
+          "line": 49
+        },
+        {
+          "name": "draw_main_menu",
+          "args": [
+            "surf",
+            "project_name"
+          ],
+          "docstring": "",
+          "line": 63
+        },
+        {
+          "name": "draw_class_select",
+          "args": [
+            "surf"
+          ],
+          "docstring": "",
+          "line": 75
+        },
+        {
+          "name": "draw_inventory",
+          "args": [
+            "surf",
+            "player",
+            "selected"
+          ],
+          "docstring": "",
+          "line": 90
+        },
+        {
+          "name": "draw_quest_log",
+          "args": [
+            "surf",
+            "player"
+          ],
+          "docstring": "",
+          "line": 100
+        },
+        {
+          "name": "draw_shop",
+          "args": [
+            "surf",
+            "npc",
+            "player",
+            "selected"
+          ],
+          "docstring": "",
+          "line": 107
+        },
+        {
+          "name": "draw_crafting",
+          "args": [
+            "surf",
+            "player",
+            "tab",
+            "selected",
+            "recipes"
+          ],
+          "docstring": "",
+          "line": 118
+        },
+        {
+          "name": "draw_dialogue",
+          "args": [
+            "surf",
+            "npc",
+            "dial_idx"
+          ],
+          "docstring": "",
+          "line": 132
+        },
+        {
+          "name": "draw_pause",
+          "args": [
+            "surf"
+          ],
+          "docstring": "",
+          "line": 141
+        },
+        {
+          "name": "draw_city_panel",
+          "args": [
+            "surf",
+            "place_type",
+            "BUILDING_TYPES"
+          ],
+          "docstring": "",
+          "line": 150
+        },
+        {
+          "name": "draw_world_map",
+          "args": [
+            "surf",
+            "player",
+            "TOWNS",
+            "CITIES",
+            "WORLD_MAP",
+            "BIOME_COL"
+          ],
+          "docstring": "",
+          "line": 158
+        }
+      ],
+      "classes": [],
+      "todos": [],
+      "line_count": 168
+    },
+    "workspaces/agent_builds/quicktest11/world_quicktest11.py": {
+      "imports": [
+        "random"
+      ],
+      "functions": [
+        {
+          "name": "gen_world",
+          "args": [],
+          "docstring": "",
+          "line": 25
+        },
+        {
+          "name": "draw_world",
+          "args": [
+            "surf",
+            "cam_x",
+            "cam_y"
+          ],
+          "docstring": "",
+          "line": 32
+        },
+        {
+          "name": "get_biome",
+          "args": [
+            "tx",
+            "ty"
+          ],
+          "docstring": "",
+          "line": 41
+        }
+      ],
+      "classes": [],
+      "todos": [],
+      "line_count": 44
+    },
+    "workspaces/agent_builds/quicktest12/character_quicktest12.py": {
+      "imports": [
+        "random",
+        "math"
+      ],
+      "functions": [],
+      "classes": [
+        {
+          "name": "Player",
+          "docstring": "",
+          "methods": [
+            {
+              "name": "__init__",
+              "args": [
+                "self",
+                "cls"
+              ],
+              "docstring": "",
+              "line": 11
+            },
+            {
+              "name": "atk_power",
+              "args": [
+                "self"
+              ],
+              "docstring": "",
+              "line": 42
+            },
+            {
+              "name": "def_power",
+              "args": [
+                "self"
+              ],
+              "docstring": "",
+              "line": 45
+            },
+            {
+              "name": "add_item",
+              "args": [
+                "self",
+                "name",
+                "qty"
+              ],
+              "docstring": "",
+              "line": 48
+            },
+            {
+              "name": "gain_xp",
+              "args": [
+                "self",
+                "amt"
+              ],
+              "docstring": "",
+              "line": 54
+            },
+            {
+              "name": "level_up",
+              "args": [
+                "self"
+              ],
+              "docstring": "",
+              "line": 59
+            },
+            {
+              "name": "regen",
+              "args": [
+                "self",
+                "dt"
+              ],
+              "docstring": "",
+              "line": 73
+            }
+          ],
+          "line": 10
+        },
+        {
+          "name": "Enemy",
+          "docstring": "",
+          "methods": [
+            {
+              "name": "__init__",
+              "args": [
+                "self",
+                "edef",
+                "tx",
+                "ty"
+              ],
+              "docstring": "",
+              "line": 80
+            },
+            {
+              "name": "update",
+              "args": [
+                "self",
+                "player",
+                "dt"
+              ],
+              "docstring": "",
+              "line": 91
+            },
+            {
+              "name": "draw",
+              "args": [
+                "self",
+                "surf",
+                "cx",
+                "cy"
+              ],
+              "docstring": "",
+              "line": 100
+            }
+          ],
+          "line": 79
+        },
+        {
+          "name": "NPC",
+          "docstring": "",
+          "methods": [
+            {
+              "name": "__init__",
+              "args": [
+                "self",
+                "name",
+                "job",
+                "tx",
+                "ty"
+              ],
+              "docstring": "",
+              "line": 104
+            }
+          ],
+          "line": 103
+        }
+      ],
+      "todos": [],
+      "line_count": 116
+    },
+    "workspaces/agent_builds/quicktest12/economy_quicktest12.py": {
+      "imports": [],
+      "functions": [
+        {
+          "name": "buy_item",
+          "args": [
+            "player",
+            "npc",
+            "item_name"
+          ],
+          "docstring": "",
+          "line": 39
+        },
+        {
+          "name": "sell_item",
+          "args": [
+            "player",
+            "npc",
+            "item_name"
+          ],
+          "docstring": "",
+          "line": 48
+        },
+        {
+          "name": "craft_item",
+          "args": [
+            "player",
+            "recipe"
+          ],
+          "docstring": "",
+          "line": 57
+        }
+      ],
+      "classes": [],
+      "todos": [],
+      "line_count": 65
+    },
+    "workspaces/agent_builds/quicktest12/item_quicktest12.py": {
+      "imports": [],
+      "functions": [],
+      "classes": [],
+      "todos": [],
+      "line_count": 89
+    },
+    "workspaces/agent_builds/quicktest12/mechanic_quicktest12.py": {
+      "imports": [
+        "json",
+        "math",
+        "os",
+        "os",
+        "pygame",
+        "pygame",
+        "pygame"
+      ],
+      "functions": [
+        {
+          "name": "save_game",
+          "args": [
+            "player",
+            "buildings",
+            "filepath"
+          ],
+          "docstring": "",
+          "line": 84
+        },
+        {
+          "name": "load_game",
+          "args": [
+            "player",
+            "buildings",
+            "filepath"
+          ],
+          "docstring": "",
+          "line": 97
+        }
+      ],
+      "classes": [
+        {
+          "name": "Camera",
+          "docstring": "",
+          "methods": [
+            {
+              "name": "__init__",
+              "args": [
+                "self",
+                "x",
+                "y"
+              ],
+              "docstring": "",
+              "line": 7
+            },
+            {
+              "name": "update",
+              "args": [
+                "self",
+                "px",
+                "py"
+              ],
+              "docstring": "",
+              "line": 11
+            }
+          ],
+          "line": 6
+        },
+        {
+          "name": "FloatText",
+          "docstring": "",
+          "methods": [
+            {
+              "name": "__init__",
+              "args": [
+                "self",
+                "text",
+                "x",
+                "y",
+                "col"
+              ],
+              "docstring": "",
+              "line": 16
+            },
+            {
+              "name": "update",
+              "args": [
+                "self"
+              ],
+              "docstring": "",
+              "line": 24
+            },
+            {
+              "name": "draw",
+              "args": [
+                "self",
+                "surf",
+                "cx",
+                "cy"
+              ],
+              "docstring": "",
+              "line": 30
+            }
+          ],
+          "line": 15
+        },
+        {
+          "name": "Projectile",
+          "docstring": "",
+          "methods": [
+            {
+              "name": "__init__",
+              "args": [
+                "self",
+                "x",
+                "y",
+                "tx",
+                "ty",
+                "dmg",
+                "col",
+                "spd"
+              ],
+              "docstring": "",
+              "line": 37
+            },
+            {
+              "name": "update",
+              "args": [
+                "self"
+              ],
+              "docstring": "",
+              "line": 49
+            },
+            {
+              "name": "draw",
+              "args": [
+                "self",
+                "surf",
+                "cx",
+                "cy"
+              ],
+              "docstring": "",
+              "line": 53
+            }
+          ],
+          "line": 36
+        },
+        {
+          "name": "Building",
+          "docstring": "",
+          "methods": [
+            {
+              "name": "__init__",
+              "args": [
+                "self",
+                "btype",
+                "tx",
+                "ty"
+              ],
+              "docstring": "",
+              "line": 67
+            },
+            {
+              "name": "draw",
+              "args": [
+                "self",
+                "surf",
+                "cx",
+                "cy"
+              ],
+              "docstring": "",
+              "line": 72
+            }
+          ],
+          "line": 57
+        }
+      ],
+      "todos": [],
+      "line_count": 110
+    },
+    "workspaces/agent_builds/quicktest12/quest_quicktest12.py": {
+      "imports": [
+        "random"
+      ],
+      "functions": [
+        {
+          "name": "spawn_entities",
+          "args": [
+            "WORLD_MAP",
+            "TOWNS",
+            "CITIES",
+            "BANDIT_CAMPS",
+            "GOBLIN_CAMPS",
+            "ENEMY_DEFS",
+            "NPC_NAMES",
+            "NPC_JOBS"
+          ],
+          "docstring": "",
+          "line": 8
+        },
+        {
+          "name": "check_kill_quests",
+          "args": [
+            "player",
+            "enemy_name"
+          ],
+          "docstring": "",
+          "line": 42
+        },
+        {
+          "name": "check_item_quests",
+          "args": [
+            "player",
+            "item_name",
+            "qty"
+          ],
+          "docstring": "",
+          "line": 49
+        },
+        {
+          "name": "complete_ready_quests",
+          "args": [
+            "player"
+          ],
+          "docstring": "",
+          "line": 56
+        },
+        {
+          "name": "harvest_nearby",
+          "args": [
+            "player",
+            "WORLD_MAP"
+          ],
+          "docstring": "",
+          "line": 65
+        }
+      ],
+      "classes": [],
+      "todos": [],
+      "line_count": 73
+    },
+    "workspaces/agent_builds/quicktest12/quicktest12_game.py": {
+      "imports": [
+        "pygame",
+        "sys",
+        "math",
+        "random",
+        "json",
+        "os",
+        "time",
+        "inspect",
+        "pygame"
+      ],
+      "functions": [
+        {
+          "name": "_umbra_flex",
+          "args": [
+            "fn"
+          ],
+          "docstring": "",
+          "line": 31
+        },
+        {
+          "name": "gen_world",
+          "args": [],
+          "docstring": "",
+          "line": 130
+        },
+        {
+          "name": "draw_world",
+          "args": [
+            "surf",
+            "cam_x",
+            "cam_y"
+          ],
+          "docstring": "",
+          "line": 137
+        },
+        {
+          "name": "get_biome",
+          "args": [
+            "tx",
+            "ty"
+          ],
+          "docstring": "",
+          "line": 147
+        },
+        {
+          "name": "save_game",
+          "args": [
+            "player",
+            "buildings",
+            "filepath"
+          ],
+          "docstring": "",
+          "line": 438
+        },
+        {
+          "name": "load_game",
+          "args": [
+            "player",
+            "buildings",
+            "filepath"
+          ],
+          "docstring": "",
+          "line": 450
+        },
+        {
+          "name": "font_cache",
+          "args": [
+            "sz"
+          ],
+          "docstring": "",
+          "line": 468
+        },
+        {
+          "name": "bar",
+          "args": [
+            "surf",
+            "x",
+            "y",
+            "w",
+            "h",
+            "val",
+            "mx",
+            "col",
+            "bg"
+          ],
+          "docstring": "",
+          "line": 473
+        },
+        {
+          "name": "panel",
+          "args": [
+            "surf",
+            "rx",
+            "ry",
+            "rw",
+            "rh",
+            "title"
+          ],
+          "docstring": "",
+          "line": 480
+        },
+        {
+          "name": "btn",
+          "args": [
+            "surf",
+            "x",
+            "y",
+            "w",
+            "h",
+            "label",
+            "col",
+            "tcol",
+            "sz"
+          ],
+          "docstring": "",
+          "line": 488
+        },
+        {
+          "name": "draw_minimap",
+          "args": [
+            "surf",
+            "player",
+            "enemies",
+            "WORLD_MAP",
+            "BIOME_COL"
+          ],
+          "docstring": "",
+          "line": 494
+        },
+        {
+          "name": "draw_quest_log",
+          "args": [
+            "surf",
+            "player"
+          ],
+          "docstring": "",
+          "line": 506
+        },
+        {
+          "name": "draw_city_panel",
+          "args": [
+            "surf",
+            "place_type",
+            "BUILDING_TYPES"
+          ],
+          "docstring": "",
+          "line": 513
+        },
+        {
+          "name": "draw_game_over",
+          "args": [
+            "surf"
+          ],
+          "docstring": "",
+          "line": 521
+        },
+        {
+          "name": "draw_player_stats",
+          "args": [
+            "surf",
+            "player"
+          ],
+          "docstring": "",
+          "line": 527
+        },
+        {
+          "name": "draw_player_inventory",
+          "args": [
+            "surf",
+            "player"
+          ],
+          "docstring": "",
+          "line": 532
+        },
+        {
+          "name": "draw_player_equipment",
+          "args": [
+            "surf",
+            "player"
+          ],
+          "docstring": "",
+          "line": 537
+        },
+        {
+          "name": "draw_player_quests",
+          "args": [
+            "surf",
+            "player"
+          ],
+          "docstring": "",
+          "line": 543
+        },
+        {
+          "name": "draw_player_spells",
+          "args": [
+            "surf",
+            "player"
+          ],
+          "docstring": "",
+          "line": 547
+        },
+        {
+          "name": "draw_player_status_effects",
+          "args": [
+            "surf",
+            "player"
+          ],
+          "docstring": "",
+          "line": 552
+        },
+        {
+          "name": "spawn_entities",
+          "args": [
+            "WORLD_MAP",
+            "TOWNS",
+            "CITIES",
+            "BANDIT_CAMPS",
+            "GOBLIN_CAMPS",
+            "ENEMY_DEFS",
+            "NPC_NAMES",
+            "NPC_JOBS"
+          ],
+          "docstring": "",
+          "line": 563
+        },
+        {
+          "name": "check_kill_quests",
+          "args": [
+            "player",
+            "enemy_name"
+          ],
+          "docstring": "",
+          "line": 597
+        },
+        {
+          "name": "check_item_quests",
+          "args": [
+            "player",
+            "item_name",
+            "qty"
+          ],
+          "docstring": "",
+          "line": 604
+        },
+        {
+          "name": "complete_ready_quests",
+          "args": [
+            "player"
+          ],
+          "docstring": "",
+          "line": 611
+        },
+        {
+          "name": "harvest_nearby",
+          "args": [
+            "player",
+            "WORLD_MAP"
+          ],
+          "docstring": "",
+          "line": 620
+        },
+        {
+          "name": "buy_item",
+          "args": [
+            "player",
+            "npc",
+            "item_name"
+          ],
+          "docstring": "",
+          "line": 669
+        },
+        {
+          "name": "sell_item",
+          "args": [
+            "player",
+            "npc",
+            "item_name"
+          ],
+          "docstring": "",
+          "line": 678
+        },
+        {
+          "name": "craft_item",
+          "args": [
+            "player",
+            "recipe"
+          ],
+          "docstring": "",
+          "line": 687
+        },
+        {
+          "name": "font",
+          "args": [
+            "size"
+          ],
+          "docstring": "",
+          "line": 1199
+        },
+        {
+          "name": "txt",
+          "args": [
+            "surf",
+            "text",
+            "x",
+            "y",
+            "size",
+            "col",
+            "center"
+          ],
+          "docstring": "",
+          "line": 1203
+        },
+        {
+          "name": "main",
+          "args": [],
+          "docstring": "",
+          "line": 1632
+        }
+      ],
+      "classes": [
+        {
+          "name": "Player",
+          "docstring": "",
+          "methods": [
+            {
+              "name": "__init__",
+              "args": [
+                "self",
+                "cls"
+              ],
+              "docstring": "",
+              "line": 161
+            },
+            {
+              "name": "atk_power",
+              "args": [
+                "self"
+              ],
+              "docstring": "",
+              "line": 192
+            },
+            {
+              "name": "def_power",
+              "args": [
+                "self"
+              ],
+              "docstring": "",
+              "line": 195
+            },
+            {
+              "name": "add_item",
+              "args": [
+                "self",
+                "name",
+                "qty"
+              ],
+              "docstring": "",
+              "line": 198
+            },
+            {
+              "name": "gain_xp",
+              "args": [
+                "self",
+                "amt"
+              ],
+              "docstring": "",
+              "line": 204
+            },
+            {
+              "name": "level_up",
+              "args": [
+                "self"
+              ],
+              "docstring": "",
+              "line": 209
+            },
+            {
+              "name": "regen",
+              "args": [
+                "self",
+                "dt"
+              ],
+              "docstring": "",
+              "line": 223
+            }
+          ],
+          "line": 160
+        },
+        {
+          "name": "Enemy",
+          "docstring": "",
+          "methods": [
+            {
+              "name": "__init__",
+              "args": [
+                "self",
+                "edef",
+                "tx",
+                "ty"
+              ],
+              "docstring": "",
+              "line": 230
+            },
+            {
+              "name": "update",
+              "args": [
+                "self",
+                "player",
+                "dt"
+              ],
+              "docstring": "",
+              "line": 241
+            },
+            {
+              "name": "draw",
+              "args": [
+                "self",
+                "surf",
+                "cx",
+                "cy"
+              ],
+              "docstring": "",
+              "line": 250
+            }
+          ],
+          "line": 229
+        },
+        {
+          "name": "NPC",
+          "docstring": "",
+          "methods": [
+            {
+              "name": "__init__",
+              "args": [
+                "self",
+                "name",
+                "job",
+                "tx",
+                "ty"
+              ],
+              "docstring": "",
+              "line": 254
+            }
+          ],
+          "line": 253
+        },
+        {
+          "name": "Camera",
+          "docstring": "",
+          "methods": [
+            {
+              "name": "__init__",
+              "args": [
+                "self",
+                "x",
+                "y"
+              ],
+              "docstring": "",
+              "line": 364
+            },
+            {
+              "name": "update",
+              "args": [
+                "self",
+                "px",
+                "py"
+              ],
+              "docstring": "",
+              "line": 368
+            }
+          ],
+          "line": 363
+        },
+        {
+          "name": "FloatText",
+          "docstring": "",
+          "methods": [
+            {
+              "name": "__init__",
+              "args": [
+                "self",
+                "text",
+                "x",
+                "y",
+                "col"
+              ],
+              "docstring": "",
+              "line": 373
+            },
+            {
+              "name": "update",
+              "args": [
+                "self"
+              ],
+              "docstring": "",
+              "line": 381
+            },
+            {
+              "name": "draw",
+              "args": [
+                "self",
+                "surf",
+                "cx",
+                "cy"
+              ],
+              "docstring": "",
+              "line": 387
+            }
+          ],
+          "line": 372
+        },
+        {
+          "name": "Projectile",
+          "docstring": "",
+          "methods": [
+            {
+              "name": "__init__",
+              "args": [
+                "self",
+                "x",
+                "y",
+                "tx",
+                "ty",
+                "dmg",
+                "col",
+                "spd"
+              ],
+              "docstring": "",
+              "line": 393
+            },
+            {
+              "name": "update",
+              "args": [
+                "self"
+              ],
+              "docstring": "",
+              "line": 405
+            },
+            {
+              "name": "draw",
+              "args": [
+                "self",
+                "surf",
+                "cx",
+                "cy"
+              ],
+              "docstring": "",
+              "line": 409
+            }
+          ],
+          "line": 392
+        },
+        {
+          "name": "Building",
+          "docstring": "",
+          "methods": [
+            {
+              "name": "__init__",
+              "args": [
+                "self",
+                "btype",
+                "tx",
+                "ty"
+              ],
+              "docstring": "",
+              "line": 422
+            },
+            {
+              "name": "draw",
+              "args": [
+                "self",
+                "surf",
+                "cx",
+                "cy"
+              ],
+              "docstring": "",
+              "line": 427
+            }
+          ],
+          "line": 412
+        }
+      ],
+      "todos": [],
+      "line_count": 2433
+    },
+    "workspaces/agent_builds/quicktest12/ui_quicktest12.py": {
+      "imports": [
+        "pygame"
+      ],
+      "functions": [
+        {
+          "name": "font_cache",
+          "args": [
+            "sz"
+          ],
+          "docstring": "",
+          "line": 5
+        },
+        {
+          "name": "txt",
+          "args": [
+            "surf",
+            "text",
+            "x",
+            "y",
+            "sz",
+            "col",
+            "center"
+          ],
+          "docstring": "",
+          "line": 10
+        },
+        {
+          "name": "bar",
+          "args": [
+            "surf",
+            "x",
+            "y",
+            "w",
+            "h",
+            "val",
+            "mx",
+            "col",
+            "bg"
+          ],
+          "docstring": "",
+          "line": 20
+        },
+        {
+          "name": "panel",
+          "args": [
+            "surf",
+            "rx",
+            "ry",
+            "rw",
+            "rh",
+            "title"
+          ],
+          "docstring": "",
+          "line": 27
+        },
+        {
+          "name": "btn",
+          "args": [
+            "surf",
+            "x",
+            "y",
+            "w",
+            "h",
+            "label",
+            "col",
+            "tcol",
+            "sz"
+          ],
+          "docstring": "",
+          "line": 35
+        },
+        {
+          "name": "draw_hud",
+          "args": [
+            "surf",
+            "player"
+          ],
+          "docstring": "",
+          "line": 41
+        },
+        {
+          "name": "draw_minimap",
+          "args": [
+            "surf",
+            "player",
+            "enemies",
+            "WORLD_MAP",
+            "BIOME_COL"
+          ],
+          "docstring": "",
+          "line": 50
+        },
+        {
+          "name": "draw_main_menu",
+          "args": [
+            "surf",
+            "project_name"
+          ],
+          "docstring": "",
+          "line": 62
+        },
+        {
+          "name": "draw_class_select",
+          "args": [
+            "surf"
+          ],
+          "docstring": "",
+          "line": 71
+        },
+        {
+          "name": "draw_inventory",
+          "args": [
+            "surf",
+            "player",
+            "selected"
+          ],
+          "docstring": "",
+          "line": 79
+        },
+        {
+          "name": "draw_quest_log",
+          "args": [
+            "surf",
+            "player"
+          ],
+          "docstring": "",
+          "line": 87
+        },
+        {
+          "name": "draw_shop",
+          "args": [
+            "surf",
+            "npc",
+            "player",
+            "selected"
+          ],
+          "docstring": "",
+          "line": 94
+        },
+        {
+          "name": "draw_crafting",
+          "args": [
+            "surf",
+            "player",
+            "tab",
+            "selected",
+            "recipes"
+          ],
+          "docstring": "",
+          "line": 103
+        },
+        {
+          "name": "draw_dialogue",
+          "args": [
+            "surf",
+            "npc",
+            "dial_idx"
+          ],
+          "docstring": "",
+          "line": 116
+        },
+        {
+          "name": "draw_pause",
+          "args": [
+            "surf"
+          ],
+          "docstring": "",
+          "line": 125
+        },
+        {
+          "name": "draw_city_panel",
+          "args": [
+            "surf",
+            "place_type",
+            "BUILDING_TYPES"
+          ],
+          "docstring": "",
+          "line": 134
+        },
+        {
+          "name": "draw_world_map",
+          "args": [
+            "surf",
+            "player",
+            "TOWNS",
+            "CITIES",
+            "WORLD_MAP",
+            "BIOME_COL"
+          ],
+          "docstring": "",
+          "line": 142
+        },
+        {
+          "name": "draw_game_over",
+          "args": [
+            "surf"
+          ],
+          "docstring": "",
+          "line": 154
+        },
+        {
+          "name": "draw_player_stats",
+          "args": [
+            "surf",
+            "player"
+          ],
+          "docstring": "",
+          "line": 160
+        },
+        {
+          "name": "draw_player_inventory",
+          "args": [
+            "surf",
+            "player"
+          ],
+          "docstring": "",
+          "line": 165
+        },
+        {
+          "name": "draw_player_equipment",
+          "args": [
+            "surf",
+            "player"
+          ],
+          "docstring": "",
+          "line": 170
+        },
+        {
+          "name": "draw_player_quests",
+          "args": [
+            "surf",
+            "player"
+          ],
+          "docstring": "",
+          "line": 176
+        },
+        {
+          "name": "draw_player_spells",
+          "args": [
+            "surf",
+            "player"
+          ],
+          "docstring": "",
+          "line": 180
+        },
+        {
+          "name": "draw_player_status_effects",
+          "args": [
+            "surf",
+            "player"
+          ],
+          "docstring": "",
+          "line": 185
+        }
+      ],
+      "classes": [],
+      "todos": [],
+      "line_count": 187
+    },
+    "workspaces/agent_builds/quicktest12/world_quicktest12.py": {
+      "imports": [
+        "random"
+      ],
+      "functions": [
+        {
+          "name": "gen_world",
+          "args": [],
+          "docstring": "",
+          "line": 25
+        },
+        {
+          "name": "draw_world",
+          "args": [
+            "surf",
+            "cam_x",
+            "cam_y"
+          ],
+          "docstring": "",
+          "line": 35
+        },
+        {
+          "name": "get_biome",
+          "args": [
+            "tx",
+            "ty"
+          ],
+          "docstring": "",
+          "line": 45
+        }
+      ],
+      "classes": [],
+      "todos": [],
+      "line_count": 48
     },
     "workspaces/agent_builds/quicktest2/character_quicktest2.py": {
       "imports": [
