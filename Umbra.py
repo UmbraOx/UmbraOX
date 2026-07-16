@@ -2869,12 +2869,28 @@ def _maybe_tts(runtime, text):
             return
         if not _ensure_pyttsx3():
             return
-        import pyttsx3
-        engine = pyttsx3.init()
+        # pyttsx3's SAPI5 driver on Windows is backed by a COM object that
+        # is NOT safe to re-create on every call from a background thread
+        # (which is how the GUI invokes this) - that mismatch is the most
+        # common reason "tts on" silently does nothing at all. Initialize
+        # COM for this thread if pywin32 is available, and reuse a single
+        # cached engine instance instead of creating a new one every call.
+        try:
+            import pythoncom
+            pythoncom.CoInitialize()
+        except Exception:
+            pass
+        engine = runtime.get("_tts_pyttsx3_engine")
+        if engine is None:
+            import pyttsx3
+            engine = pyttsx3.init()
+            runtime["_tts_pyttsx3_engine"] = engine
         engine.say(text)
         engine.runAndWait()
-    except Exception:
-        pass
+    except Exception as _tts_ex:
+        # Was a bare "except: pass" - meant "tts on" could fail completely
+        # silently with zero feedback, which is exactly what was reported.
+        _umbra_print("  [TTS] Error: " + str(_tts_ex) + "\n")
 
 
 # ============================================================
@@ -3485,6 +3501,67 @@ def _process_command(runtime, user_input):
                 _umbra_print("  [MIC] Error: " + res.error + "\n")
             else:
                 _umbra_print("  [MIC] Nothing heard.\n")
+        return
+
+    # Diagnostics / files / projects (were interactive_mode-CLI-only,
+    # same gap batch27 fixed for listen/voice - GUI never reached these)
+    if cmd in ("health", "health check", "system health"):
+        report = runtime["health"].run_all_checks()
+        _umbra_print("\n[HEALTH] " + report.summary_line())
+        for check in report.checks:
+            icon = "+" if check["status"] == "pass" else "!"
+            _umbra_print("  " + icon + " " + check["name"] + ": " + (check["message"] or check["status"]))
+        _umbra_print("")
+        return
+
+    if cmd in ("memory", "what do you remember"):
+        mem = runtime["memory"]
+        stats = mem.get_stats()
+        _umbra_print("\n[MEMORY] " + str(stats["total_entries"]) + " entries")
+        for k in mem.list_keys()[:10]:
+            _umbra_print("  " + k)
+        _umbra_print("")
+        return
+
+    if cmd in ("projects", "list projects", "my projects"):
+        if pm:
+            _projects = pm.list_projects()
+            if not _projects:
+                _umbra_print("  No projects yet.\n")
+            else:
+                _umbra_print("\n[PROJECTS] " + str(len(_projects)) + " total:")
+                for p in _projects:
+                    tag = " (active)" if (active and active.slug == p.slug) else ""
+                    _umbra_print("  " + p.name + tag + " | " + str(len(p.files)) + " files")
+                _umbra_print("")
+        return
+
+    if (cmd.startswith("work on ") or cmd.startswith("lets work on ")
+            or cmd.startswith("continue ") or cmd.startswith("open ")):
+        _wname = None
+        for pfx in ("lets work on ", "work on ", "continue ", "open "):
+            if cmd.startswith(pfx):
+                _wname = user_input[len(pfx):].strip().title()
+                break
+        if _wname and pm:
+            _existing = pm.get_project(_wname)
+            if _existing:
+                pm.set_active(_wname)
+                _umbra_print("\n[UMBRA] Switched to: " + _existing.name + "\n")
+            else:
+                _umbra_print("  Project '" + _wname + "' not found.\n")
+        return
+
+    if cmd in ("list files", "show files", "browse files", "files"):
+        handle_files_browser(runtime, cmd)
+        return
+
+    if "list workspace" in cmd or "workspace files" in cmd:
+        handle_files_browser(runtime, "workspace")
+        return
+
+    if "clean" in cmd and ("file" in cmd or "old" in cmd or "backup" in cmd):
+        handle_files_browser(runtime, "clean old files")
         return
 
     # Self-repair

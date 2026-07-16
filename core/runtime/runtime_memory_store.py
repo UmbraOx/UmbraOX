@@ -54,16 +54,29 @@ class RuntimeMemoryStore:
         return entry
 
     def search(self, query, top_k=10):
+        # Was pure substring containment ("games I like" not found in
+        # "I like the games..." because word order differs) - use keyword
+        # overlap instead so word order in the query doesn't matter, while
+        # still rewarding an exact-phrase hit as a bonus.
         query_lower = query.lower()
+        query_words = [w for w in query_lower.split() if len(w) > 1]
         results = []
         for entry in self.entries.values():
+            value_lower = str(entry.value).lower()
+            key_lower = entry.key.lower()
+            tags_lower = [t.lower() for t in entry.tags]
             score = 0
-            if query_lower in str(entry.value).lower():
+            if query_lower in value_lower:
                 score += 2
-            if query_lower in entry.key.lower():
+            if query_lower in key_lower:
                 score += 3
-            if any(query_lower in tag.lower() for tag in entry.tags):
+            if any(query_lower in t for t in tags_lower):
                 score += 1
+            if query_words:
+                value_hits = sum(1 for w in query_words if w in value_lower)
+                key_hits = sum(1 for w in query_words if w in key_lower)
+                score += value_hits
+                score += key_hits * 2
             if score > 0:
                 results.append((score, entry))
         results.sort(key=lambda x: x[0], reverse=True)
