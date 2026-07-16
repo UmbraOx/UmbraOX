@@ -1,59 +1,31 @@
-# UMBRA HANDOFF v3.1.0 â€” Paste at start of every new chat
+import datetime, sys
 
-## HOW TO START
-1. Pull repo: `cd C:\\Umbra && git pull origin main`
-2. Read this file
-3. Continue from CURRENT PRIORITY
-4. Send patch scripts only â€” no explanations
+ts = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
+FP = r"C:\Umbra\UMBRA_HANDOFF.md"
 
----
+with open(FP, "r", encoding="utf-8") as f:
+    src = f.read()
+with open(FP + f".bak55_{ts}", "w", encoding="utf-8") as f:
+    f.write(src)
 
-## REPO
-- GitHub: https://github.com/UmbraOx/UmbraOX (PUBLIC)
-- Main: `C:\\Umbra\\Umbra.py` (~4500+ lines, v3.1.0)
-- GUI: `C:\\Umbra\\core\\gui\\control_center.py`
-- Game skeleton: `C:\\Umbra\\core\\assets\\game_skeleton.py`
-- Dev assistant: `C:\\Umbra\\umbra_dev_assistant.py`
-- Tests: `test_umbra_full.py` (67) + `test_dev_assistant.py` (39)
-- Crash test: `test_gameplay_crash.py` (headless, run directly not via pytest)
+OLD_START = "## CURRENT STATUS v3.1.0"
+OLD_END = "## COMPLETION"
 
-## SYSTEM
-- Windows 11, AMD Ryzen 9 3900XT, RX 7900 XT 20GB GPU, 64GB RAM
-- Python 3.12 venv: `C:\\Umbra\\venv\\` â€” activate: `venv\\Scripts\\activate`
-- Python 3.10 also installed â€” games launch with 3.10 (pygame installed there)
-- Ollama running: qwen3:14b (chat), qwen2.5-coder:32b (builds), 15 total models
-- ComfyUI: `C:\\Umbra\\run_directml.bat` â€” must be running for images/GIFs
-  - WARNING: ComfyUI reports only 1GB VRAM on DirectML despite RX 7900 XT having 20GB
-  - This is a DirectML bug â€” causes OOM on heavy workloads like AnimateDiff
-- ComfyUI-Manager: installed (V3.41)
-- AnimateDiff-Evolved: installed (v1.5.7, 146 nodes)
-- Motion module: `C:\\ComfyUI\\models\\animatediff_models\\mm_sd_v15_v2.ckpt`
-- Checkpoints: dreamshaper_8.safetensors, realisticVisionV60B1, v1-5-pruned-emaonly.ckpt
+start_idx = src.find(OLD_START)
+end_idx = src.find(OLD_END)
+if start_idx == -1 or end_idx == -1:
+    print("FAIL: could not locate status section boundaries")
+    sys.exit(1)
 
-## PATCH WORKFLOW
-Claude sends apply_fixes_N.py + push_batchN.py â€” you run them:
-```powershell
-cd C:\\Umbra
-venv\\Scripts\\activate
-python apply_fixes_N.py
-python push_batchN.py
-python Umbra.py   # to test
-```
-Always use numbered patches. Push after every batch. Backup baks are auto-created.
+# find the end of the COMPLETION section (end of file, or next ## heading)
+tail_from_completion = src[end_idx:]
+next_heading = tail_from_completion.find("\n## ", 4)
+if next_heading == -1:
+    completion_end = len(src)
+else:
+    completion_end = end_idx + next_heading
 
-## REPLY RULES â€” NEVER BREAK
-- **COMPRESSED REPLIES ONLY â€” patch scripts and results, zero prose explanations**
-- No narration, no "I will now...", no "This fix addresses..."
-- Full drop-in patch scripts only. Never snippets or descriptions of changes.
-- Fix support/core files before Umbra.py
-- Push every batch to git
-- Run tests before shipping: `python -m pytest -q` then `python test_umbra_full.py`
-- Never send heredocs â€” PowerShell encoding breaks them. Send .py files only.
-- When stuck on exact source text, send a dump_lines.py script first, then fix.
-
----
-
-## CURRENT STATUS v3.1.0 (updated after batch 54)
+NEW_SECTION = '''## CURRENT STATUS v3.1.0 (updated after batch 54)
 
 ### TESTING PLAN
 Per explicit direction: test and confirm everything EXCEPT the game
@@ -208,3 +180,11 @@ Priority order:
 - **Overall on non-game core features: ~90%, pending live confirmation**
 - **Overall on game builder: contract-safety layer extensive, but
   integration-level correctness still unresolved**
+'''
+
+new_src = src[:start_idx] + NEW_SECTION + src[completion_end:]
+
+with open(FP, "w", encoding="utf-8") as f:
+    f.write(new_src)
+
+print("UMBRA_HANDOFF.md updated - reflects batches 45-54, restructured around non-game testing plan")
