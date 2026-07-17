@@ -2874,9 +2874,12 @@ def _tts_log(line):
 
 
 def _maybe_tts(runtime, text):
+    _tts_log("_maybe_tts ENTRY, runtime_id=" + str(id(runtime)) +
+             " _tts_enabled=" + repr(runtime.get("_tts_enabled")) +
+             " text_len=" + str(len(text or "")))
     if not runtime.get("_tts_enabled"):
+        _tts_log("_maybe_tts returning early - not enabled")
         return
-    _tts_log("_maybe_tts called, enabled=True, text_len=" + str(len(text or "")))
     try:
         tts_mod = runtime.get("tts_engine")
         if tts_mod and hasattr(tts_mod, "run"):
@@ -3501,12 +3504,14 @@ def _process_command(runtime, user_input):
     if cmd in ("tts on", "text to speech on", "speak responses",
                "turn on tts", "turn tts on", "enable tts"):
         runtime["_tts_enabled"] = True
+        _tts_log("TOGGLE: tts on, runtime_id=" + str(id(runtime)))
         _umbra_print("  [TTS] Text-to-speech ON.\n")
         return
 
     if cmd in ("tts off", "text to speech off", "stop speaking",
                "turn off tts", "turn tts off", "disable tts"):
         runtime["_tts_enabled"] = False
+        _tts_log("TOGGLE: tts off, runtime_id=" + str(id(runtime)))
         _umbra_print("  [TTS] Text-to-speech OFF.\n")
         return
 
