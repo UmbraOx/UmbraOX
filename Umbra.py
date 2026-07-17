@@ -4098,6 +4098,13 @@ def _direct_llm_answer(runtime, prompt, active_project=None, pm=None):
         else:
             if answer:
                 _umbra_print("\n[UMBRA] " + answer.strip() + "\n")
+        # This is the actual function generating plain Q&A answers in the
+        # GUI (confirmed by the unique "[UMBRA] Thinking..." print above) -
+        # it never called _maybe_tts at all, which is the real reason TTS
+        # was never heard. Wiring it in here, not just the other answer
+        # path, is the fix - not another audio-layer change.
+        if answer:
+            _maybe_tts(runtime, answer)
         return None
     except Exception as e:
         _umbra_print("[UMBRA] Could not answer: " + str(e))
