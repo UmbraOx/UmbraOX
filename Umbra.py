@@ -4189,6 +4189,13 @@ def run_prompt(runtime, prompt, project_override=None):
                 print("")
             else:
                 _umbra_print("\n[UMBRA] " + (_ans.strip() if _ans else "I could not find an answer.") + "\n")
+            # Found via exhaustive grep after _maybe_tts was already wired
+            # into three OTHER answer paths and still never fired - this
+            # general-knowledge Q&A branch (its own model selection, its
+            # own streaming) was a genuinely separate, previously-missed
+            # fourth path.
+            if _ans:
+                _maybe_tts(runtime, _ans)
         except Exception as _qe:
             _umbra_print("[UMBRA] Could not answer: " + str(_qe))
         return None
